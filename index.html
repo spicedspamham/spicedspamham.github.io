@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Shrinkage</title>
 
@@ -12,130 +11,97 @@
 body{
 margin:0;
 font-family:system-ui;
-background:#0e0e0e;
+background:#101010;
 color:white;
 }
 
 header{
 text-align:center;
 padding:14px;
-font-size:32px;
+font-size:30px;
 font-weight:bold;
 }
 
 #stats{
 display:flex;
 justify-content:space-around;
-background:#1c1c1c;
+background:#1b1b1b;
 padding:10px;
-font-size:18px;
 }
 
 .section{
-padding:12px;
+padding:10px;
 }
 
-.board{
+.board,.hand{
 display:flex;
-gap:14px;
-overflow-x:auto;
-padding-bottom:10px;
-}
-
-.hand{
-display:flex;
-gap:16px;
+gap:12px;
 overflow-x:auto;
 }
 
 .card{
-
-width:190px;
+width:180px;
 background:#e9c89d;
 color:black;
-border-radius:14px;
+border-radius:12px;
 border:4px solid black;
 flex-shrink:0;
-
 display:flex;
 flex-direction:column;
-
-box-shadow:0 4px 12px rgba(0,0,0,.5);
-
 }
 
 .cardTop{
-
 display:flex;
 justify-content:space-between;
 padding:6px;
 font-weight:bold;
 border-bottom:3px solid black;
-
 }
 
 .cardArt{
-
 height:120px;
-background:url("70410DAD-32A3-413C-A7BA-0F18B892AB6D.png");
-background-size:contain;
-background-repeat:no-repeat;
-background-position:center;
-
+background:#ccc;
 }
 
 .cardText{
-
 font-size:12px;
 padding:6px;
-min-height:60px;
-
+min-height:50px;
 }
 
 .cardBottom{
-
 display:flex;
 justify-content:space-between;
 border-top:3px solid black;
 padding:6px;
-font-size:12px;
-
 }
 
 button{
-
 padding:10px;
-border:none;
+margin:5px;
 background:#444;
+border:none;
 color:white;
 border-radius:6px;
-margin-top:6px;
-
 }
 
-#controls{
-
+#console{
 text-align:center;
-padding:14px;
-
+padding:10px;
 }
 
 #log{
-
 background:black;
 height:120px;
 overflow:auto;
-font-size:12px;
 padding:6px;
-
+font-size:12px;
 }
 
 #rules{
-
-background:#191919;
-padding:12px;
+background:#1c1c1c;
+padding:10px;
 font-size:13px;
-
 }
 
 </style>
@@ -147,95 +113,88 @@ font-size:13px;
 <header>Shrinkage</header>
 
 <div id="stats">
-
 <div>Resources: <span id="resources"></span></div>
-<div>Your Deck: <span id="playerDeck"></span></div>
-<div>Enemy Deck: <span id="enemyDeck"></span></div>
-
+<div>Your Deck: <span id="pdeck"></span></div>
+<div>Enemy Deck: <span id="edeck"></span></div>
 </div>
 
 <div class="section">
-
 <h3>Opponent Board</h3>
 <div id="enemyBoard" class="board"></div>
-
 </div>
 
 <div class="section">
-
 <h3>Your Board</h3>
 <div id="playerBoard" class="board"></div>
-
 </div>
 
 <div class="section">
-
 <h3>Your Hand</h3>
 <div id="hand" class="hand"></div>
-
 </div>
 
-<div id="controls">
+<div id="console">
 
+<button onclick="startGame()">Start New Game</button>
+<button onclick="drawTurn()">Draw For Turn</button>
+<button onclick="rollResources()">Roll Resources</button>
 <button onclick="endTurn()">End Turn</button>
-<button onclick="startGame()">Reset Game</button>
 
 </div>
 
 <div class="section">
-
 <h3>Game Log</h3>
 <div id="log"></div>
-
 </div>
 
 <div id="rules">
 
 <b>Rules</b><br><br>
 
-Deck = Health.<br>
-If your deck reaches 0 you lose.<br><br>
+Deck = health.<br>
+When a deck reaches 0, that player loses.<br><br>
 
-• Start with 5 cards<br>
-• Gain 6 resources each turn<br>
-• Play soldiers<br>
-• Soldiers automatically attack<br>
-• If undefended they shrink opponent deck equal to strength<br>
+Turn flow:<br>
+1 Draw card<br>
+2 Roll resources (6 + d6)<br>
+3 Play soldiers<br>
+4 End turn → combat → enemy turn<br>
+
+Unblocked attacks shrink enemy deck equal to strength.
 
 </div>
 
 <script>
 
-/* CARD DATABASE */
+/* CARD POOL */
 
-const CARDS=[
+const CARDPOOL=[
 
-{name:"Scout",cost:2,str:1,text:"Simple fighter"},
+{name:"Scout",cost:2,str:1},
 
-{name:"Raider",cost:3,str:2,text:"Fast soldier"},
+{name:"Raider",cost:3,str:2},
 
-{name:"Knight",cost:4,str:4,text:"Heavy combatant"},
+{name:"Knight",cost:4,str:4},
 
-{name:"Herald",cost:3,str:2,text:"ETB draw 2",kw:["ETB:Draw2"]},
+{name:"Herald",cost:3,str:2,kw:["ETB:Draw2"]},
 
-{name:"Arms Bearer",cost:3,str:3,text:"ETB buff team",kw:["ETB:BuffAll1"]},
+{name:"Saboteur",cost:4,str:2,kw:["ETB:Shrink3"]},
 
-{name:"Saboteur",cost:4,str:2,text:"ETB shrink enemy",kw:["ETB:Shrink3"]},
+{name:"Captain",cost:5,str:4,kw:["ETB:BuffAll1"]},
 
-{name:"World Shifter",cost:18,str:10,text:"Massive shrink",kw:["ETB:Shrink15"]}
+{name:"World Shifter",cost:18,str:10,kw:["ETB:Shrink15"]}
 
 ]
 
-/* GAME STATE */
-
 let game
+
+/* START */
 
 function startGame(){
 
 game={
 
-resources:6,
-
+resources:0,
 playerDeck:buildDeck(),
 enemyDeck:buildDeck(),
 
@@ -249,7 +208,7 @@ draw(5)
 
 render()
 
-log("Game started")
+log("New game started")
 
 }
 
@@ -257,19 +216,15 @@ log("Game started")
 
 function buildDeck(){
 
-let deck=[]
+let d=[]
 
-CARDS.forEach(c=>{
+CARDPOOL.forEach(c=>{
 
-for(let i=0;i<5;i++){
-
-deck.push({...c})
-
-}
+for(let i=0;i<4;i++) d.push({...c})
 
 })
 
-return shuffle(deck)
+return shuffle(d)
 
 }
 
@@ -297,6 +252,29 @@ if(game.playerDeck.length===0) lose()
 game.hand.push(game.playerDeck.pop())
 
 }
+
+}
+
+/* TURN ACTIONS */
+
+function drawTurn(){
+
+draw(1)
+render()
+
+log("You drew a card")
+
+}
+
+function rollResources(){
+
+let roll=Math.floor(Math.random()*6)+1
+
+game.resources+=6+roll
+
+log("Rolled "+roll+" → gained "+(6+roll)+" resources")
+
+render()
 
 }
 
@@ -342,17 +320,9 @@ game.playerBoard.forEach(s=>s.str++)
 
 }
 
-if(val==="Shrink3"){
+if(val==="Shrink3") shrinkEnemy(3)
 
-shrinkEnemy(3)
-
-}
-
-if(val==="Shrink15"){
-
-shrinkEnemy(15)
-
-}
+if(val==="Shrink15") shrinkEnemy(15)
 
 })
 
@@ -374,18 +344,6 @@ log("Enemy shrinks "+n)
 
 }
 
-/* AI */
-
-function aiTurn(){
-
-let card=CARDS[Math.floor(Math.random()*CARDS.length)]
-
-game.enemyBoard.push({...card})
-
-log("Enemy played "+card.name)
-
-}
-
 /* COMBAT */
 
 function combat(){
@@ -399,7 +357,6 @@ let e=game.enemyBoard[0]
 if(p.str>=e.str){
 
 game.enemyBoard.shift()
-
 log(p.name+" killed "+e.name)
 
 }else{
@@ -418,17 +375,37 @@ shrinkEnemy(p.str)
 
 }
 
+/* AI */
+
+function enemyTurn(){
+
+drawEnemy()
+
+let playable=CARDPOOL.filter(c=>c.cost<=5)
+
+let card=playable[Math.floor(Math.random()*playable.length)]
+
+game.enemyBoard.push({...card})
+
+log("Enemy played "+card.name)
+
+}
+
+function drawEnemy(){
+
+if(game.enemyDeck.length>0)
+
+game.enemyDeck.pop()
+
+}
+
 /* END TURN */
 
 function endTurn(){
 
-game.resources+=6
-
-aiTurn()
-
 combat()
 
-draw(1)
+enemyTurn()
 
 render()
 
@@ -439,8 +416,8 @@ render()
 function render(){
 
 document.getElementById("resources").innerText=game.resources
-document.getElementById("playerDeck").innerText=game.playerDeck.length
-document.getElementById("enemyDeck").innerText=game.enemyDeck.length
+document.getElementById("pdeck").innerText=game.playerDeck.length
+document.getElementById("edeck").innerText=game.enemyDeck.length
 
 renderHand()
 renderBoards()
@@ -449,15 +426,15 @@ renderBoards()
 
 function renderHand(){
 
-let h=""
+let html=""
 
 game.hand.forEach((c,i)=>{
 
-h+=cardHTML(c,i,true)
+html+=cardHTML(c,i,true)
 
 })
 
-document.getElementById("hand").innerHTML=h
+document.getElementById("hand").innerHTML=html
 
 }
 
@@ -481,21 +458,19 @@ return `
 <div class="card">
 
 <div class="cardTop">
-
 <span>${c.name}</span>
 <span>${c.cost}</span>
-
 </div>
 
 <div class="cardArt"></div>
 
-<div class="cardText">${c.text}</div>
+<div class="cardText">
+${c.kw?c.kw.join("<br>"):""}
+</div>
 
 <div class="cardBottom">
-
 <span>Soldier</span>
 <span>${c.str}</span>
-
 </div>
 
 ${playable?`<button onclick="playCard(${i})">Play</button>`:""}
@@ -506,12 +481,11 @@ ${playable?`<button onclick="playCard(${i})">Play</button>`:""}
 
 }
 
-/* WIN / LOSE */
+/* WIN LOSE */
 
 function win(){
 
 alert("You win!")
-
 startGame()
 
 }
@@ -519,7 +493,6 @@ startGame()
 function lose(){
 
 alert("You lose!")
-
 startGame()
 
 }
@@ -531,14 +504,9 @@ function log(t){
 let l=document.getElementById("log")
 
 l.innerHTML+=t+"<br>"
-
 l.scrollTop=l.scrollHeight
 
 }
-
-/* START */
-
-startGame()
 
 </script>
 
