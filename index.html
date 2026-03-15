@@ -90,14 +90,6 @@ text-align:center;
 padding:10px;
 }
 
-#log{
-background:black;
-height:120px;
-overflow:auto;
-padding:6px;
-font-size:12px;
-}
-
 #rules{
 background:#1c1c1c;
 padding:10px;
@@ -142,11 +134,6 @@ font-size:13px;
 
 </div>
 
-<div class="section">
-<h3>Game Log</h3>
-<div id="log"></div>
-</div>
-
 <div id="rules">
 
 <b>Rules</b><br><br>
@@ -160,7 +147,8 @@ Turn flow:<br>
 3 Play soldiers<br>
 4 End turn → combat → enemy turn<br>
 
-Unblocked attacks shrink enemy deck equal to strength.
+Unblocked attacks shrink enemy deck equal to strength.<br>
+(Enemy attacks back the same way)
 
 </div>
 
@@ -208,8 +196,6 @@ draw(5)
 
 render()
 
-log("New game started")
-
 }
 
 /* DECK */
@@ -247,7 +233,13 @@ function draw(n){
 
 for(let i=0;i<n;i++){
 
-if(game.playerDeck.length===0) lose()
+if(game.playerDeck.length===0){
+
+lose()
+
+return
+
+}
 
 game.hand.push(game.playerDeck.pop())
 
@@ -262,17 +254,13 @@ function drawTurn(){
 draw(1)
 render()
 
-log("You drew a card")
-
 }
 
 function rollResources(){
 
 let roll=Math.floor(Math.random()*6)+1
 
-game.resources+=6+roll
-
-log("Rolled "+roll+" → gained "+(6+roll)+" resources")
+game.resources += 6+roll
 
 render()
 
@@ -293,8 +281,6 @@ game.hand.splice(i,1)
 game.playerBoard.push(c)
 
 trigger(c,"ETB")
-
-log("Played "+c.name)
 
 render()
 
@@ -334,34 +320,59 @@ function shrinkEnemy(n){
 
 for(let i=0;i<n;i++){
 
-if(game.enemyDeck.length===0) win()
+if(game.enemyDeck.length===0){
+
+win()
+
+return
+
+}
 
 game.enemyDeck.pop()
 
 }
 
-log("Enemy shrinks "+n)
+}
+
+function shrinkPlayer(n){
+
+for(let i=0;i<n;i++){
+
+if(game.playerDeck.length===0){
+
+lose()
+
+return
 
 }
 
-/* COMBAT */
+game.playerDeck.pop()
 
-function combat(){
+}
 
-game.playerBoard.forEach(p=>{
+}
 
-if(game.enemyBoard.length){
+/* COMBAT - PLAYER ATTACKS FIRST */
 
-let e=game.enemyBoard[0]
+function playerCombat(){
 
-if(p.str>=e.str){
+let newPlayerBoard = []
+
+game.playerBoard.forEach(p => {
+
+if(game.enemyBoard.length > 0){
+
+let e = game.enemyBoard[0]
+
+if(p.str >= e.str){
 
 game.enemyBoard.shift()
-log(p.name+" killed "+e.name)
+
+newPlayerBoard.push(p)
 
 }else{
 
-log(p.name+" died")
+// attacker dies, blocker lives
 
 }
 
@@ -369,17 +380,57 @@ log(p.name+" died")
 
 shrinkEnemy(p.str)
 
+newPlayerBoard.push(p)
+
 }
 
 })
 
+game.playerBoard = newPlayerBoard
+
 }
 
-/* AI */
+/* ENEMY COMBAT - AFTER ENEMY PLAYS */
+
+function enemyCombat(){
+
+let newEnemyBoard = []
+
+game.enemyBoard.forEach(e => {
+
+if(game.playerBoard.length > 0){
+
+let p = game.playerBoard[0]
+
+if(e.str >= p.str){
+
+game.playerBoard.shift()
+
+newEnemyBoard.push(e)
+
+}else{
+
+// enemy dies, blocker lives
+
+}
+
+}else{
+
+shrinkPlayer(e.str)
+
+newEnemyBoard.push(e)
+
+}
+
+})
+
+game.enemyBoard = newEnemyBoard
+
+}
+
+/* AI - SIMPLE ENEMY TURN */
 
 function enemyTurn(){
-
-drawEnemy()
 
 let playable=CARDPOOL.filter(c=>c.cost<=5)
 
@@ -387,15 +438,7 @@ let card=playable[Math.floor(Math.random()*playable.length)]
 
 game.enemyBoard.push({...card})
 
-log("Enemy played "+card.name)
-
-}
-
-function drawEnemy(){
-
-if(game.enemyDeck.length>0)
-
-game.enemyDeck.pop()
+enemyCombat()
 
 }
 
@@ -403,7 +446,7 @@ game.enemyDeck.pop()
 
 function endTurn(){
 
-combat()
+playerCombat()
 
 enemyTurn()
 
@@ -441,9 +484,11 @@ document.getElementById("hand").innerHTML=html
 function renderBoards(){
 
 let p=""
+
 let e=""
 
 game.playerBoard.forEach(c=>p+=cardHTML(c))
+
 game.enemyBoard.forEach(c=>e+=cardHTML(c))
 
 document.getElementById("playerBoard").innerHTML=p
@@ -494,17 +539,6 @@ function lose(){
 
 alert("You lose!")
 startGame()
-
-}
-
-/* LOG */
-
-function log(t){
-
-let l=document.getElementById("log")
-
-l.innerHTML+=t+"<br>"
-l.scrollTop=l.scrollHeight
 
 }
 
