@@ -1,274 +1,501 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>SHRINKAGE: ULTIMATE PROTOCOL</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs@3/dist/cdn.min.js" defer></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=JetBrains+Mono:wght@500;700&display=swap');
-        body { background: #020202; color: #e4e4e7; font-family: 'JetBrains Mono', monospace; margin: 0; }
-        .title { font-family: 'UnifrakturCook', cursive; }
-        .game-wrapper { display: grid; grid-template-columns: 350px 1fr; min-height: 100vh; }
-        
-        /* CARDS: Large & Readable */
-        .card { 
-            width: 210px; height: 290px; background: #09090b; border: 2px solid #27272a;
-            border-radius: 12px; padding: 20px; flex-shrink: 0; position: relative; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer;
-        }
-        .card:hover { border-color: #fbbf24; transform: translateY(-8px); box-shadow: 0 10px 20px -10px rgba(251, 191, 36, 0.3); z-index: 10; }
-        .card.tapped { transform: rotate(10deg); opacity: 0.4; filter: grayscale(1); }
-        .card.sustenance { border: 4px double #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
-        
-        .card-name { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 10px; border-bottom: 1px solid #18181b; padding-bottom: 5px; }
-        .card-ability { font-size: 14px; color: #a1a1aa; line-height: 1.5; font-weight: 500; }
-        .card-stat { position: absolute; bottom: 15px; right: 20px; font-size: 32px; font-weight: 900; }
-        .card-cost { position: absolute; top: 10px; right: 15px; color: #fbbf24; font-weight: 800; font-size: 18px; }
+<meta charset="UTF-8">
+<title>Shrinkage Prototype</title>
 
-        .zone { display: flex; gap: 24px; padding: 30px; background: rgba(255,255,255,0.01); border-radius: 16px; overflow-x: auto; border: 1px solid #09090b; min-height: 350px; scrollbar-width: none; }
-        .sidebar { background: #000; border-right: 1px solid #18181b; height: 100vh; position: sticky; top: 0; z-index: 50; }
-        [x-cloak] { display: none !important; }
-    </style>
+<style>
+
+body{
+font-family:Arial;
+background:#1a1a1a;
+color:white;
+margin:0;
+}
+
+#game{
+display:flex;
+height:100vh;
+}
+
+#left{
+width:70%;
+padding:10px;
+}
+
+#right{
+width:30%;
+background:#111;
+padding:10px;
+overflow:auto;
+}
+
+.card{
+border:1px solid #888;
+border-radius:6px;
+padding:6px;
+margin:4px;
+display:inline-block;
+background:#2a2a2a;
+cursor:pointer;
+width:110px;
+}
+
+.card:hover{
+background:#3a3a3a;
+}
+
+.row{
+margin-bottom:10px;
+}
+
+button{
+padding:8px;
+margin:5px;
+}
+
+.phase{
+font-weight:bold;
+color:#8fe;
+}
+
+</style>
 </head>
 
-<body x-data="shrinkage()" x-init="init()" x-cloak>
-    <div class="game-wrapper">
-        <aside class="sidebar p-8 flex flex-col gap-8 shadow-2xl">
-            <h1 class="title text-7xl text-amber-500 text-center tracking-tighter">SHRINK</h1>
-            
-            <div class="bg-zinc-900/40 p-3 rounded-xl border border-zinc-800 space-y-4">
-                <div class="flex gap-2">
-                    <button @click="setMode('AI')" :class="mode === 'AI' ? 'bg-amber-600 text-black' : 'text-zinc-500 hover:text-white'" class="flex-1 py-2 text-xs font-bold rounded-lg transition">VS AI</button>
-                    <button @click="setMode('P2P')" :class="mode === 'P2P' ? 'bg-emerald-600 text-black' : 'text-zinc-500 hover:text-white'" class="flex-1 py-2 text-xs font-bold rounded-lg transition">P2P</button>
-                </div>
-                <div class="h-px bg-zinc-800"></div>
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Energy</span>
-                    <span class="text-4xl font-black text-amber-400" x-text="p.res + '/6'"></span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Enemy Lib</span>
-                    <span class="text-3xl font-black text-red-600" x-text="opp.deck"></span>
-                </div>
-            </div>
+<body>
 
-            <button @click="passPriority()" class="w-full py-6 bg-white text-black font-black text-2xl rounded-xl hover:bg-amber-500 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                PASS PRIORITY
-            </button>
+<div id="game">
 
-            <div class="flex-1 bg-black rounded-lg border border-zinc-900 overflow-hidden flex flex-col">
-                <div class="p-2 bg-zinc-900 text-[10px] font-bold uppercase text-zinc-500">Battle Log</div>
-                <div class="p-4 overflow-y-auto text-[11px] font-mono space-y-2 text-zinc-400">
-                    <template x-for="log in logs">
-                        <div class="border-b border-zinc-900/50 pb-1" x-html="log"></div>
-                    </template>
-                </div>
-            </div>
-        </aside>
+<div id="left">
 
-        <main class="p-12 space-y-16 bg-[#020202]">
-            <section>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xs font-black text-red-500 uppercase tracking-[0.4em]">Enemy Battlefield</h2>
-                    <span class="text-[10px] text-zinc-600" x-text="opp.field.length + ' Active'"></span>
-                </div>
-                <div class="zone border-red-900/5">
-                    <template x-for="c in opp.field">
-                        <div class="card" :class="c.tapped && 'tapped'">
-                            <div class="card-cost" x-text="c.cost"></div>
-                            <div class="card-name" x-text="c.name"></div>
-                            <div class="card-ability" x-text="c.ability"></div>
-                            <div class="card-stat text-red-600" x-text="c.str"></div>
-                        </div>
-                    </template>
-                </div>
-            </section>
+<h2>Shrinkage</h2>
 
-            <section>
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">Your Battlefield</h2>
-                    <span class="text-[10px] text-zinc-600" x-text="p.field.length + ' Active'"></span>
-                </div>
-                <div class="zone border-emerald-900/5">
-                    <template x-for="c in p.field">
-                        <div class="card" :class="{'tapped': c.tapped, 'sustenance': c.sustenance}" @click="handleCombat(c)">
-                            <div class="card-cost" x-text="c.cost"></div>
-                            <div class="card-name" x-text="c.name"></div>
-                            <div class="card-ability" x-text="c.ability"></div>
-                            <div class="card-stat text-emerald-500" x-text="c.str"></div>
-                        </div>
-                    </template>
-                </div>
-            </section>
+<div id="status"></div>
 
-            <section class="pt-8">
-                <h2 class="text-xs font-black text-zinc-600 mb-6 uppercase tracking-[0.4em]">Your Hand</h2>
-                <div class="zone bg-black/60 border-zinc-800 shadow-inner">
-                    <template x-for="c in p.hand">
-                        <div class="card border-zinc-800 hover:border-amber-500" @click="castCard(c)">
-                            <div class="card-cost" x-text="c.cost"></div>
-                            <div class="card-name" x-text="c.name"></div>
-                            <div class="card-ability" x-text="c.ability"></div>
-                            <div class="card-stat text-zinc-700" x-text="c.str"></div>
-                        </div>
-                    </template>
-                </div>
-            </section>
-<footer class="mt-24 p-12 bg-zinc-950 border border-zinc-900 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-12 text-zinc-500">
-                <div>
-                    <h3 class="text-amber-500 font-bold text-xs uppercase mb-6 tracking-widest">Protocol Rules</h3>
-                    <ul class="text-[11px] space-y-3 leading-relaxed">
-                        <li>• <b class="text-white">SHRINK:</b> Your deck is your life. Take damage, mill cards.</li>
-                        <li>• <b class="text-white">HASTE:</b> Every soldier can attack the moment it lands.</li>
-                        <li>• <b class="text-white">BLOCK:</b> Defenders must intercept attackers. Both die in clash.</li>
-                        <li>• <b class="text-white">ENERGY:</b> Capped at 6. Refills every turn.</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-amber-500 font-bold text-xs uppercase mb-6 tracking-widest">Symbolic Logic</h3>
-                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-[11px] font-mono">
-                        <div class="text-emerald-400">$X: <span class="text-zinc-600">Shrink Enemy X</span></div>
-                        <div class="text-emerald-400">#X: <span class="text-zinc-600">Shrink Self X</span></div>
-                        <div class="text-emerald-400">@X: <span class="text-zinc-600">Add Energy X</span></div>
-                        <div class="text-emerald-400">[S+]: <span class="text-zinc-600">Sustenance</span></div>
-                        <div class="text-emerald-400">%: <span class="text-zinc-600">Counter Stack</span></div>
-                        <div class="text-emerald-400">^: <span class="text-zinc-600">Recall Grave</span></div>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-amber-500 font-bold text-xs uppercase mb-6 tracking-widest">How to Play</h3>
-                    <p class="text-[11px] leading-relaxed">
-                        Choose your mode (AI or P2P). Click cards in hand to put them on the <b class="text-white">Stack</b>. You must click <b class="text-white">Pass Priority</b> to resolve cards. When attacking, if the enemy has no soldiers, you hit their library directly.
-                    </p>
-                </div>
-            </footer>
-        </main>
-    </div>
+<div class="row">
+<b>AI Board</b>
+<div id="aiBoard"></div>
+</div>
 
-    <script>
-        const DECKS = {
-            BURN: [
-                {name:"Neural Zap", cost:3, str:0, type:"I", ability:"[S] $4"},
-                {name:"Static Pulse", cost:2, str:0, type:"I", ability:"%1 $1"},
-                {name:"Mirror Sentinel", cost:3, str:2, type:"S", ability:"[S+] [U]"},
-                {name:"Mana Flare", cost:1, str:0, type:"I", ability:"@3"},
-                {name:"Mind Wipe", cost:6, str:0, type:"I", ability:"[S] $8"}
-            ],
-            STOMPY: [
-                {name:"Void Maw", cost:2, str:6, type:"S", ability:"[H] #8"},
-                {name:"Grave Caller", cost:3, str:2, type:"S", ability:"^1"},
-                {name:"Eternity Guard", cost:4, str:3, type:"S", ability:"[S+]"},
-                {name:"Soul Butcher", cost:2, str:4, type:"S", ability:"SAC: $3"},
-                {name:"Primal Behemoth", cost:5, str:9, type:"S", ability:"#5 $2"}
-            ]
-        };
+<div class="row">
+<b>Your Board</b>
+<div id="playerBoard"></div>
+</div>
 
-        function shrinkage() {
-            return {
-                p: { deck: 50, hand: [], field: [], res: 6, grave: [] },
-                opp: { deck: 50, hand: [], field: [], res: 6, grave: [] },
-                mode: 'AI', priority: 'player', logs: [], stack: [],
+<div class="row">
+<b>Your Hand</b>
+<div id="hand"></div>
+</div>
 
-                init() {
-                    this.setMode('AI'); // Default
-                },
-                setMode(m) {
-                    this.mode = m;
-                    this.resetGame();
-                },
-                resetGame() {
-                    // Balanced Start: Player gets Stompy, AI gets Burn (or vice versa)
-                    const pDeckKey = Math.random() > 0.5 ? 'STOMPY' : 'BURN';
-                    const oDeckKey = pDeckKey === 'STOMPY' ? 'BURN' : 'STOMPY';
-                    
-                    let pPool = this.shuffle(Array(10).fill(DECKS[pDeckKey]).flat());
-                    let oPool = this.shuffle(Array(10).fill(DECKS[oDeckKey]).flat());
+<div class="row">
+<button onclick="playTurn()">End Phase</button>
+<button onclick="attack()">Attack</button>
+</div>
 
-                    this.p = { deck: 50, hand: pPool.splice(0, 5), field: [], res: 6, grave: [], pool: pPool };
-                    this.opp = { deck: 50, hand: oPool.splice(0, 5), field: [], res: 6, grave: [], pool: oPool };
-                    this.logs = [`System: Match started. You are playing ${pDeckKey}.`];
-                },
-                shuffle(a) {
-                    for (let i = a.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [a[i], a[j]] = [a[j], a[i]];
-                    }
-                    return a;
-                },
-                log(m) { this.logs.unshift(`> ${m}`); },
+</div>
 
-                passPriority() {
-                    if (this.stack.length > 0) this.resolveStack();
-                    else {
-                        this.priority = (this.priority === 'player' ? 'opp' : 'player');
-                        if (this.priority === 'player') { 
-                            this.p.res = 6; 
-                            this.p.field.forEach(c => c.tapped = false); 
-                            this.log("Your Turn. Energy Refilled.");
-                        }
-                        if (this.mode === 'AI' && this.priority === 'opp') {
-                            this.opp.res = 6;
-                            this.opp.field.forEach(c => c.tapped = false);
-                            setTimeout(() => this.aiMove(), 800);
-                        }
-                    }
-                },
+<div id="right">
 
-                castCard(card) {
-                    if (this.priority !== 'player' || this.p.res < card.cost) return;
-                    this.p.res -= card.cost;
-                    this.p.hand = this.p.hand.filter(c => c !== card);
-                    this.stack.push({ owner: 'player', card: card });
-                    this.log(`STACK: Cast ${card.name}`);
-                    this.passPriority();
-                },
+<h3>Rules</h3>
 
-                resolveStack() {
-                    while (this.stack.length > 0) {
-                        const { card, owner } = this.stack.pop();
-                        const isP = (owner === 'player');
-                        if (card.type === 'S') {
-                            this[isP ? 'p' : 'opp'].field.push({...card, tapped: false, sustenance: card.ability.includes('[S+]')});
-                        }
-                        this.execute(card, isP);
-                    }
-                },
+<p>
+Goal: force opponents to run out of cards in their deck.  
+When your deck reaches 0 you lose.
+</p>
 
-                execute(card, isP) {
-                    const a = card.ability;
-                    const target = isP ? 'opp' : 'p';
-                    if (a.includes('$')) this[target].deck -= parseInt(a.split('$')[1]);
-                    if (a.includes('#')) this[isP ? 'p' : 'opp'].deck -= parseInt(a.split('#')[1]);
-                    if (a.includes('@')) this[isP ? 'p' : 'opp'].res = Math.min(6, this[isP ? 'p' : 'opp'].res + parseInt(a.split('@')[1]));
-                    if (a.includes('%')) { if(this.stack.length) this.stack.pop(); }
-                },
+<p>
+Deck size: 50 cards
+</p>
 
-                handleCombat(attacker) {
-                    if (attacker.tapped || this.priority !== 'player') return;
-                    if (this.opp.field.length > 0) {
-                        const def = this.opp.field[0];
-                        if (def.sustenance) def.sustenance = false;
-                        else this.opp.field.shift();
-                        this.p.field = this.p.field.filter(c => c !== attacker);
-                    } else {
-                        this.opp.deck -= attacker.str;
-                        attacker.tapped = true;
-                    }
-                },
+<p>
+Limits:
+<br>⭐ 1-star → max 5 copies
+<br>⭐⭐ 2-star → max 3 copies
+<br>⭐⭐⭐ 3-star → max 1 copy
+</p>
 
-                aiMove() {
-                    const playable = this.opp.hand.find(c => c.cost <= this.opp.res);
-                    if (playable) {
-                        this.opp.res -= playable.cost;
-                        this.opp.hand = this.opp.hand.filter(c => c !== playable);
-                        this.stack.push({ owner: 'opp', card: playable });
-                        this.resolveStack();
-                    }
-                    this.passPriority();
-                }
-            }
-        }
-    </script>
+<p>
+Max star counts in deck:
+<br>⭐⭐⭐ = 5 cards
+<br>⭐⭐ = 15 cards
+<br>⭐ = remainder
+</p>
+
+<p>
+Turn Phases
+<br>1 Draw (draw 2)
+<br>2 Resource (6 + d6)
+<br>3 Main
+<br>4 Combat
+</p>
+
+<p>
+Combat: When soldiers clash both die.  
+Excess damage shrinks opponent's deck.
+</p>
+
+<p>
+Shrink = move cards from deck to Spoils.
+</p>
+
+</div>
+
+</div>
+
+<script>
+
+// ------------------
+// Card Engine
+// ------------------
+
+const CARDS = {
+
+Scout:{
+name:"Scout",
+type:"Soldier",
+power:1,
+cost:2,
+stars:1,
+text:"On play shrink opponent 1"
+},
+
+Raider:{
+name:"Raider",
+type:"Soldier",
+power:2,
+cost:3,
+stars:1
+},
+
+Guardian:{
+name:"Guardian",
+type:"Soldier",
+power:3,
+cost:4,
+stars:2
+},
+
+Titan:{
+name:"Titan",
+type:"Soldier",
+power:6,
+cost:6,
+stars:3
+},
+
+Collapse:{
+name:"Collapse",
+type:"Instant",
+cost:3,
+stars:2,
+effect:"destroy"
+}
+
+}
+
+// ------------------
+// Game State
+// ------------------
+
+let player={
+deck:[],
+hand:[],
+board:[],
+spoils:[],
+resources:0
+}
+
+let ai={
+deck:[],
+hand:[],
+board:[],
+spoils:[],
+resources:0
+}
+
+let phase="Draw"
+
+// ------------------
+// Utility
+// ------------------
+
+function shuffle(a){
+for(let i=a.length-1;i>0;i--){
+let j=Math.floor(Math.random()*(i+1));
+[a[i],a[j]]=[a[j],a[i]];
+}
+}
+
+// ------------------
+// Deck Builder
+// ------------------
+
+function buildDeck(){
+
+let deck=[]
+
+for(let i=0;i<20;i++) deck.push("Scout")
+for(let i=0;i<20;i++) deck.push("Raider")
+for(let i=0;i<8;i++) deck.push("Guardian")
+for(let i=0;i<2;i++) deck.push("Titan")
+
+shuffle(deck)
+
+return deck
+}
+
+// ------------------
+// Game Start
+// ------------------
+
+function start(){
+
+player.deck=buildDeck()
+ai.deck=buildDeck()
+
+draw(player,3)
+draw(ai,3)
+
+render()
+
+}
+
+function draw(p,n){
+
+for(let i=0;i<n;i++){
+
+if(p.deck.length==0){
+alert("A player decked out!")
+return
+}
+
+let card=p.deck.pop()
+p.hand.push(card)
+
+}
+
+}
+
+// ------------------
+// Shrink Mechanic
+// ------------------
+
+function shrink(p,n){
+
+for(let i=0;i<n;i++){
+
+if(p.deck.length==0){
+alert("Deck empty!")
+return
+}
+
+p.spoils.push(p.deck.pop())
+
+}
+
+}
+
+// ------------------
+// Phase Logic
+// ------------------
+
+function playTurn(){
+
+if(phase=="Draw"){
+
+draw(player,2)
+
+phase="Resource"
+
+}
+
+else if(phase=="Resource"){
+
+player.resources+=6+Math.floor(Math.random()*6)+1
+
+phase="Main"
+
+}
+
+else if(phase=="Main"){
+
+phase="Combat"
+
+}
+
+else if(phase=="Combat"){
+
+aiTurn()
+
+phase="Draw"
+
+}
+
+render()
+
+}
+
+// ------------------
+// Play Card
+// ------------------
+
+function playCard(i){
+
+let id=player.hand[i]
+let card=CARDS[id]
+
+if(player.resources<card.cost) return
+
+player.resources-=card.cost
+player.hand.splice(i,1)
+
+if(card.type=="Soldier"){
+
+player.board.push(id)
+
+if(card.text?.includes("shrink")){
+shrink(ai,1)
+}
+
+}
+
+render()
+
+}
+
+// ------------------
+// Attack
+// ------------------
+
+function attack(){
+
+if(player.board.length==0) return
+
+let atk=CARDS[player.board[0]].power
+let def=ai.board.length?CARDS[ai.board[0]].power:0
+
+if(def>0){
+
+player.spoils.push(player.board.shift())
+ai.spoils.push(ai.board.shift())
+
+if(atk>def) shrink(ai,atk-def)
+if(def>atk) shrink(player,def-atk)
+
+}else{
+
+shrink(ai,atk)
+
+}
+
+render()
+
+}
+
+// ------------------
+// AI Turn
+// ------------------
+
+function aiTurn(){
+
+draw(ai,2)
+
+ai.resources+=6+Math.floor(Math.random()*6)+1
+
+for(let i=0;i<ai.hand.length;i++){
+
+let id=ai.hand[i]
+let card=CARDS[id]
+
+if(card.cost<=ai.resources){
+
+ai.resources-=card.cost
+ai.board.push(id)
+ai.hand.splice(i,1)
+break
+
+}
+
+}
+
+if(ai.board.length){
+
+let atk=CARDS[ai.board[0]].power
+let def=player.board.length?CARDS[player.board[0]].power:0
+
+if(def){
+
+ai.spoils.push(ai.board.shift())
+player.spoils.push(player.board.shift())
+
+if(atk>def) shrink(player,atk-def)
+if(def>atk) shrink(ai,def-atk)
+
+}else{
+
+shrink(player,atk)
+
+}
+
+}
+
+}
+
+// ------------------
+// Rendering
+// ------------------
+
+function render(){
+
+document.getElementById("status").innerHTML=
+
+"Phase: <span class='phase'>"+phase+"</span>" +
+"<br>Your Resources: "+player.resources+
+"<br>Your Deck: "+player.deck.length+
+"<br>AI Deck: "+ai.deck.length
+
+// hand
+
+let h=""
+
+player.hand.forEach((c,i)=>{
+
+let card=CARDS[c]
+
+h+=`<div class="card" onclick="playCard(${i})">
+<b>${card.name}</b><br>
+Power:${card.power||"-"}<br>
+Cost:${card.cost}
+</div>`
+
+})
+
+document.getElementById("hand").innerHTML=h
+
+// boards
+
+let pb=""
+player.board.forEach(c=>{
+let card=CARDS[c]
+pb+=`<div class="card">${card.name}<br>${card.power}</div>`
+})
+
+document.getElementById("playerBoard").innerHTML=pb
+
+let ab=""
+ai.board.forEach(c=>{
+let card=CARDS[c]
+ab+=`<div class="card">${card.name}<br>${card.power}</div>`
+})
+
+document.getElementById("aiBoard").innerHTML=ab
+
+}
+
+// start game
+start()
+
+</script>
+
 </body>
 </html>
