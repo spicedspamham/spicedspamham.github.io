@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>Shrinkage</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Shrinkage</title>
 
 <style>
 
@@ -21,14 +23,16 @@ text-align:center;
 font-size:22px;
 }
 
-#main{
-max-width:900px;
+#container{
+max-width:1100px;
 margin:auto;
 padding:10px;
 }
 
-.section{
-margin-bottom:14px;
+.row{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
 }
 
 .board{
@@ -41,21 +45,47 @@ gap:6px;
 display:flex;
 overflow-x:auto;
 gap:8px;
+padding:6px;
 }
 
 .card{
-background:#222;
-border:1px solid #666;
-border-radius:8px;
-padding:6px;
-width:110px;
-font-size:12px;
-flex-shrink:0;
+width:140px;
+border-radius:10px;
+background:#e6b98a;
+color:black;
+border:3px solid black;
+display:flex;
+flex-direction:column;
 }
 
-.card button{
-width:100%;
-margin-top:4px;
+.cardTop{
+display:flex;
+justify-content:space-between;
+padding:4px;
+background:#e6b98a;
+border-bottom:2px solid black;
+font-weight:bold;
+}
+
+.cardArt{
+height:140px;
+background-size:contain;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+.cardText{
+padding:6px;
+font-size:12px;
+min-height:60px;
+}
+
+.cardBottom{
+display:flex;
+justify-content:space-between;
+border-top:2px solid black;
+padding:4px;
+font-size:11px;
 }
 
 button{
@@ -66,176 +96,146 @@ background:#444;
 color:white;
 }
 
-button:active{
-background:#666;
-}
-
-#controls{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-}
-
-.small{
+#log{
+background:#000;
+padding:6px;
+height:160px;
+overflow:auto;
 font-size:12px;
-color:#aaa;
 }
 
-#deckBuilder{
-display:none;
-}
-
-.cardRow{
-display:flex;
-justify-content:space-between;
-padding:4px;
-border-bottom:1px solid #333;
+footer{
+text-align:center;
+font-size:13px;
+padding:10px;
+color:#bbb;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<header>Shrinkage</header>
+<header>
+Shrinkage
+</header>
 
-<div id="main">
+<div id="container">
 
-<div id="game">
+<div id="status"></div>
 
-<div class="section" id="status"></div>
-
-<div class="section">
-<b>AI Board</b>
-<div id="aiBoard" class="board"></div>
-</div>
-
-<div class="section">
-<b>Your Board</b>
-<div id="playerBoard" class="board"></div>
-</div>
-
-<div class="section">
-<b>Your Hand</b>
-<div id="hand" class="hand"></div>
-</div>
-
-<div class="section" id="controls">
-
+<div>
 <button onclick="nextPhase()">Next Phase</button>
 <button onclick="attack()">Attack</button>
-<button onclick="openDeckBuilder()">Deck Builder</button>
-<button onclick="showRules()">Rules</button>
+<button onclick="toggleCompetitive()">Competitive Mode</button>
+<button onclick="saveGame()">Save Game</button>
+<button onclick="loadGame()">Load Game</button>
+</div>
+
+<h3>AI Board</h3>
+<div id="aiBoard" class="board"></div>
+
+<h3>Your Board</h3>
+<div id="playerBoard" class="board"></div>
+
+<h3>Your Hand</h3>
+<div id="hand" class="hand"></div>
+
+<h3>Game Log</h3>
+<div id="log"></div>
 
 </div>
 
-<div class="section small">
-Deck: <span id="deckCount"></span> |
-Spoils: <span id="spoilsCount"></span>
-</div>
-
-</div>
-
-<div id="deckBuilder">
-
-<h2>Deck Builder</h2>
-
-Deck Size: <span id="deckSize"></span>/50
-
-<div id="builderList"></div>
-
-<button onclick="saveDeck()">Save Deck</button>
-<button onclick="closeDeckBuilder()">Back</button>
-
-</div>
-
-</div>
+<footer>
+Shrinkage by Joseph DeSantis  
+Support development: Venmo @Joseph-DeSantis-43
+</footer>
 
 <script>
 
-/* =============================
-CARD LIBRARY (60+)
-============================= */
+/* ======================
+LOGO
+====================== */
+
+const LOGO = "logo.png"
+
+/* ======================
+CARD DATABASE
+====================== */
 
 const CARDS=[
 
-{name:"Scout",stars:1,type:"Soldier",cost:2,power:1,shrink:1},
-{name:"Runner",stars:1,type:"Soldier",cost:1,power:1},
-{name:"Raider",stars:1,type:"Soldier",cost:3,power:2},
-{name:"Guard",stars:1,type:"Soldier",cost:2,power:2},
-{name:"Slinger",stars:1,type:"Soldier",cost:2,power:1,shrink:1},
-{name:"Ambusher",stars:1,type:"Soldier",cost:2,power:2},
-{name:"Archer",stars:1,type:"Soldier",cost:3,power:2},
-{name:"Watcher",stars:1,type:"Soldier",cost:2,power:1,shrink:1},
-{name:"Stalker",stars:1,type:"Soldier",cost:2,power:2},
-{name:"Spearman",stars:1,type:"Soldier",cost:3,power:2},
+{name:"Vigilant Keeper",type:"Soldier",cost:0,power:0,stars:1,
+text:"Counter opponent card by shrinking X where X = cost. Forbid this soldier."},
 
-{name:"Knight",stars:2,type:"Soldier",cost:4,power:4},
-{name:"Guardian",stars:2,type:"Soldier",cost:4,power:3},
-{name:"Hunter",stars:2,type:"Soldier",cost:4,power:3},
-{name:"Breaker",stars:2,type:"Soldier",cost:5,power:5},
-{name:"Captain",stars:2,type:"Soldier",cost:5,power:4},
-{name:"Sieger",stars:2,type:"Soldier",cost:5,power:4,shrink:2},
-{name:"Champion",stars:2,type:"Soldier",cost:5,power:4},
-{name:"Defender",stars:2,type:"Soldier",cost:4,power:3},
-{name:"Ranger",stars:2,type:"Soldier",cost:4,power:3},
-{name:"Crusher",stars:2,type:"Soldier",cost:5,power:5},
+{name:"Scout",type:"Soldier",cost:2,power:1,stars:1,text:"Shrink 1 on play"},
 
-{name:"Titan",stars:3,type:"Soldier",cost:7,power:7},
-{name:"Colossus",stars:3,type:"Soldier",cost:6,power:6},
-{name:"Behemoth",stars:3,type:"Soldier",cost:7,power:8},
-{name:"Juggernaut",stars:3,type:"Soldier",cost:6,power:7},
-{name:"Dreadlord",stars:3,type:"Soldier",cost:7,power:6,shrink:3},
+{name:"Raider",type:"Soldier",cost:3,power:2,stars:1},
 
-{name:"Strike",stars:1,type:"Instant",cost:1,destroy:1},
-{name:"Burst",stars:1,type:"Instant",cost:2,shrink:1},
-{name:"Bomb",stars:1,type:"Instant",cost:2,shrink:2},
-{name:"Edge",stars:1,type:"Instant",cost:2,shrink:1},
+{name:"Knight",type:"Soldier",cost:4,power:4,stars:2},
 
-{name:"Collapse",stars:2,type:"Instant",cost:3,destroy:1},
-{name:"Storm",stars:2,type:"Instant",cost:3,shrink:2},
-{name:"Drain",stars:2,type:"Instant",cost:3,shrink:3},
-{name:"Blast",stars:2,type:"Instant",cost:4,destroy:1},
+{name:"Titan",type:"Soldier",cost:7,power:7,stars:3},
 
-{name:"Rift",stars:3,type:"Instant",cost:5,shrink:5},
-{name:"TimeCut",stars:3,type:"Instant",cost:4,shrink:4}
+{name:"Strike",type:"Instant",cost:1,text:"Destroy a soldier"},
+
+{name:"Collapse",type:"Instant",cost:3,text:"Destroy a soldier"},
+
+{name:"Bomb",type:"Instant",cost:2,text:"Shrink 2"}
 
 ]
 
-/* =============================
+/* ======================
 GAME STATE
-============================= */
+====================== */
 
-let player={deck:[],hand:[],board:[],spoils:[],resources:0}
-let ai={deck:[],hand:[],board:[],spoils:[],resources:0}
+let game={
 
-let phase="Draw"
+phase:"Draw",
 
-let playerDeck=[]
+competitive:false,
 
-/* =============================
-UTILITY
-============================= */
+player:{
+deck:[],
+hand:[],
+board:[],
+spoils:[],
+resources:0,
+timer:180
+},
 
-function shuffle(a){
-for(let i=a.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1))
-;[a[i],a[j]]=[a[j],a[i]]
-}
-}
+ai:{
+deck:[],
+hand:[],
+board:[],
+spoils:[],
+resources:0,
+timer:180
+},
 
-function draw(p,n){
-
-for(let i=0;i<n;i++){
-
-if(p.deck.length===0){
-alert("Deck empty! Game Over")
-location.reload()
-}
-
-p.hand.push(p.deck.pop())
+stack:[]
 
 }
+
+/* ======================
+LOG
+====================== */
+
+function log(t){
+
+let el=document.getElementById("log")
+el.innerHTML+=t+"<br>"
+el.scrollTop=el.scrollHeight
+
+}
+
+/* ======================
+UTIL
+====================== */
+
+function roll(){
+
+return Math.floor(Math.random()*6)+1
 
 }
 
@@ -243,9 +243,11 @@ function shrink(p,n){
 
 for(let i=0;i<n;i++){
 
-if(p.deck.length===0){
-alert("Deck empty!")
+if(p.deck.length==0){
+
+alert("Deck empty")
 location.reload()
+
 }
 
 p.spoils.push(p.deck.pop())
@@ -254,130 +256,118 @@ p.spoils.push(p.deck.pop())
 
 }
 
-/* =============================
-START GAME
-============================= */
-
-function start(){
-
-let saved=localStorage.getItem("deck")
-
-if(saved){
-playerDeck=JSON.parse(saved)
-}else{
-playerDeck=defaultDeck()
-}
-
-player.deck=[...playerDeck]
-ai.deck=defaultDeck()
-
-shuffle(player.deck)
-shuffle(ai.deck)
-
-draw(player,3)
-draw(ai,3)
-
-render()
-
-}
-
-function defaultDeck(){
-
-let d=[]
-for(let i=0;i<25;i++) d.push("Scout")
-for(let i=0;i<25;i++) d.push("Raider")
-
-return d
-
-}
-
-/* =============================
-PHASES
-============================= */
+/* ======================
+TURN PHASES
+====================== */
 
 function nextPhase(){
 
-if(phase==="Draw"){
-draw(player,2)
-phase="Resource"
+if(game.phase=="Draw"){
+
+draw(game.player,2)
+
+game.phase="Resource"
+
 }
 
-else if(phase==="Resource"){
-player.resources+=6+Math.floor(Math.random()*6)+1
-phase="Main"
+else if(game.phase=="Resource"){
+
+let r=6+roll()
+
+game.player.resources+=r
+
+log("Player gains "+r+" resources")
+
+game.phase="Main"
+
 }
 
-else if(phase==="Main"){
-phase="Combat"
+else if(game.phase=="Main"){
+
+resolveStack()
+
+game.phase="Combat"
+
 }
 
-else if(phase==="Combat"){
-aiTurn()
-phase="Draw"
+else if(game.phase=="Combat"){
+
+endTurn()
+
 }
 
 render()
 
 }
 
-/* =============================
-PLAY CARD
-============================= */
+/* ======================
+STACK
+====================== */
 
 function playCard(i){
 
-let name=player.hand[i]
-let card=CARDS.find(c=>c.name===name)
+let name=game.player.hand[i]
 
-if(player.resources<card.cost)return
+let card=CARDS.find(c=>c.name==name)
 
-player.resources-=card.cost
-player.hand.splice(i,1)
+if(game.player.resources<card.cost) return
 
-if(card.type==="Soldier"){
+game.player.resources-=card.cost
 
-player.board.push(name)
+game.player.hand.splice(i,1)
 
-if(card.shrink) shrink(ai,card.shrink)
+game.stack.push({player:"player",card:card})
 
-}else{
-
-if(card.shrink) shrink(ai,card.shrink)
-
-if(card.destroy && ai.board.length)
-ai.spoils.push(ai.board.shift())
-
-}
+log("Player plays "+card.name)
 
 render()
 
 }
 
-/* =============================
+function resolveStack(){
+
+while(game.stack.length>0){
+
+let action=game.stack.pop()
+
+let card=action.card
+
+log("Resolving "+card.name)
+
+if(card.text?.includes("Shrink")){
+
+shrink(game.ai,1)
+
+}
+
+}
+
+}
+
+/* ======================
 COMBAT
-============================= */
+====================== */
 
 function attack(){
 
-if(player.board.length===0)return
+if(game.player.board.length==0) return
 
-let atk=CARDS.find(c=>c.name===player.board[0])
-let def=ai.board.length?CARDS.find(c=>c.name===ai.board[0]):null
+let atk=game.player.board.shift()
+
+let def=game.ai.board.shift()
 
 if(def){
 
-player.spoils.push(player.board.shift())
-ai.spoils.push(ai.board.shift())
+log("Clash")
 
-if(atk.power>def.power)
-shrink(ai,atk.power-def.power)
-
-if(def.power>atk.power)
-shrink(player,def.power-atk.power)
+game.player.spoils.push(atk)
+game.ai.spoils.push(def)
 
 }else{
 
-shrink(ai,atk.power)
+let p=CARDS.find(c=>c.name==atk).power
+
+shrink(game.ai,p)
 
 }
 
@@ -385,200 +375,180 @@ render()
 
 }
 
-/* =============================
+/* ======================
+END TURN
+====================== */
+
+function endTurn(){
+
+if(game.player.resources>6)
+game.player.resources=6
+
+if(game.competitive){
+
+shrink(game.player,5)
+
+log("Competitive shrink 5")
+
+}
+
+aiTurn()
+
+game.phase="Draw"
+
+}
+
+/* ======================
 AI
-============================= */
+====================== */
 
 function aiTurn(){
 
-draw(ai,2)
+draw(game.ai,2)
 
-ai.resources+=6+Math.floor(Math.random()*6)+1
+game.ai.resources+=6+roll()
 
-for(let i=0;i<ai.hand.length;i++){
+let playable=game.ai.hand.find(c=>{
+let card=CARDS.find(x=>x.name==c)
+return card.cost<=game.ai.resources
+})
 
-let name=ai.hand[i]
-let card=CARDS.find(c=>c.name===name)
+if(playable){
 
-if(card.cost<=ai.resources){
+let card=CARDS.find(x=>x.name==playable)
 
-ai.resources-=card.cost
-ai.hand.splice(i,1)
+game.ai.resources-=card.cost
 
-if(card.type==="Soldier")
-ai.board.push(name)
+game.ai.board.push(playable)
 
-break
-
-}
-
-}
-
-if(ai.board.length){
-
-let atk=CARDS.find(c=>c.name===ai.board[0])
-let def=player.board.length?CARDS.find(c=>c.name===player.board[0]):null
-
-if(def){
-
-ai.spoils.push(ai.board.shift())
-player.spoils.push(player.board.shift())
-
-if(atk.power>def.power)
-shrink(player,atk.power-def.power)
-
-}else{
-
-shrink(player,atk.power)
+log("AI plays "+playable)
 
 }
 
 }
 
+/* ======================
+DRAW
+====================== */
+
+function draw(p,n){
+
+for(let i=0;i<n;i++){
+
+p.hand.push(p.deck.pop())
+
 }
 
-/* =============================
+}
+
+/* ======================
 RENDER
-============================= */
+====================== */
 
 function render(){
 
 document.getElementById("status").innerHTML=
-"Phase: "+phase+" | Resources: "+player.resources
+"Phase: "+game.phase+
+" | Resources: "+game.player.resources+
+" | Deck: "+game.player.deck.length
 
-document.getElementById("deckCount").innerText=player.deck.length
-document.getElementById("spoilsCount").innerText=player.spoils.length
+let h=""
 
-let handHTML=""
+game.player.hand.forEach((c,i)=>{
 
-player.hand.forEach((c,i)=>{
+let card=CARDS.find(x=>x.name==c)
 
-let card=CARDS.find(x=>x.name===c)
+h+=cardHTML(card,i)
 
-handHTML+=`
+})
+
+document.getElementById("hand").innerHTML=h
+
+}
+
+/* ======================
+CARD UI
+====================== */
+
+function cardHTML(card,i){
+
+return `
 <div class="card">
-<b>${card.name}</b><br>
-Cost:${card.cost}<br>
-Power:${card.power||"-"}<br>
+
+<div class="cardTop">
+<span>${card.name}</span>
+<span>${card.cost}</span>
+</div>
+
+<div class="cardArt" style="background-image:url('${LOGO}')"></div>
+
+<div class="cardText">
+${card.text||""}
+</div>
+
+<div class="cardBottom">
+<span>Shrinkage</span>
+<span>${card.stars||1}</span>
+</div>
+
 <button onclick="playCard(${i})">Play</button>
+
 </div>
 `
 
-})
+}
 
-document.getElementById("hand").innerHTML=handHTML
+/* ======================
+SAVE
+====================== */
 
-let pb=""
-player.board.forEach(c=>{
-let card=CARDS.find(x=>x.name===c)
-pb+=`<div class="card">${card.name}<br>${card.power}</div>`
-})
+function saveGame(){
 
-document.getElementById("playerBoard").innerHTML=pb
+localStorage.setItem("shrinkageSave",JSON.stringify(game))
 
-let ab=""
-ai.board.forEach(c=>{
-let card=CARDS.find(x=>x.name===c)
-ab+=`<div class="card">${card.name}<br>${card.power}</div>`
-})
-
-document.getElementById("aiBoard").innerHTML=ab
+log("Game saved")
 
 }
 
-/* =============================
-DECK BUILDER
-============================= */
+function loadGame(){
 
-function openDeckBuilder(){
+let g=localStorage.getItem("shrinkageSave")
 
-document.getElementById("game").style.display="none"
-document.getElementById("deckBuilder").style.display="block"
+if(g){
 
-renderBuilder()
+game=JSON.parse(g)
 
-}
-
-function closeDeckBuilder(){
-
-document.getElementById("game").style.display="block"
-document.getElementById("deckBuilder").style.display="none"
+render()
 
 }
 
-function renderBuilder(){
+}
 
-let html=""
+/* ======================
+COMP MODE
+====================== */
 
-CARDS.forEach(c=>{
+function toggleCompetitive(){
 
-html+=`
-<div class="cardRow">
-${c.name} ⭐${c.stars}
-<button onclick="addCard('${c.name}')">Add</button>
-</div>
-`
+game.competitive=!game.competitive
 
-})
-
-document.getElementById("builderList").innerHTML=html
-document.getElementById("deckSize").innerText=playerDeck.length
+log("Competitive mode "+game.competitive)
 
 }
 
-function addCard(name){
+/* ======================
+START
+====================== */
 
-if(playerDeck.length>=50){
-alert("Deck full")
-return
-}
+function start(){
 
-playerDeck.push(name)
-renderBuilder()
+game.player.deck=["Scout","Scout","Scout","Raider","Knight","Titan","Bomb","Strike"]
+game.ai.deck=[...game.player.deck]
 
-}
+draw(game.player,3)
+draw(game.ai,3)
 
-function saveDeck(){
-
-if(playerDeck.length!==50){
-alert("Deck must be 50 cards")
-return
-}
-
-localStorage.setItem("deck",JSON.stringify(playerDeck))
-
-alert("Deck Saved")
-
-}
-
-/* =============================
-RULES
-============================= */
-
-function showRules(){
-
-alert(`Shrinkage Rules
-
-Goal: Opponent deck reaches 0.
-
-Deck Size: 50
-
-Limits
-1★ = 5 copies
-2★ = 3 copies
-3★ = 1 copy
-
-Star limits
-3★ max 5
-2★ max 15
-
-Turn Phases
-Draw
-Resource
-Main
-Combat
-
-Shrink = move cards from deck to spoils.`)
+render()
 
 }
 
