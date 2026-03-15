@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Shrinkage</title>
 
@@ -17,43 +16,40 @@ color:white;
 }
 
 header{
-background:#000;
+background:black;
 padding:12px;
 text-align:center;
 font-size:22px;
 }
 
-#container{
-max-width:1100px;
-margin:auto;
-padding:10px;
+#topbar{
+display:flex;
+justify-content:space-around;
+background:#1b1b1b;
+padding:6px;
 }
 
-.row{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
-}
+.section{padding:10px}
 
 .board{
 display:flex;
-flex-wrap:wrap;
-gap:6px;
+gap:10px;
+overflow-x:auto;
 }
 
 .hand{
 display:flex;
+gap:14px;
 overflow-x:auto;
-gap:8px;
-padding:6px;
 }
 
 .card{
-width:140px;
-border-radius:10px;
+width:190px;
 background:#e6b98a;
+border:4px solid black;
+border-radius:12px;
 color:black;
-border:3px solid black;
+flex-shrink:0;
 display:flex;
 flex-direction:column;
 }
@@ -61,29 +57,29 @@ flex-direction:column;
 .cardTop{
 display:flex;
 justify-content:space-between;
-padding:4px;
-background:#e6b98a;
-border-bottom:2px solid black;
+border-bottom:3px solid black;
+padding:6px;
 font-weight:bold;
 }
 
 .cardArt{
-height:140px;
+height:150px;
+background-image:url("70410DAD-32A3-413C-A7BA-0F18B892AB6D.png");
 background-size:contain;
-background-position:center;
 background-repeat:no-repeat;
+background-position:center;
 }
 
 .cardText{
 padding:6px;
 font-size:12px;
-min-height:60px;
+min-height:70px;
 }
 
 .cardBottom{
 display:flex;
 justify-content:space-between;
-border-top:2px solid black;
+border-top:3px solid black;
 padding:4px;
 font-size:11px;
 }
@@ -94,203 +90,204 @@ border:none;
 border-radius:6px;
 background:#444;
 color:white;
+margin:4px;
 }
 
 #log{
-background:#000;
-padding:6px;
-height:160px;
+background:black;
+height:140px;
 overflow:auto;
+padding:6px;
 font-size:12px;
 }
 
-footer{
-text-align:center;
-font-size:13px;
-padding:10px;
-color:#bbb;
+#pauseOverlay{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:black;
+display:none;
+align-items:center;
+justify-content:center;
+font-size:40px;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<header>
-Shrinkage
-</header>
+<header>Shrinkage</header>
 
-<div id="container">
-
-<div id="status"></div>
-
-<div>
-<button onclick="nextPhase()">Next Phase</button>
-<button onclick="attack()">Attack</button>
-<button onclick="toggleCompetitive()">Competitive Mode</button>
-<button onclick="saveGame()">Save Game</button>
-<button onclick="loadGame()">Load Game</button>
+<div id="topbar">
+<div>Phase: <span id="phase">Draw</span></div>
+<div>Resources: <span id="resources">0</span></div>
+<div>Deck: <span id="deckCount">0</span></div>
+<div>Timer: <span id="timer">180</span></div>
 </div>
 
-<h3>AI Board</h3>
-<div id="aiBoard" class="board"></div>
+<div class="section">
+<button onclick="startGame()">Start Game</button>
+<button onclick="toggleCompetitive()">Competitive</button>
+<button onclick="pauseGame()">Pause</button>
+</div>
 
+<div class="section">
+<h3>Opponent Board</h3>
+<div id="enemyBoard" class="board"></div>
+</div>
+
+<div class="section">
 <h3>Your Board</h3>
 <div id="playerBoard" class="board"></div>
-
-<h3>Your Hand</h3>
-<div id="hand" class="hand"></div>
-
-<h3>Game Log</h3>
-<div id="log"></div>
-
 </div>
 
-<footer>
-Shrinkage by Joseph DeSantis  
-Support development: Venmo @Joseph-DeSantis-43
+<div class="section">
+<h3>Your Hand</h3>
+<div id="hand" class="hand"></div>
+</div>
+
+<div class="section">
+<button id="mainButton" onclick="phaseAction()">Draw Cards</button>
+</div>
+
+<div class="section">
+<h3>Game Log</h3>
+<div id="log"></div>
+</div>
+
+<div id="pauseOverlay">PAUSED</div>
+
+<footer style="text-align:center;padding:8px;color:#aaa">
+Shrinkage by Joseph DeSantis • Venmo @Joseph-DeSantis-43
 </footer>
 
 <script>
 
-/* ======================
-LOGO
-====================== */
-
-const LOGO = "logo.png"
-
-/* ======================
-CARD DATABASE
-====================== */
+/* ------------------ */
+/* CARD DATABASE */
+/* ------------------ */
 
 const CARDS=[
 
-{name:"Vigilant Keeper",type:"Soldier",cost:0,power:0,stars:1,
-text:"Counter opponent card by shrinking X where X = cost. Forbid this soldier."},
+{name:"Scout",cost:2,strength:1,text:"Basic soldier",effect:null},
 
-{name:"Scout",type:"Soldier",cost:2,power:1,stars:1,text:"Shrink 1 on play"},
+{name:"Raider",cost:3,strength:2,text:"Basic attacker",effect:null},
 
-{name:"Raider",type:"Soldier",cost:3,power:2,stars:1},
+{name:"Knight",cost:4,strength:4,text:"Strong soldier",effect:null},
 
-{name:"Knight",type:"Soldier",cost:4,power:4,stars:2},
+{name:"Daily Baker",cost:4,strength:3,text:"Bank limit +1",effect:"bank1"},
 
-{name:"Titan",type:"Soldier",cost:7,power:7,stars:3},
+{name:"Distributor",cost:3,strength:2,text:"Bank limit +2",effect:"bank2"},
 
-{name:"Strike",type:"Instant",cost:1,text:"Destroy a soldier"},
+{name:"Arms Bearer",cost:3,strength:3,text:"All your soldiers +1",effect:"buff"},
 
-{name:"Collapse",type:"Instant",cost:3,text:"Destroy a soldier"},
+{name:"Crooked Medic",cost:3,strength:2,text:"Opponent shrinks 3",effect:"shrink3"},
 
-{name:"Bomb",type:"Instant",cost:2,text:"Shrink 2"}
+{name:"Joyful Herald",cost:2,strength:1,text:"Draw 2 cards",effect:"draw2"},
+
+{name:"Filled Herald",cost:3,strength:2,text:"Draw 3 cards",effect:"draw3"},
+
+{name:"Timer Ally",cost:5,strength:2,text:"+60 seconds",effect:"time60"}
 
 ]
 
-/* ======================
-GAME STATE
-====================== */
+/* ------------------ */
+/* GAME STATE */
+/* ------------------ */
 
 let game={
-
-phase:"Draw",
-
+phase:"draw",
+resources:0,
+deck:[],
+hand:[],
+playerBoard:[],
+enemyBoard:[],
+bankLimit:6,
 competitive:false,
+timer:180,
+timerRunning:false,
+paused:false
+}
 
-player:{
-deck:[],
-hand:[],
-board:[],
-spoils:[],
-resources:0,
-timer:180
-},
+/* ------------------ */
 
-ai:{
-deck:[],
-hand:[],
-board:[],
-spoils:[],
-resources:0,
-timer:180
-},
+function buildDeck(){
 
-stack:[]
+let d=[]
+
+CARDS.forEach(c=>{
+for(let i=0;i<6;i++) d.push({...c})
+})
+
+return shuffle(d)
 
 }
 
-/* ======================
-LOG
-====================== */
+function shuffle(a){
 
-function log(t){
+for(let i=a.length-1;i>0;i--){
+let j=Math.floor(Math.random()*(i+1))
+[a[i],a[j]]=[a[j],a[i]]
+}
 
-let el=document.getElementById("log")
-el.innerHTML+=t+"<br>"
-el.scrollTop=el.scrollHeight
+return a
 
 }
 
-/* ======================
-UTIL
-====================== */
+/* ------------------ */
 
-function roll(){
-
-return Math.floor(Math.random()*6)+1
-
-}
-
-function shrink(p,n){
+function draw(n){
 
 for(let i=0;i<n;i++){
 
-if(p.deck.length==0){
+if(game.deck.length===0) return
 
-alert("Deck empty")
-location.reload()
-
-}
-
-p.spoils.push(p.deck.pop())
+game.hand.push(game.deck.pop())
 
 }
 
 }
 
-/* ======================
-TURN PHASES
-====================== */
+/* ------------------ */
 
-function nextPhase(){
+function roll(){
+return Math.floor(Math.random()*6)+1
+}
 
-if(game.phase=="Draw"){
+/* ------------------ */
 
-draw(game.player,2)
+function phaseAction(){
 
-game.phase="Resource"
+if(game.phase==="draw"){
+
+draw(2)
+log("Draw 2 cards")
+
+game.phase="resource"
+setMain("Roll Resources")
 
 }
 
-else if(game.phase=="Resource"){
+else if(game.phase==="resource"){
 
 let r=6+roll()
+game.resources+=r
 
-game.player.resources+=r
+log("Gain "+r+" resources")
 
-log("Player gains "+r+" resources")
-
-game.phase="Main"
-
-}
-
-else if(game.phase=="Main"){
-
-resolveStack()
-
-game.phase="Combat"
+game.phase="play"
+setMain("Play Cards")
 
 }
 
-else if(game.phase=="Combat"){
+else if(game.phase==="play"){
+
+autoAttack()
+
+aiTurn()
 
 endTurn()
 
@@ -300,165 +297,156 @@ render()
 
 }
 
-/* ======================
-STACK
-====================== */
+/* ------------------ */
 
 function playCard(i){
 
-let name=game.player.hand[i]
+let c=game.hand[i]
 
-let card=CARDS.find(c=>c.name==name)
+if(c.cost>game.resources) return
 
-if(game.player.resources<card.cost) return
+game.resources-=c.cost
 
-game.player.resources-=card.cost
+game.hand.splice(i,1)
 
-game.player.hand.splice(i,1)
+game.playerBoard.push(c)
 
-game.stack.push({player:"player",card:card})
+resolveEffect(c)
 
-log("Player plays "+card.name)
+log("Played "+c.name)
 
 render()
 
 }
 
-function resolveStack(){
+/* ------------------ */
 
-while(game.stack.length>0){
+function resolveEffect(c){
 
-let action=game.stack.pop()
+if(c.effect==="draw2") draw(2)
 
-let card=action.card
+if(c.effect==="draw3") draw(3)
 
-log("Resolving "+card.name)
+if(c.effect==="bank1") game.bankLimit+=1
 
-if(card.text?.includes("Shrink")){
+if(c.effect==="bank2") game.bankLimit+=2
 
-shrink(game.ai,1)
+if(c.effect==="buff"){
+
+game.playerBoard.forEach(s=>s.strength++)
+
+}
+
+if(c.effect==="shrink3"){
+
+log("Opponent shrinks 3 cards")
+
+}
+
+if(c.effect==="time60"){
+
+game.timer+=60
 
 }
 
 }
 
-}
+/* ------------------ */
 
-/* ======================
-COMBAT
-====================== */
+function autoAttack(){
 
-function attack(){
+game.playerBoard.forEach(p=>{
 
-if(game.player.board.length==0) return
+if(game.enemyBoard.length){
 
-let atk=game.player.board.shift()
+let e=game.enemyBoard[0]
 
-let def=game.ai.board.shift()
+if(p.strength>=e.strength){
 
-if(def){
+game.enemyBoard.shift()
 
-log("Clash")
-
-game.player.spoils.push(atk)
-game.ai.spoils.push(def)
+log(p.name+" defeats "+e.name)
 
 }else{
 
-let p=CARDS.find(c=>c.name==atk).power
-
-shrink(game.ai,p)
+log(p.name+" dies attacking")
 
 }
 
-render()
+}else{
+
+log(p.name+" attacks directly")
 
 }
 
-/* ======================
-END TURN
-====================== */
+})
+
+}
+
+/* ------------------ */
+
+function aiTurn(){
+
+draw(1)
+
+let playable=game.hand.filter(c=>c.cost<=game.resources)
+
+if(playable.length){
+
+let c=playable[0]
+
+game.enemyBoard.push(c)
+
+log("AI plays "+c.name)
+
+}
+
+}
+
+/* ------------------ */
 
 function endTurn(){
 
-if(game.player.resources>6)
-game.player.resources=6
+if(game.resources>game.bankLimit){
+
+game.resources=game.bankLimit
+
+}
 
 if(game.competitive){
-
-shrink(game.player,5)
 
 log("Competitive shrink 5")
 
 }
 
-aiTurn()
+game.phase="draw"
 
-game.phase="Draw"
-
-}
-
-/* ======================
-AI
-====================== */
-
-function aiTurn(){
-
-draw(game.ai,2)
-
-game.ai.resources+=6+roll()
-
-let playable=game.ai.hand.find(c=>{
-let card=CARDS.find(x=>x.name==c)
-return card.cost<=game.ai.resources
-})
-
-if(playable){
-
-let card=CARDS.find(x=>x.name==playable)
-
-game.ai.resources-=card.cost
-
-game.ai.board.push(playable)
-
-log("AI plays "+playable)
+setMain("Draw Cards")
 
 }
 
-}
-
-/* ======================
-DRAW
-====================== */
-
-function draw(p,n){
-
-for(let i=0;i<n;i++){
-
-p.hand.push(p.deck.pop())
-
-}
-
-}
-
-/* ======================
-RENDER
-====================== */
+/* ------------------ */
 
 function render(){
 
-document.getElementById("status").innerHTML=
-"Phase: "+game.phase+
-" | Resources: "+game.player.resources+
-" | Deck: "+game.player.deck.length
+document.getElementById("resources").innerText=game.resources
+document.getElementById("deckCount").innerText=game.deck.length
+document.getElementById("phase").innerText=game.phase
+
+renderHand()
+renderBoards()
+
+}
+
+/* ------------------ */
+
+function renderHand(){
 
 let h=""
 
-game.player.hand.forEach((c,i)=>{
+game.hand.forEach((c,i)=>{
 
-let card=CARDS.find(x=>x.name==c)
-
-h+=cardHTML(card,i)
+h+=cardHTML(c,i,true)
 
 })
 
@@ -466,93 +454,113 @@ document.getElementById("hand").innerHTML=h
 
 }
 
-/* ======================
-CARD UI
-====================== */
+function renderBoards(){
 
-function cardHTML(card,i){
+let p=""
+let e=""
+
+game.playerBoard.forEach(c=>p+=cardHTML(c))
+game.enemyBoard.forEach(c=>e+=cardHTML(c))
+
+document.getElementById("playerBoard").innerHTML=p
+document.getElementById("enemyBoard").innerHTML=e
+
+}
+
+/* ------------------ */
+
+function cardHTML(c,i,playable){
 
 return `
 <div class="card">
 
 <div class="cardTop">
-<span>${card.name}</span>
-<span>${card.cost}</span>
+<span>${c.name}</span>
+<span>${c.cost}</span>
 </div>
 
-<div class="cardArt" style="background-image:url('${LOGO}')"></div>
+<div class="cardArt"></div>
 
 <div class="cardText">
-${card.text||""}
+${c.text}
 </div>
 
 <div class="cardBottom">
-<span>Shrinkage</span>
-<span>${card.stars||1}</span>
+<span>Soldier</span>
+<span>${c.strength}</span>
 </div>
 
-<button onclick="playCard(${i})">Play</button>
+${playable?`<button onclick="playCard(${i})">Play</button>`:""}
 
 </div>
 `
 
 }
 
-/* ======================
-SAVE
-====================== */
+/* ------------------ */
 
-function saveGame(){
+function setMain(t){
 
-localStorage.setItem("shrinkageSave",JSON.stringify(game))
-
-log("Game saved")
+document.getElementById("mainButton").innerText=t
 
 }
 
-function loadGame(){
+function log(t){
 
-let g=localStorage.getItem("shrinkageSave")
+let l=document.getElementById("log")
 
-if(g){
+l.innerHTML+=t+"<br>"
 
-game=JSON.parse(g)
-
-render()
+l.scrollTop=l.scrollHeight
 
 }
 
-}
-
-/* ======================
-COMP MODE
-====================== */
+/* ------------------ */
 
 function toggleCompetitive(){
 
 game.competitive=!game.competitive
 
-log("Competitive mode "+game.competitive)
+alert("Competitive "+game.competitive)
 
 }
 
-/* ======================
-START
-====================== */
+function pauseGame(){
 
-function start(){
+game.paused=!game.paused
 
-game.player.deck=["Scout","Scout","Scout","Raider","Knight","Titan","Bomb","Strike"]
-game.ai.deck=[...game.player.deck]
+document.getElementById("pauseOverlay").style.display=
+game.paused?"flex":"none"
 
-draw(game.player,3)
-draw(game.ai,3)
+}
+
+function startGame(){
+
+game.deck=buildDeck()
+
+draw(5)
+
+game.timerRunning=true
 
 render()
 
 }
 
-start()
+/* ------------------ */
+/* TIMER */
+/* ------------------ */
+
+setInterval(()=>{
+
+if(game.timerRunning && !game.paused){
+
+game.timer--
+
+document.getElementById("timer").innerText=game.timer
+
+}
+
+},1000)
 
 </script>
 
