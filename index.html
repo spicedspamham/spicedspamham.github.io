@@ -1,548 +1,626 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHRINKAGE • SOLO PRACTICE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+        
+        .tail-container { font-family: 'Inter', system_ui, sans-serif; }
+        .card-name { font-family: 'Playfair Display', serif; }
+        
+        .play-card {
+    width: 115px;
+    height: 130px;
 
-<title>Shrinkage</title>
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px -8px rgb(0 0 0 / 0.6);
 
-<style>
+    border-radius: 12px;
+    background: linear-gradient(180deg, #18181b 0%, #27272a 100%);
+    border: 2px solid #3f3f46;
 
-body{
-margin:0;
-font-family:system-ui;
-background:#101010;
-color:white;
+    padding: 6px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    font-size: 9px;
+    line-height: 1.1;
+
+    overflow: hidden;
 }
+        
+        .play-card:hover { 
+            transform: scale(1.18) rotate(1deg); 
+            box-shadow: 0 20px 35px -10px rgb(0 0 0 / 0.6); 
+            z-index: 10;
+        }
+        
+        /* TIGHT SINGLE-AREA LAYOUT (improved spacing) */
+        .play-card .cost-circle { 
+            top: 8px; left: 8px; 
+            background: #22c55e;
+            color: white;
+            width: 26px; height: 26px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; 
+            font-size: 14px; font-family: monospace; font-weight: 800;
+            box-shadow: 0 0 0 3px #18181b;
+        }
 
-header{
-text-align:center;
-padding:14px;
-font-size:30px;
-font-weight:bold;
-}
+        .play-card .strength {
+            top: 8px; right: 8px;
+            background: #ef4444; color: white;
+            width: 26px; height: 26px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; 
+            box-shadow: 0 0 0 3px #18181b;
+            font-size: 14px; font-family: monospace; font-weight: 800;
+        }
 
-#stats{
-display:flex;
-justify-content:space-around;
-background:#1b1b1b;
-padding:10px;
-}
+        .play-card .name { 
+            top: 10px; 
+            left: 40px; 
+            right: 40px;
+            font-size: 12px; 
+            line-height: 1.05; 
+            font-weight: 700; 
+            color: white; 
+            white-space: normal;
+        }
 
-.section{
-padding:10px;
-}
+        .play-card .type { 
+            top: 28px; 
+            left: 40px; 
+            font-size: 8px; 
+            color: #22c55e; 
+            font-weight: 600;
+        }
 
-.board,.hand{
-display:flex;
-gap:12px;
-overflow-x:auto;
-}
-
-.card{
-width:180px;
-background:#e9c89d;
-color:black;
-border-radius:12px;
-border:4px solid black;
-flex-shrink:0;
-display:flex;
-flex-direction:column;
-}
-
-.cardTop{
-display:flex;
-justify-content:space-between;
-padding:6px;
-font-weight:bold;
-border-bottom:3px solid black;
-}
-
-.cardArt{
-height:120px;
-background:#ccc;
-}
-
-.cardText{
-font-size:12px;
-padding:6px;
-min-height:50px;
-}
-
-.cardBottom{
-display:flex;
-justify-content:space-between;
-border-top:3px solid black;
-padding:6px;
-}
-
-button{
-padding:10px;
-margin:5px;
-background:#444;
-border:none;
-color:white;
-border-radius:6px;
-}
-
-#console{
-text-align:center;
-padding:10px;
-}
-
-#rules{
-background:#1c1c1c;
-padding:10px;
-font-size:13px;
-}
-
-</style>
-
+        .play-card .text {
+            top: 50px; 
+            left: 8px; 
+            right: 8px; 
+            bottom: 8px;
+            font-size: 8.4px; 
+            line-height: 1.25;
+            overflow-y: auto;
+            scrollbar-width: none;
+            color: #e4e4e7;
+            font-weight: 500;
+        }
+ 
+        
+        .zone { transition: background-color 0.2s; }
+        .zone.dragover { background-color: #22c55e30; border-color: #22c55e; }
+        
+        .dice {
+            animation: roll 0.5s ease-out;
+        }
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+    </style>
 </head>
-
-<body>
-
-<header>Shrinkage</header>
-
-<div id="stats">
-<div>Resources: <span id="resources"></span></div>
-<div>Your Deck: <span id="pdeck"></span></div>
-<div>Enemy Deck: <span id="edeck"></span></div>
-</div>
-
-<div class="section">
-<h3>Opponent Board</h3>
-<div id="enemyBoard" class="board"></div>
-</div>
-
-<div class="section">
-<h3>Your Board</h3>
-<div id="playerBoard" class="board"></div>
-</div>
-
-<div class="section">
-<h3>Your Hand</h3>
-<div id="hand" class="hand"></div>
-</div>
-
-<div id="console">
-
-<button onclick="startGame()">Start New Game</button>
-<button onclick="drawTurn()">Draw For Turn</button>
-<button onclick="rollResources()">Roll Resources</button>
-<button onclick="endTurn()">End Turn</button>
-
-</div>
-
-<div id="rules">
-
-<b>Rules</b><br><br>
-
-Deck = health.<br>
-When a deck reaches 0, that player loses.<br><br>
-
-Turn flow:<br>
-1 Draw card<br>
-2 Roll resources (6 + d6)<br>
-3 Play soldiers<br>
-4 End turn → combat → enemy turn<br>
-
-Unblocked attacks shrink enemy deck equal to strength.<br>
-(Enemy attacks back the same way)
-
-</div>
-
-<script>
-
-/* CARD POOL */
-
-const CARDPOOL=[
-
-{name:"Scout",cost:2,str:1},
-
-{name:"Raider",cost:3,str:2},
-
-{name:"Knight",cost:4,str:4},
-
-{name:"Herald",cost:3,str:2,kw:["ETB:Draw2"]},
-
-{name:"Saboteur",cost:4,str:2,kw:["ETB:Shrink3"]},
-
-{name:"Captain",cost:5,str:4,kw:["ETB:BuffAll1"]},
-
-{name:"World Shifter",cost:18,str:10,kw:["ETB:Shrink15"]}
-
-]
-
-let game
-
-/* START */
-
-function startGame(){
-
-game={
-
-resources:0,
-playerDeck:buildDeck(),
-enemyDeck:buildDeck(),
-
-hand:[],
-playerBoard:[],
-enemyBoard:[]
-
-}
-
-draw(5)
-
-render()
-
-}
-
-/* DECK */
-
-function buildDeck(){
-
-let d=[]
-
-CARDPOOL.forEach(c=>{
-
-for(let i=0;i<4;i++) d.push({...c})
-
-})
-
-return shuffle(d)
-
-}
-
-function shuffle(a){
-
-for(let i=a.length-1;i>0;i--){
-
-let j=Math.floor(Math.random()*(i+1))
-[a[i],a[j]]=[a[j],a[i]]
-
-}
-
-return a
-
-}
-
-/* DRAW */
-
-function draw(n){
-
-for(let i=0;i<n;i++){
-
-if(game.playerDeck.length===0){
-
-lose()
-
-return
-
-}
-
-game.hand.push(game.playerDeck.pop())
-
-}
-
-}
-
-/* TURN ACTIONS */
-
-function drawTurn(){
-
-draw(1)
-render()
-
-}
-
-function rollResources(){
-
-let roll=Math.floor(Math.random()*6)+1
-
-game.resources += 6+roll
-
-render()
-
-}
-
-/* PLAY */
-
-function playCard(i){
-
-let c=game.hand[i]
-
-if(c.cost>game.resources) return
-
-game.resources-=c.cost
-
-game.hand.splice(i,1)
-
-game.playerBoard.push(c)
-
-trigger(c,"ETB")
-
-render()
-
-}
-
-/* KEYWORDS */
-
-function trigger(card,type){
-
-if(!card.kw) return
-
-card.kw.forEach(k=>{
-
-let [t,val]=k.split(":")
-
-if(t!==type) return
-
-if(val==="Draw2") draw(2)
-
-if(val==="BuffAll1"){
-
-game.playerBoard.forEach(s=>s.str++)
-
-}
-
-if(val==="Shrink3") shrinkEnemy(3)
-
-if(val==="Shrink15") shrinkEnemy(15)
-
-})
-
-}
-
-/* SHRINK */
-
-function shrinkEnemy(n){
-
-for(let i=0;i<n;i++){
-
-if(game.enemyDeck.length===0){
-
-win()
-
-return
-
-}
-
-game.enemyDeck.pop()
-
-}
-
-}
-
-function shrinkPlayer(n){
-
-for(let i=0;i<n;i++){
-
-if(game.playerDeck.length===0){
-
-lose()
-
-return
-
-}
-
-game.playerDeck.pop()
-
-}
-
-}
-
-/* COMBAT - PLAYER ATTACKS FIRST */
-
-function playerCombat(){
-
-let newPlayerBoard = []
-
-game.playerBoard.forEach(p => {
-
-if(game.enemyBoard.length > 0){
-
-let e = game.enemyBoard[0]
-
-if(p.str >= e.str){
-
-game.enemyBoard.shift()
-
-newPlayerBoard.push(p)
-
-}else{
-
-// attacker dies, blocker lives
-
-}
-
-}else{
-
-shrinkEnemy(p.str)
-
-newPlayerBoard.push(p)
-
-}
-
-})
-
-game.playerBoard = newPlayerBoard
-
-}
-
-/* ENEMY COMBAT - AFTER ENEMY PLAYS */
-
-function enemyCombat(){
-
-let newEnemyBoard = []
-
-game.enemyBoard.forEach(e => {
-
-if(game.playerBoard.length > 0){
-
-let p = game.playerBoard[0]
-
-if(e.str >= p.str){
-
-game.playerBoard.shift()
-
-newEnemyBoard.push(e)
-
-}else{
-
-// enemy dies, blocker lives
-
-}
-
-}else{
-
-shrinkPlayer(e.str)
-
-newEnemyBoard.push(e)
-
-}
-
-})
-
-game.enemyBoard = newEnemyBoard
-
-}
-
-/* AI - SIMPLE ENEMY TURN */
-
-function enemyTurn(){
-
-let playable=CARDPOOL.filter(c=>c.cost<=5)
-
-let card=playable[Math.floor(Math.random()*playable.length)]
-
-game.enemyBoard.push({...card})
-
-enemyCombat()
-
-}
-
-/* END TURN */
-
-function endTurn(){
-
-playerCombat()
-
-enemyTurn()
-
-render()
-
-}
-
-/* RENDER */
-
-function render(){
-
-document.getElementById("resources").innerText=game.resources
-document.getElementById("pdeck").innerText=game.playerDeck.length
-document.getElementById("edeck").innerText=game.enemyDeck.length
-
-renderHand()
-renderBoards()
-
-}
-
-function renderHand(){
-
-let html=""
-
-game.hand.forEach((c,i)=>{
-
-html+=cardHTML(c,i,true)
-
-})
-
-document.getElementById("hand").innerHTML=html
-
-}
-
-function renderBoards(){
-
-let p=""
-
-let e=""
-
-game.playerBoard.forEach(c=>p+=cardHTML(c))
-
-game.enemyBoard.forEach(c=>e+=cardHTML(c))
-
-document.getElementById("playerBoard").innerHTML=p
-document.getElementById("enemyBoard").innerHTML=e
-
-}
-
-function cardHTML(c,i,playable){
-
-return `
-
-<div class="card">
-
-<div class="cardTop">
-<span>${c.name}</span>
-<span>${c.cost}</span>
-</div>
-
-<div class="cardArt"></div>
-
-<div class="cardText">
-${c.kw?c.kw.join("<br>"):""}
-</div>
-
-<div class="cardBottom">
-<span>Soldier</span>
-<span>${c.str}</span>
-</div>
-
-${playable?`<button onclick="playCard(${i})">Play</button>`:""}
-
-</div>
-
-`
-
-}
-
-/* WIN LOSE */
-
-function win(){
-
-alert("You win!")
-startGame()
-
-}
-
-function lose(){
-
-alert("You lose!")
-startGame()
-
-}
-
-</script>
-
+<body class="tail-container bg-zinc-950 text-white min-h-screen overflow-hidden">
+    <div class="flex h-screen">
+        <!-- LEFT CONTROLS -->
+        <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+            <div class="p-6 border-b border-zinc-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-rose-600 rounded-3xl flex items-center justify-center text-4xl">S</div>
+                    <div>
+                        <h1 class="text-4xl font-bold tracking-tighter card-name">SHRINKAGE</h1>
+                        <p class="text-sm text-rose-400 -mt-1">SOLO PRACTICE • 50-card decks</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <label onclick="document.getElementById('csv-upload').click()" 
+                       class="cursor-pointer block bg-white text-black hover:bg-amber-300 transition-all text-center py-6 rounded-3xl font-medium text-xl flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-file-csv text-3xl"></i>
+                    IMPORT DECK CSV
+                </label>
+                <input id="csv-upload" type="file" accept=".csv" class="hidden" onchange="handleCSVImport(event)">
+                
+                <div class="flex gap-3 mt-4">
+                    <button onclick="downloadSampleCSV()" 
+                            class="flex-1 text-xs bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">↓ Sample CSV</button>
+                    <button onclick="searchDeck()" 
+                            class="flex-1 text-xs bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">🔍 Search Library</button>
+                </div>
+            </div>
+            
+            <div class="px-6 flex-1 overflow-y-auto space-y-7">
+                <div>
+                    <div class="flex justify-between items-end mb-3">
+                        <div class="text-sm uppercase tracking-widest text-zinc-400">RESOURCES</div>
+                        <div id="resource-display" class="text-7xl font-mono text-emerald-400 tabular-nums">0</div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="changeResource(-1)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-5 rounded-3xl text-3xl font-medium">-</button>
+                        <button onclick="changeResource(1)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-5 rounded-3xl text-3xl font-medium">+</button>
+                    </div>
+                </div>
+                
+                <div class="bg-zinc-800 rounded-3xl p-6 text-center">
+                    <div class="text-sm uppercase tracking-widest text-zinc-400 mb-3">D6 (rolls at start of turn)</div>
+                    <div onclick="manualRoll()" id="dice-result"
+                         class="dice inline-flex items-center justify-center w-24 h-24 bg-zinc-900 rounded-3xl text-6xl font-bold cursor-pointer border-4 border-zinc-700">
+                        ?
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <button onclick="drawCard()" 
+                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
+                        <i class="fa-solid fa-hand fa-2xl mb-2 text-sky-400"></i>
+                        DRAW
+                    </button>
+                    <button onclick="selfShrink()" 
+                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
+                        <i class="fa-solid fa-compress fa-2xl mb-2 text-rose-400"></i>
+                        SELF-SHRINK
+                    </button>
+                    <button onclick="shuffleDeck()" 
+                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
+                        <i class="fa-solid fa-shuffle fa-2xl mb-2"></i>
+                        SHUFFLE
+                    </button>
+                    <button onclick="clearAllZones()" 
+                            class="bg-red-950 hover:bg-red-900 h-20 rounded-3xl flex flex-col items-center justify-center text-red-400">
+                        <i class="fa-solid fa-trash fa-2xl mb-2"></i>
+                        RESET
+                    </button>
+                </div>
+                
+                <div onclick="nextTurn()" 
+                     class="bg-emerald-600 hover:bg-emerald-500 cursor-pointer rounded-3xl p-6 text-center">
+                    <div class="text-sm uppercase text-emerald-200">NEXT TURN</div>
+                    <div id="turn-counter" class="text-8xl font-mono text-white">1</div>
+                    <div class="text-xs text-emerald-200 mt-1">+6 + D6 resources</div>
+                </div>
+            </div>
+            
+            <div class="p-6 border-t border-zinc-800 mt-auto">
+                <div class="flex justify-between text-sm">
+                    <div>
+                        <span class="text-zinc-400">DECK</span><br>
+                        <span id="your-deck-count" class="font-mono text-6xl">0</span>
+                    </div>
+                    <div>
+                        <span class="text-zinc-400">SPOILS</span><br>
+                        <span id="spoils-count" class="font-mono text-6xl text-rose-400">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-1 flex flex-col">
+            <!-- OPPONENTS -->
+            <div class="h-28 bg-zinc-900 border-b border-zinc-800 p-4 flex gap-3">
+                <div onclick="millOpponent(0)" id="opp-0" 
+                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
+                    <div class="text-xs text-zinc-400">OPPONENT 1</div>
+                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-0">50</div>
+                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
+                </div>
+                <div onclick="millOpponent(1)" id="opp-1" 
+                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
+                    <div class="text-xs text-zinc-400">OPPONENT 2</div>
+                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-1">50</div>
+                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
+                </div>
+                <div onclick="millOpponent(2)" id="opp-2" 
+                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
+                    <div class="text-xs text-zinc-400">OPPONENT 3</div>
+                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-2">50</div>
+                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
+                </div>
+            </div>
+            
+            <!-- BATTLEFIELD - even more cards fit -->
+            <div class="flex-1 p-8 overflow-y-auto bg-zinc-950 zone" id="battlefield-zone"
+                 ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="uppercase text-xs tracking-widest text-zinc-400 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-swords"></i> BATTLEFIELD
+                </div>
+                <div id="battlefield" class="grid grid-cols-8 gap-4"></div>
+            </div>
+            
+        <div class="h-52 bg-zinc-900 border-t border-zinc-800 p-6 overflow-x-auto zone"
+            id="hand-zone" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+
+        <div class="uppercase text-xs tracking-widest text-zinc-400 mb-3">
+             HAND • MAX 5
+        </div>
+
+        <div id="hand" class="flex gap-4"></div>
+        </div>
+
+
+        </div>
+        
+        <div class="w-64 bg-zinc-900 border-l border-zinc-800 flex flex-col">
+            <div class="p-6 border-b border-zinc-800">
+                <div class="text-xs uppercase text-zinc-400 mb-3">YOUR DECK</div>
+                <div onclick="drawCard()" 
+                     class="play-card mx-auto cursor-pointer flex items-center justify-center border border-dashed border-zinc-600 hover:border-sky-400">
+                    <div class="text-center text-xs">
+                        <i class="fa-solid fa-layer-group text-4xl text-zinc-500 mb-3"></i>
+                        CLICK TO DRAW
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-1 p-6 overflow-y-auto zone" id="spoils-zone"
+                 ondrop="dropCard(event)" ondragover="allowDrop(event)">
+                <div class="text-xs uppercase text-rose-400 mb-4">SPOILS</div>
+                <div id="spoils" class="flex flex-col gap-4"></div>
+            </div>
+            
+            <div class="p-6 text-xs flex-1 flex flex-col border-t border-zinc-800">
+                <div class="uppercase text-zinc-400 mb-3">LOG</div>
+                <div id="log" class="flex-1 overflow-y-auto text-zinc-300 space-y-2 pr-2 text-[14px]"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CARD MODAL -->
+    <div id="card-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 rounded-3xl w-[340px] overflow-hidden">
+            <div id="modal-card" class="play-card mx-auto mt-8 scale-[1.45]"></div>
+            
+            <div class="p-8 grid grid-cols-2 gap-3 text-sm">
+                <button onclick="playFromModal()" class="py-5 bg-emerald-600 rounded-3xl font-medium">PLAY TO BATTLEFIELD</button>
+                <button onclick="moveToHandFromModal()" class="py-5 bg-sky-600 rounded-3xl font-medium">TO HAND</button>
+                <button onclick="moveToDeckFromModal()" class="py-5 bg-zinc-700 rounded-3xl font-medium">BACK TO DECK</button>
+                <button onclick="instantToSpoils()" class="py-5 bg-rose-600 rounded-3xl font-medium">CAST INSTANT → SPOILS</button>
+                <button onclick="returnFromSpoils()" class="col-span-2 py-5 bg-amber-600 rounded-3xl font-medium">RETURN FROM SPOILS TO DECK</button>
+                <button onclick="closeModal()" class="col-span-2 py-5 bg-zinc-700 rounded-3xl font-medium">CLOSE</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SEARCH MODAL -->
+    <div id="search-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+        <div class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl p-8 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between mb-6">
+                <h2 class="text-2xl font-bold">Search Your Deck</h2>
+                <button onclick="closeSearchModal()" class="text-4xl text-zinc-400">×</button>
+            </div>
+            <input id="search-input" type="text" placeholder="Type card name..." 
+                   class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg mb-6 focus:outline-none"
+                   onkeyup="filterSearch()">
+            <div id="search-results" class="flex-1 overflow-y-auto space-y-3 pr-4"></div>
+        </div>
+    </div>
+    
+    <script>
+        let cards = [];
+        let zones = { deck: [], hand: [], battlefield: [], spoils: [] };
+        let opponents = [50, 50, 50];
+        let resources = 0;
+        let turn = 1;
+        let draggedCard = null;
+        
+        function getSampleCards() {
+            return [
+                {id:1, name:"Sample Instant", type:"Instant", cost:1, strength:"", text:"Enjoy the game."},
+                {id:3, name:"Sample Soldier", type:"Soldier", cost:0, strength:"0", text:"ETB this card dies."},
+                
+            ];
+        }
+        
+        function createCardElement(card, zoneName, index) {
+            const div = document.createElement('div');
+            div.className = 'play-card cursor-pointer flex-shrink-0';
+            div.draggable = true;
+            div.dataset.index = index;
+            div.dataset.zone = zoneName;
+            
+            div.ondragstart = (e) => {
+                draggedCard = {card, zone: zoneName, index};
+                e.dataTransfer.setData('text/plain', JSON.stringify(draggedCard));
+            };
+            
+            let html = `
+            <div class="font-bold text-white text-[11px] leading-tight">${card.name}</div>
+            <div class="text-emerald-400 text-[9px]">${card.type}</div>
+            <div class="text-yellow-400 text-[9px]">Cost: ${card.cost}</div>
+            ${card.strength ? `<div class="text-rose-400 text-[9px]">Strength: ${card.strength}</div>` : ``}
+            <div class="text-zinc-200 text-[9px] leading-tight">${card.text}</div>
+            `;
+            
+            div.innerHTML = html;
+            
+            div.onclick = (e) => {
+                e.stopImmediatePropagation();
+                showCardModal(card, zoneName, index);
+            };
+            return div;
+        }
+        
+        function renderZone(zoneName, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            zones[zoneName].forEach((card, i) => {
+                container.appendChild(createCardElement(card, zoneName, i));
+            });
+        }
+        
+        function updateAllZones() {
+            renderZone('battlefield', 'battlefield');
+            renderZone('hand', 'hand');
+            renderZone('spoils', 'spoils');
+            
+            document.getElementById('your-deck-count').textContent = zones.deck.length;
+            document.getElementById('spoils-count').textContent = zones.spoils.length;
+            
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`opp-deck-${i}`).textContent = opponents[i];
+            }
+        }
+        
+        function showCardModal(card, fromZone, fromIndex) {
+            draggedCard = {card, zone: fromZone, index: fromIndex};
+            document.getElementById('card-modal').classList.remove('hidden');
+            const modalContainer = document.getElementById('modal-card');
+            modalContainer.innerHTML = createCardElement(card, '', 0).innerHTML;
+        }
+        
+        function closeModal() { document.getElementById('card-modal').classList.add('hidden'); }
+        function closeSearchModal() { document.getElementById('search-modal').classList.add('hidden'); }
+        
+        function playFromModal() {
+            if (!draggedCard) return;
+            const c = draggedCard.card;
+            if (resources < (parseInt(c.cost) || 0)) return alert("Not enough resources!");
+            resources -= (parseInt(c.cost) || 0);
+            document.getElementById('resource-display').textContent = resources;
+            moveCard(draggedCard.zone, draggedCard.index, 'battlefield');
+            closeModal();
+            log(`Played ${c.name}`);
+        }
+        
+        function moveToHandFromModal() {
+            if (!draggedCard) return;
+            if (zones.hand.length >= 5) return alert("Hand already at max size 5!");
+            moveCard(draggedCard.zone, draggedCard.index, 'hand');
+            closeModal();
+        }
+        
+        function moveToDeckFromModal() {
+            if (!draggedCard) return;
+            moveCard(draggedCard.zone, draggedCard.index, 'deck');
+            closeModal();
+        }
+        
+        function instantToSpoils() {
+            if (!draggedCard) return;
+            moveCard(draggedCard.zone, draggedCard.index, 'spoils');
+            closeModal();
+            log(`Instant ${draggedCard.card.name} → spoils`);
+        }
+        
+        function returnFromSpoils() {
+            if (!draggedCard || draggedCard.zone !== 'spoils') return;
+            moveCard('spoils', draggedCard.index, 'deck');
+            closeModal();
+            log(`Returned ${draggedCard.card.name} to deck`);
+        }
+        
+        function moveCard(fromZone, fromIndex, toZone) {
+            if (toZone === 'hand' && zones.hand.length >= 5) {
+                alert("Hand is full (max 5 cards)!");
+                return;
+            }
+            const card = zones[fromZone].splice(fromIndex, 1)[0];
+            zones[toZone].push(card);
+            updateAllZones();
+        }
+        
+        function allowDrop(ev) { 
+            ev.preventDefault(); 
+            ev.currentTarget.classList.add('dragover'); 
+        }
+        
+        function dropCard(ev) {
+            ev.preventDefault();
+            ev.currentTarget.classList.remove('dragover');
+            if (!draggedCard) return;
+            
+            let targetZone = null;
+            if (ev.currentTarget.id === 'battlefield-zone') targetZone = 'battlefield';
+            else if (ev.currentTarget.id === 'hand-zone') targetZone = 'hand';
+            else if (ev.currentTarget.id === 'spoils-zone') targetZone = 'spoils';
+            
+            if (!targetZone) return;
+            if (targetZone === 'hand' && zones.hand.length >= 5) {
+                alert("Hand max 5!");
+                return;
+            }
+            
+            const card = zones[draggedCard.zone].splice(draggedCard.index, 1)[0];
+            zones[targetZone].push(card);
+            updateAllZones();
+            log(`Moved ${card.name} → ${targetZone}`);
+        }
+        
+        function changeResource(delta) {
+            resources = Math.max(0, Math.min(18, resources + delta));
+            document.getElementById('resource-display').textContent = resources;
+        }
+        
+        function manualRoll() {
+            const dice = document.getElementById('dice-result');
+            dice.classList.add('dice');
+            const roll = Math.floor(Math.random() * 6) + 1;
+            dice.textContent = roll;
+            setTimeout(() => dice.classList.remove('dice'), 600);
+            log(`Manual roll: ${roll}`);
+        }
+        
+        function nextTurn() {
+            turn++;
+             document.getElementById('turn-counter').textContent = turn;
+
+            log(`Turn ${turn} started`);
+        }
+        
+        function drawCard() {
+            if (zones.deck.length === 0) return alert("Deck empty!");
+            if (zones.hand.length >= 5) return alert("Hand full (max 5 cards)!");
+            
+            const card = zones.deck.shift();
+            zones.hand.push(card);
+            updateAllZones();
+            log(`Drew ${card.name}`);
+        }
+        
+        function selfShrink() {
+            if (zones.deck.length === 0) return;
+            const card = zones.deck.shift();
+            zones.spoils.push(card);
+            updateAllZones();
+            log(`Self-shrunk ${card.name}`);
+        }
+        
+        function shuffleDeck() {
+            zones.deck.sort(() => Math.random() - 0.5);
+            log("Deck shuffled");
+        }
+        
+        function millOpponent(index) {
+            if (opponents[index] > 0) {
+                opponents[index]--;
+                document.getElementById(`opp-deck-${index}`).textContent = opponents[index];
+                log(`Milled 1 from Opponent ${index+1}`);
+                if (opponents[index] === 0) log(`★★★ OPPONENT ${index+1} DECK EMPTY — YOU WIN! ★★★`);
+            }
+        }
+        
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.innerHTML = `• ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function handleCSVImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.trim().split('\n');
+                cards = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const v = lines[i].split(',').map(x => x.trim());
+                    cards.push({
+                        id: Date.now() + i,
+                        name: v[0] || "Card",
+                        type: v[1] || "Soldier",
+                        cost: parseInt(v[2]) || 0,
+                        strength: v[3] || "",
+                        text: v[4] || ""
+                    });
+                }
+                zones.deck = [...cards].sort(() => Math.random() - 0.5);
+                zones.hand = []; zones.battlefield = []; zones.spoils = [];
+                opponents = [50,50,50];
+                resources = 0; turn = 1;
+                updateAllZones();
+                document.getElementById('resource-display').textContent = 0;
+                document.getElementById('turn-counter').textContent = 1;
+                log(`✅ Imported ${cards.length} cards and shuffled deck`);
+            };
+            reader.readAsText(file);
+        }
+        
+        function downloadSampleCSV() {
+            const csv = `name,type,cost,strength,text`;
+            const blob = new Blob([csv], {type: 'text/csv'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'shrinkage-deck.csv';
+            a.click();
+        }
+        
+        function searchDeck() {
+            if (zones.deck.length === 0) return alert("Deck empty!");
+            document.getElementById('search-modal').classList.remove('hidden');
+            filterSearch();
+        }
+        
+        function filterSearch() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const container = document.getElementById('search-results');
+            container.innerHTML = '';
+            
+            const filtered = zones.deck.filter(c => 
+                c.name.toLowerCase().includes(term)
+            );
+            
+            filtered.forEach((card, i) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-between bg-zinc-800 hover:bg-zinc-700 px-6 py-4 rounded-2xl cursor-pointer';
+                row.innerHTML = `
+                    <div>
+                        <div class="font-medium">${card.name}</div>
+                        <div class="text-xs text-emerald-400">${card.type} • cost ${card.cost}</div>
+                    </div>
+                    <button onclick="event.stopImmediatePropagation(); takeFromSearch(${i});" 
+                            class="bg-emerald-600 px-6 py-2 rounded-2xl text-xs">DRAW TO HAND</button>
+                `;
+                row.onclick = () => takeFromSearch(i);
+                container.appendChild(row);
+            });
+        }
+        
+        function takeFromSearch(index) {
+            if (zones.hand.length >= 5) return alert("Hand full!");
+            const card = zones.deck.splice(index, 1)[0];
+            zones.hand.push(card);
+            updateAllZones();
+            closeSearchModal();
+            log(`Searched & drew ${card.name}`);
+        }
+        
+        function clearAllZones() {
+            if (!confirm("Reset full game?")) return;
+            zones.deck = [...cards];
+            zones.hand = []; zones.battlefield = []; zones.spoils = [];
+            opponents = [50,50,50];
+            resources = 0; turn = 1;
+            document.getElementById('resource-display').textContent = 0;
+            document.getElementById('turn-counter').textContent = 1;
+            document.getElementById('log').innerHTML = '';
+            updateAllZones();
+            log("Game fully reset");
+        }
+        
+        function init() {
+            cards = getSampleCards();
+            zones.deck = [...cards];
+            updateAllZones();
+            document.getElementById('resource-display').textContent = resources;
+            document.getElementById('turn-counter').textContent = turn;
+            log("SHRINKAGE SOLO PRACTICE LOADED");
+            log("• Everything now in ONE tight area");
+            log("• Smaller cards + smaller circles + smaller text");
+            log("• Still perfectly readable from 3 feet away");
+        }
+        
+        window.onload = init;
+    </script>
 </body>
 </html>
