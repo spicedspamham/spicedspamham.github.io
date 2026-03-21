@@ -1,626 +1,1526 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHRINKAGE • SOLO PRACTICE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
-        
-        .tail-container { font-family: 'Inter', system_ui, sans-serif; }
-        .card-name { font-family: 'Playfair Display', serif; }
-        
-        .play-card {
-    width: 115px;
-    height: 130px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shrinkage — MTG Variant by Joseph DeSantis</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0a00;
+    --parchment: #f5e9c8;
+    --parchment-dark: #e8d5a3;
+    --gold: #c8932a;
+    --gold-light: #f0c050;
+    --crimson: #8b1a1a;
+    --teal: #1a5c5c;
+    --shadow: rgba(0,0,0,0.6);
+    --card-w: 120px;
+    --card-h: 168px;
+  }
 
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 20px -8px rgb(0 0 0 / 0.6);
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
-    border-radius: 12px;
-    background: linear-gradient(180deg, #18181b 0%, #27272a 100%);
-    border: 2px solid #3f3f46;
-
-    padding: 6px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-
-    font-size: 9px;
-    line-height: 1.1;
-
-    overflow: hidden;
+body {
+background: #0d1a0d;
+background-image:
+radial-gradient(ellipse at 20% 50%, rgba(26,92,26,0.15) 0%, transparent 50%),
+radial-gradient(ellipse at 80% 50%, rgba(10,40,60,0.2) 0%, transparent 50%),
+url(“data:image/svg+xml,%3Csvg width=‘60’ height=‘60’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Crect width=‘60’ height=‘60’ fill=‘none’/%3E%3Ccircle cx=‘30’ cy=‘30’ r=‘1’ fill=‘rgba(200,147,42,0.08)’/%3E%3C/svg%3E”);
+font-family: ‘EB Garamond’, serif;
+color: var(–parchment);
+min-height: 100vh;
+overflow-x: hidden;
 }
-        
-        .play-card:hover { 
-            transform: scale(1.18) rotate(1deg); 
-            box-shadow: 0 20px 35px -10px rgb(0 0 0 / 0.6); 
-            z-index: 10;
-        }
-        
-        /* TIGHT SINGLE-AREA LAYOUT (improved spacing) */
-        .play-card .cost-circle { 
-            top: 8px; left: 8px; 
-            background: #22c55e;
-            color: white;
-            width: 26px; height: 26px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; 
-            font-size: 14px; font-family: monospace; font-weight: 800;
-            box-shadow: 0 0 0 3px #18181b;
-        }
 
-        .play-card .strength {
-            top: 8px; right: 8px;
-            background: #ef4444; color: white;
-            width: 26px; height: 26px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; 
-            box-shadow: 0 0 0 3px #18181b;
-            font-size: 14px; font-family: monospace; font-weight: 800;
-        }
+/* ========= SCREENS ========= */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; }
 
-        .play-card .name { 
-            top: 10px; 
-            left: 40px; 
-            right: 40px;
-            font-size: 12px; 
-            line-height: 1.05; 
-            font-weight: 700; 
-            color: white; 
-            white-space: normal;
-        }
+/* ========= TITLE SCREEN ========= */
+#title-screen {
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 40px 20px;
+position: relative;
+}
 
-        .play-card .type { 
-            top: 28px; 
-            left: 40px; 
-            font-size: 8px; 
-            color: #22c55e; 
-            font-weight: 600;
-        }
+.title-art {
+font-size: 90px;
+margin-bottom: 10px;
+filter: drop-shadow(0 0 30px rgba(200,147,42,0.5));
+animation: float 4s ease-in-out infinite;
+}
 
-        .play-card .text {
-            top: 50px; 
-            left: 8px; 
-            right: 8px; 
-            bottom: 8px;
-            font-size: 8.4px; 
-            line-height: 1.25;
-            overflow-y: auto;
-            scrollbar-width: none;
-            color: #e4e4e7;
-            font-weight: 500;
-        }
- 
-        
-        .zone { transition: background-color 0.2s; }
-        .zone.dragover { background-color: #22c55e30; border-color: #22c55e; }
-        
-        .dice {
-            animation: roll 0.5s ease-out;
-        }
-        @keyframes roll {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(720deg) scale(1); }
-        }
-    </style>
+@keyframes float {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(-12px); }
+}
+
+h1.game-title {
+font-family: ‘Cinzel Decorative’, serif;
+font-size: clamp(36px, 8vw, 72px);
+color: var(–gold-light);
+text-shadow: 0 0 40px rgba(200,147,42,0.7), 2px 2px 0 var(–ink);
+letter-spacing: 4px;
+margin-bottom: 8px;
+}
+
+.subtitle {
+font-family: ‘Cinzel’, serif;
+font-size: 14px;
+color: var(–parchment-dark);
+letter-spacing: 3px;
+margin-bottom: 50px;
+opacity: 0.8;
+}
+
+.rulebox {
+background: rgba(245,233,200,0.07);
+border: 1px solid rgba(200,147,42,0.3);
+border-radius: 4px;
+padding: 24px 32px;
+max-width: 520px;
+margin-bottom: 40px;
+text-align: left;
+font-size: 15px;
+line-height: 1.7;
+}
+
+.rulebox h3 {
+font-family: ‘Cinzel’, serif;
+color: var(–gold-light);
+font-size: 13px;
+letter-spacing: 2px;
+margin-bottom: 12px;
+text-align: center;
+}
+
+.rulebox ul { list-style: none; }
+.rulebox li { padding: 3px 0; }
+.rulebox li::before { content: ’⚔ ’; color: var(–gold); }
+
+.btn {
+font-family: ‘Cinzel’, serif;
+font-size: 16px;
+letter-spacing: 2px;
+padding: 14px 40px;
+background: linear-gradient(135deg, #7a4a10, #c8932a, #7a4a10);
+color: var(–parchment);
+border: 2px solid var(–gold);
+cursor: pointer;
+text-transform: uppercase;
+position: relative;
+overflow: hidden;
+transition: all 0.2s;
+clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+
+.btn:hover {
+background: linear-gradient(135deg, #c8932a, #f0c050, #c8932a);
+color: var(–ink);
+transform: translateY(-2px);
+box-shadow: 0 8px 30px rgba(200,147,42,0.4);
+}
+
+/* ========= GAME SCREEN ========= */
+#game-screen {
+flex-direction: column;
+padding: 0;
+height: 100vh;
+overflow: hidden;
+}
+
+.game-layout {
+display: grid;
+grid-template-rows: auto 1fr auto 1fr auto;
+height: 100vh;
+gap: 0;
+}
+
+/* ========= ZONES ========= */
+.player-zone {
+padding: 8px 16px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+position: relative;
+}
+
+.ai-zone { background: rgba(139,26,26,0.08); border-bottom: 1px solid rgba(200,147,42,0.15); }
+.player-zone-human { background: rgba(26,92,92,0.08); border-top: 1px solid rgba(200,147,42,0.15); }
+
+.zone-label {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 2px;
+color: var(–gold);
+opacity: 0.7;
+text-transform: uppercase;
+}
+
+.hand-row {
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+min-height: 50px;
+align-items: center;
+}
+
+/* ========= BATTLEFIELD ========= */
+.battlefield {
+display: grid;
+grid-template-columns: 1fr 1fr;
+border-top: 1px solid rgba(200,147,42,0.15);
+border-bottom: 1px solid rgba(200,147,42,0.15);
+background: rgba(0,0,0,0.3);
+position: relative;
+overflow: hidden;
+}
+
+.battlefield::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: url(“data:image/svg+xml,%3Csvg width=‘200’ height=‘200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cellipse cx=‘100’ cy=‘100’ rx=‘90’ ry=‘90’ fill=‘none’ stroke=‘rgba(200,147,42,0.05)’ stroke-width=‘2’/%3E%3C/svg%3E”) center/contain no-repeat;
+pointer-events: none;
+}
+
+.bf-side {
+padding: 8px 12px;
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+align-content: flex-start;
+min-height: 100px;
+}
+
+.bf-side.ai-bf { border-right: 1px solid rgba(200,147,42,0.1); }
+
+/* ========= STATS BAR ========= */
+.stats-bar {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 8px 16px;
+background: rgba(26,10,0,0.8);
+border: none;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.stat-group {
+display: flex;
+gap: 16px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.stat {
+font-family: ‘Cinzel’, serif;
+font-size: 12px;
+letter-spacing: 1px;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+
+.stat .val {
+font-size: 18px;
+font-weight: 700;
+color: var(–gold-light);
+min-width: 28px;
+text-align: center;
+}
+
+.stat .lbl { color: rgba(245,233,200,0.5); font-size: 10px; }
+
+.phase-indicator {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 2px;
+padding: 4px 12px;
+border: 1px solid var(–gold);
+color: var(–gold-light);
+background: rgba(200,147,42,0.1);
+text-transform: uppercase;
+white-space: nowrap;
+}
+
+/* ========= CARDS ========= */
+.card {
+width: var(–card-w);
+height: var(–card-h);
+border-radius: 8px;
+border: 2px solid var(–gold);
+cursor: pointer;
+position: relative;
+overflow: hidden;
+transition: transform 0.15s, box-shadow 0.15s;
+flex-shrink: 0;
+display: flex;
+flex-direction: column;
+font-size: 9px;
+}
+
+.card:hover:not(.tapped):not(.enemy-card) {
+transform: translateY(-8px) scale(1.05);
+box-shadow: 0 12px 30px rgba(200,147,42,0.5);
+z-index: 10;
+}
+
+.card.tapped {
+transform: rotate(90deg);
+opacity: 0.7;
+margin: 8px;
+}
+
+.card.selected {
+box-shadow: 0 0 0 3px var(–gold-light), 0 0 20px rgba(240,192,80,0.6);
+transform: translateY(-12px) scale(1.08);
+z-index: 10;
+}
+
+.card.attacking { box-shadow: 0 0 0 3px #ff4444, 0 0 20px rgba(255,68,68,0.5); }
+.card.blocking { box-shadow: 0 0 0 3px #44aaff, 0 0 20px rgba(68,170,255,0.5); }
+
+.card-inner {
+height: 100%;
+display: flex;
+flex-direction: column;
+}
+
+.card-frame {
+height: 100%;
+display: flex;
+flex-direction: column;
+padding: 4px;
+}
+
+.card-title-bar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 2px 3px;
+background: rgba(0,0,0,0.5);
+border-radius: 3px 3px 0 0;
+margin-bottom: 2px;
+}
+
+.card-name {
+font-family: ‘Cinzel’, serif;
+font-size: 8px;
+font-weight: 600;
+color: #fff;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 70px;
+}
+
+.card-cost {
+font-family: ‘Cinzel’, serif;
+font-size: 10px;
+font-weight: 700;
+background: rgba(200,147,42,0.8);
+color: #fff;
+border-radius: 50%;
+width: 16px;
+height: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+}
+
+.card-art {
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 36px;
+overflow: hidden;
+border-radius: 2px;
+background: rgba(0,0,0,0.2);
+margin: 0 1px;
+}
+
+.card-type-bar {
+background: rgba(0,0,0,0.5);
+padding: 1px 3px;
+font-family: ‘Cinzel’, serif;
+font-size: 7px;
+color: rgba(245,233,200,0.7);
+text-align: center;
+margin: 2px 0;
+letter-spacing: 0.5px;
+}
+
+.card-text-box {
+background: rgba(245,233,200,0.9);
+color: var(–ink);
+padding: 3px 4px;
+font-size: 7px;
+line-height: 1.3;
+border-radius: 2px;
+flex: 1;
+overflow: hidden;
+font-family: ‘EB Garamond’, serif;
+}
+
+.card-pt {
+background: rgba(0,0,0,0.7);
+color: var(–gold-light);
+font-family: ‘Cinzel’, serif;
+font-size: 9px;
+font-weight: 700;
+text-align: right;
+padding: 1px 3px;
+border-radius: 0 0 3px 3px;
+margin-top: 1px;
+}
+
+/* card color themes */
+.card[data-color=“fire”] { background: linear-gradient(160deg, #3d0a0a 0%, #6b1a0a 60%, #3d0a0a 100%); border-color: #c84040; }
+.card[data-color=“water”] { background: linear-gradient(160deg, #0a1a3d 0%, #0a3d6b 60%, #0a1a3d 100%); border-color: #4080c8; }
+.card[data-color=“earth”] { background: linear-gradient(160deg, #1a2a0a 0%, #3d5c1a 60%, #1a2a0a 100%); border-color: #70a030; }
+.card[data-color=“void”] { background: linear-gradient(160deg, #1a0a2a 0%, #3d1a5c 60%, #1a0a2a 100%); border-color: #9040c8; }
+.card[data-color=“gold”] { background: linear-gradient(160deg, #2a1a0a 0%, #5c3d0a 60%, #2a1a0a 100%); border-color: #c8932a; }
+
+.back-card {
+width: var(–card-w);
+height: var(–card-h);
+border-radius: 8px;
+background: linear-gradient(135deg, #1a0a00 0%, #3d1a0a 50%, #1a0a00 100%);
+border: 2px solid var(–gold);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 32px;
+flex-shrink: 0;
+filter: brightness(0.7);
+}
+
+/* ========= LOG ========= */
+.log-panel {
+position: fixed;
+right: 0;
+top: 0;
+bottom: 0;
+width: 280px;
+background: rgba(13,26,13,0.95);
+border-left: 1px solid rgba(200,147,42,0.2);
+padding: 16px;
+overflow-y: auto;
+transform: translateX(100%);
+transition: transform 0.3s;
+z-index: 100;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.log-panel.open { transform: translateX(0); }
+
+.log-entry {
+font-size: 12px;
+line-height: 1.5;
+padding: 4px 8px;
+border-left: 2px solid rgba(200,147,42,0.3);
+color: rgba(245,233,200,0.8);
+}
+
+.log-entry.combat { border-left-color: #c84040; }
+.log-entry.mill { border-left-color: #9040c8; }
+.log-entry.play { border-left-color: #70a030; }
+.log-entry.phase { border-left-color: var(–gold); color: var(–gold-light); font-family: ‘Cinzel’, serif; font-size: 11px; }
+
+.log-toggle {
+position: fixed;
+right: 12px;
+top: 12px;
+z-index: 101;
+background: rgba(26,10,0,0.9);
+border: 1px solid var(–gold);
+color: var(–gold-light);
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 1px;
+padding: 6px 12px;
+cursor: pointer;
+clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+
+/* ========= ACTION BUTTONS ========= */
+.action-row {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+padding: 6px 16px;
+background: rgba(26,10,0,0.9);
+border-top: 1px solid rgba(200,147,42,0.2);
+}
+
+.action-btn {
+font-family: ‘Cinzel’, serif;
+font-size: 11px;
+letter-spacing: 1px;
+padding: 7px 16px;
+background: rgba(200,147,42,0.15);
+color: var(–parchment);
+border: 1px solid rgba(200,147,42,0.4);
+cursor: pointer;
+text-transform: uppercase;
+transition: all 0.15s;
+clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+}
+
+.action-btn:hover:not(:disabled) {
+background: rgba(200,147,42,0.35);
+border-color: var(–gold);
+color: var(–gold-light);
+}
+
+.action-btn:disabled {
+opacity: 0.3;
+cursor: not-allowed;
+}
+
+.action-btn.primary {
+background: linear-gradient(135deg, rgba(139,26,26,0.4), rgba(200,50,50,0.3));
+border-color: #c84040;
+}
+
+.action-btn.primary:hover:not(:disabled) {
+background: linear-gradient(135deg, rgba(200,50,50,0.5), rgba(255,80,80,0.4));
+color: #ffaaaa;
+}
+
+/* ========= DICE ========= */
+.dice-display {
+font-size: 28px;
+animation: diceRoll 0.3s ease;
+}
+
+@keyframes diceRoll {
+0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+50% { transform: rotate(180deg) scale(1.2); }
+100% { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+/* ========= MODAL ========= */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.8);
+z-index: 200;
+align-items: center;
+justify-content: center;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+background: linear-gradient(160deg, #1a0a00, #2a1400);
+border: 2px solid var(–gold);
+border-radius: 8px;
+padding: 32px;
+max-width: 500px;
+width: 90vw;
+text-align: center;
+position: relative;
+}
+
+.modal h2 {
+font-family: ‘Cinzel Decorative’, serif;
+color: var(–gold-light);
+font-size: 24px;
+margin-bottom: 16px;
+}
+
+.modal p { line-height: 1.7; margin-bottom: 16px; opacity: 0.85; }
+
+/* ========= RESOURCE DOTS ========= */
+.resource-dots {
+display: flex;
+gap: 4px;
+flex-wrap: wrap;
+align-items: center;
+}
+
+.dot {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: var(–gold-light);
+box-shadow: 0 0 6px rgba(240,192,80,0.6);
+}
+
+.dot.spent {
+background: rgba(200,147,42,0.2);
+border: 1px solid rgba(200,147,42,0.3);
+box-shadow: none;
+}
+
+/* ========= ANIMATIONS ========= */
+@keyframes millAnim {
+0% { transform: scale(1) rotate(0deg); opacity: 1; }
+50% { transform: scale(1.3) rotate(15deg); opacity: 0.5; }
+100% { transform: scale(0) rotate(30deg); opacity: 0; }
+}
+
+@keyframes damageFlash {
+0%,100% { background: inherit; }
+50% { background: rgba(200,0,0,0.3); }
+}
+
+.mill-flash { animation: millAnim 0.5s forwards; }
+.damage-flash { animation: damageFlash 0.4s ease 2; }
+
+.floating-text {
+position: fixed;
+font-family: ‘Cinzel’, serif;
+font-size: 20px;
+font-weight: 700;
+pointer-events: none;
+z-index: 999;
+animation: floatUp 1.2s forwards;
+}
+
+@keyframes floatUp {
+0% { transform: translateY(0); opacity: 1; }
+100% { transform: translateY(-80px); opacity: 0; }
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 600px) {
+:root { –card-w: 90px; –card-h: 126px; }
+.card-name { max-width: 52px; font-size: 7px; }
+.card-art { font-size: 26px; }
+.card-text-box { font-size: 6px; }
+.stats-bar { font-size: 10px; }
+}
+</style>
+
 </head>
-<body class="tail-container bg-zinc-950 text-white min-h-screen overflow-hidden">
-    <div class="flex h-screen">
-        <!-- LEFT CONTROLS -->
-        <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
-            <div class="p-6 border-b border-zinc-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 bg-rose-600 rounded-3xl flex items-center justify-center text-4xl">S</div>
-                    <div>
-                        <h1 class="text-4xl font-bold tracking-tighter card-name">SHRINKAGE</h1>
-                        <p class="text-sm text-rose-400 -mt-1">SOLO PRACTICE • 50-card decks</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="p-6">
-                <label onclick="document.getElementById('csv-upload').click()" 
-                       class="cursor-pointer block bg-white text-black hover:bg-amber-300 transition-all text-center py-6 rounded-3xl font-medium text-xl flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-file-csv text-3xl"></i>
-                    IMPORT DECK CSV
-                </label>
-                <input id="csv-upload" type="file" accept=".csv" class="hidden" onchange="handleCSVImport(event)">
-                
-                <div class="flex gap-3 mt-4">
-                    <button onclick="downloadSampleCSV()" 
-                            class="flex-1 text-xs bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">↓ Sample CSV</button>
-                    <button onclick="searchDeck()" 
-                            class="flex-1 text-xs bg-zinc-800 hover:bg-zinc-700 py-3 rounded-2xl">🔍 Search Library</button>
-                </div>
-            </div>
-            
-            <div class="px-6 flex-1 overflow-y-auto space-y-7">
-                <div>
-                    <div class="flex justify-between items-end mb-3">
-                        <div class="text-sm uppercase tracking-widest text-zinc-400">RESOURCES</div>
-                        <div id="resource-display" class="text-7xl font-mono text-emerald-400 tabular-nums">0</div>
-                    </div>
-                    <div class="flex gap-3">
-                        <button onclick="changeResource(-1)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-5 rounded-3xl text-3xl font-medium">-</button>
-                        <button onclick="changeResource(1)" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-5 rounded-3xl text-3xl font-medium">+</button>
-                    </div>
-                </div>
-                
-                <div class="bg-zinc-800 rounded-3xl p-6 text-center">
-                    <div class="text-sm uppercase tracking-widest text-zinc-400 mb-3">D6 (rolls at start of turn)</div>
-                    <div onclick="manualRoll()" id="dice-result"
-                         class="dice inline-flex items-center justify-center w-24 h-24 bg-zinc-900 rounded-3xl text-6xl font-bold cursor-pointer border-4 border-zinc-700">
-                        ?
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <button onclick="drawCard()" 
-                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
-                        <i class="fa-solid fa-hand fa-2xl mb-2 text-sky-400"></i>
-                        DRAW
-                    </button>
-                    <button onclick="selfShrink()" 
-                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
-                        <i class="fa-solid fa-compress fa-2xl mb-2 text-rose-400"></i>
-                        SELF-SHRINK
-                    </button>
-                    <button onclick="shuffleDeck()" 
-                            class="bg-zinc-800 hover:bg-zinc-700 h-20 rounded-3xl flex flex-col items-center justify-center">
-                        <i class="fa-solid fa-shuffle fa-2xl mb-2"></i>
-                        SHUFFLE
-                    </button>
-                    <button onclick="clearAllZones()" 
-                            class="bg-red-950 hover:bg-red-900 h-20 rounded-3xl flex flex-col items-center justify-center text-red-400">
-                        <i class="fa-solid fa-trash fa-2xl mb-2"></i>
-                        RESET
-                    </button>
-                </div>
-                
-                <div onclick="nextTurn()" 
-                     class="bg-emerald-600 hover:bg-emerald-500 cursor-pointer rounded-3xl p-6 text-center">
-                    <div class="text-sm uppercase text-emerald-200">NEXT TURN</div>
-                    <div id="turn-counter" class="text-8xl font-mono text-white">1</div>
-                    <div class="text-xs text-emerald-200 mt-1">+6 + D6 resources</div>
-                </div>
-            </div>
-            
-            <div class="p-6 border-t border-zinc-800 mt-auto">
-                <div class="flex justify-between text-sm">
-                    <div>
-                        <span class="text-zinc-400">DECK</span><br>
-                        <span id="your-deck-count" class="font-mono text-6xl">0</span>
-                    </div>
-                    <div>
-                        <span class="text-zinc-400">SPOILS</span><br>
-                        <span id="spoils-count" class="font-mono text-6xl text-rose-400">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="flex-1 flex flex-col">
-            <!-- OPPONENTS -->
-            <div class="h-28 bg-zinc-900 border-b border-zinc-800 p-4 flex gap-3">
-                <div onclick="millOpponent(0)" id="opp-0" 
-                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
-                    <div class="text-xs text-zinc-400">OPPONENT 1</div>
-                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-0">50</div>
-                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
-                </div>
-                <div onclick="millOpponent(1)" id="opp-1" 
-                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
-                    <div class="text-xs text-zinc-400">OPPONENT 2</div>
-                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-1">50</div>
-                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
-                </div>
-                <div onclick="millOpponent(2)" id="opp-2" 
-                     class="zone flex-1 min-w-[180px] bg-zinc-800 rounded-3xl p-4 cursor-pointer hover:ring-2 hover:ring-rose-500 transition-all">
-                    <div class="text-xs text-zinc-400">OPPONENT 3</div>
-                    <div class="font-mono text-5xl text-white mt-1" id="opp-deck-2">50</div>
-                    <div class="text-[10px] text-zinc-500">click = mill 1</div>
-                </div>
-            </div>
-            
-            <!-- BATTLEFIELD - even more cards fit -->
-            <div class="flex-1 p-8 overflow-y-auto bg-zinc-950 zone" id="battlefield-zone"
-                 ondrop="dropCard(event)" ondragover="allowDrop(event)">
-                <div class="uppercase text-xs tracking-widest text-zinc-400 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-swords"></i> BATTLEFIELD
-                </div>
-                <div id="battlefield" class="grid grid-cols-8 gap-4"></div>
-            </div>
-            
-        <div class="h-52 bg-zinc-900 border-t border-zinc-800 p-6 overflow-x-auto zone"
-            id="hand-zone" ondrop="dropCard(event)" ondragover="allowDrop(event)">
+<body>
 
-        <div class="uppercase text-xs tracking-widest text-zinc-400 mb-3">
-             HAND • MAX 5
-        </div>
+<!-- TITLE SCREEN -->
 
-        <div id="hand" class="flex gap-4"></div>
-        </div>
+<div id="title-screen" class="screen active">
+  <div class="title-art">📜</div>
+  <h1 class="game-title">SHRINKAGE</h1>
+  <p class="subtitle">An MTG Variant by Joseph DeSantis</p>
+  <div class="rulebox">
+    <h3>Quick Rules</h3>
+    <ul>
+      <li>50-card singleton decks — deplete your opponent's library to win</li>
+      <li>Max hand size 5, draw 2 per turn, discard at turn start</li>
+      <li>Roll a d6 + 6 base = up to 12 resource points; save up to 6</li>
+      <li>All creatures have Deathtouch — excess damage mills opponent</li>
+      <li>Mill 5 cards at the end of each of your turns</li>
+      <li>No colors — use converted mana cost as resource cost</li>
+    </ul>
+  </div>
+  <button class="btn" onclick="startGame()">Begin the Ritual</button>
+</div>
 
+<!-- GAME SCREEN -->
 
-        </div>
-        
-        <div class="w-64 bg-zinc-900 border-l border-zinc-800 flex flex-col">
-            <div class="p-6 border-b border-zinc-800">
-                <div class="text-xs uppercase text-zinc-400 mb-3">YOUR DECK</div>
-                <div onclick="drawCard()" 
-                     class="play-card mx-auto cursor-pointer flex items-center justify-center border border-dashed border-zinc-600 hover:border-sky-400">
-                    <div class="text-center text-xs">
-                        <i class="fa-solid fa-layer-group text-4xl text-zinc-500 mb-3"></i>
-                        CLICK TO DRAW
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex-1 p-6 overflow-y-auto zone" id="spoils-zone"
-                 ondrop="dropCard(event)" ondragover="allowDrop(event)">
-                <div class="text-xs uppercase text-rose-400 mb-4">SPOILS</div>
-                <div id="spoils" class="flex flex-col gap-4"></div>
-            </div>
-            
-            <div class="p-6 text-xs flex-1 flex flex-col border-t border-zinc-800">
-                <div class="uppercase text-zinc-400 mb-3">LOG</div>
-                <div id="log" class="flex-1 overflow-y-auto text-zinc-300 space-y-2 pr-2 text-[14px]"></div>
-            </div>
-        </div>
+<div id="game-screen" class="screen">
+  <div class="game-layout">
+
+```
+<!-- AI ZONE -->
+<div class="player-zone ai-zone">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span class="zone-label">⚔ Opponent — Hand</span>
+    <div class="stat"><span class="lbl">DECK</span><span class="val" id="ai-deck-count">50</span></div>
+  </div>
+  <div class="hand-row" id="ai-hand"></div>
+</div>
+
+<!-- AI BATTLEFIELD -->
+<div class="battlefield">
+  <div class="bf-side ai-bf" id="ai-battlefield">
+    <span class="zone-label" style="width:100%;margin-bottom:4px;">⚔ AI Field</span>
+  </div>
+  <div class="bf-side" id="player-battlefield">
+    <span class="zone-label" style="width:100%;margin-bottom:4px;">🛡 Your Field</span>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-group">
+    <div class="stat">
+      <span class="lbl">YOUR RESOURCES</span>
+      <div class="resource-dots" id="resource-dots"></div>
+      <span class="val" id="resource-count">0</span>
     </div>
-    
-    <!-- CARD MODAL -->
-    <div id="card-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 rounded-3xl w-[340px] overflow-hidden">
-            <div id="modal-card" class="play-card mx-auto mt-8 scale-[1.45]"></div>
-            
-            <div class="p-8 grid grid-cols-2 gap-3 text-sm">
-                <button onclick="playFromModal()" class="py-5 bg-emerald-600 rounded-3xl font-medium">PLAY TO BATTLEFIELD</button>
-                <button onclick="moveToHandFromModal()" class="py-5 bg-sky-600 rounded-3xl font-medium">TO HAND</button>
-                <button onclick="moveToDeckFromModal()" class="py-5 bg-zinc-700 rounded-3xl font-medium">BACK TO DECK</button>
-                <button onclick="instantToSpoils()" class="py-5 bg-rose-600 rounded-3xl font-medium">CAST INSTANT → SPOILS</button>
-                <button onclick="returnFromSpoils()" class="col-span-2 py-5 bg-amber-600 rounded-3xl font-medium">RETURN FROM SPOILS TO DECK</button>
-                <button onclick="closeModal()" class="col-span-2 py-5 bg-zinc-700 rounded-3xl font-medium">CLOSE</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- SEARCH MODAL -->
-    <div id="search-modal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-        <div class="bg-zinc-900 w-full max-w-lg mx-4 rounded-3xl p-8 max-h-[80vh] flex flex-col">
-            <div class="flex justify-between mb-6">
-                <h2 class="text-2xl font-bold">Search Your Deck</h2>
-                <button onclick="closeSearchModal()" class="text-4xl text-zinc-400">×</button>
-            </div>
-            <input id="search-input" type="text" placeholder="Type card name..." 
-                   class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-4 text-lg mb-6 focus:outline-none"
-                   onkeyup="filterSearch()">
-            <div id="search-results" class="flex-1 overflow-y-auto space-y-3 pr-4"></div>
-        </div>
-    </div>
-    
-    <script>
-        let cards = [];
-        let zones = { deck: [], hand: [], battlefield: [], spoils: [] };
-        let opponents = [50, 50, 50];
-        let resources = 0;
-        let turn = 1;
-        let draggedCard = null;
-        
-        function getSampleCards() {
-            return [
-                {id:1, name:"Sample Instant", type:"Instant", cost:1, strength:"", text:"Enjoy the game."},
-                {id:3, name:"Sample Soldier", type:"Soldier", cost:0, strength:"0", text:"ETB this card dies."},
-                
-            ];
-        }
-        
-        function createCardElement(card, zoneName, index) {
-            const div = document.createElement('div');
-            div.className = 'play-card cursor-pointer flex-shrink-0';
-            div.draggable = true;
-            div.dataset.index = index;
-            div.dataset.zone = zoneName;
-            
-            div.ondragstart = (e) => {
-                draggedCard = {card, zone: zoneName, index};
-                e.dataTransfer.setData('text/plain', JSON.stringify(draggedCard));
-            };
-            
-            let html = `
-            <div class="font-bold text-white text-[11px] leading-tight">${card.name}</div>
-            <div class="text-emerald-400 text-[9px]">${card.type}</div>
-            <div class="text-yellow-400 text-[9px]">Cost: ${card.cost}</div>
-            ${card.strength ? `<div class="text-rose-400 text-[9px]">Strength: ${card.strength}</div>` : ``}
-            <div class="text-zinc-200 text-[9px] leading-tight">${card.text}</div>
-            `;
-            
-            div.innerHTML = html;
-            
-            div.onclick = (e) => {
-                e.stopImmediatePropagation();
-                showCardModal(card, zoneName, index);
-            };
-            return div;
-        }
-        
-        function renderZone(zoneName, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            zones[zoneName].forEach((card, i) => {
-                container.appendChild(createCardElement(card, zoneName, i));
-            });
-        }
-        
-        function updateAllZones() {
-            renderZone('battlefield', 'battlefield');
-            renderZone('hand', 'hand');
-            renderZone('spoils', 'spoils');
-            
-            document.getElementById('your-deck-count').textContent = zones.deck.length;
-            document.getElementById('spoils-count').textContent = zones.spoils.length;
-            
-            for (let i = 0; i < 3; i++) {
-                document.getElementById(`opp-deck-${i}`).textContent = opponents[i];
-            }
-        }
-        
-        function showCardModal(card, fromZone, fromIndex) {
-            draggedCard = {card, zone: fromZone, index: fromIndex};
-            document.getElementById('card-modal').classList.remove('hidden');
-            const modalContainer = document.getElementById('modal-card');
-            modalContainer.innerHTML = createCardElement(card, '', 0).innerHTML;
-        }
-        
-        function closeModal() { document.getElementById('card-modal').classList.add('hidden'); }
-        function closeSearchModal() { document.getElementById('search-modal').classList.add('hidden'); }
-        
-        function playFromModal() {
-            if (!draggedCard) return;
-            const c = draggedCard.card;
-            if (resources < (parseInt(c.cost) || 0)) return alert("Not enough resources!");
-            resources -= (parseInt(c.cost) || 0);
-            document.getElementById('resource-display').textContent = resources;
-            moveCard(draggedCard.zone, draggedCard.index, 'battlefield');
-            closeModal();
-            log(`Played ${c.name}`);
-        }
-        
-        function moveToHandFromModal() {
-            if (!draggedCard) return;
-            if (zones.hand.length >= 5) return alert("Hand already at max size 5!");
-            moveCard(draggedCard.zone, draggedCard.index, 'hand');
-            closeModal();
-        }
-        
-        function moveToDeckFromModal() {
-            if (!draggedCard) return;
-            moveCard(draggedCard.zone, draggedCard.index, 'deck');
-            closeModal();
-        }
-        
-        function instantToSpoils() {
-            if (!draggedCard) return;
-            moveCard(draggedCard.zone, draggedCard.index, 'spoils');
-            closeModal();
-            log(`Instant ${draggedCard.card.name} → spoils`);
-        }
-        
-        function returnFromSpoils() {
-            if (!draggedCard || draggedCard.zone !== 'spoils') return;
-            moveCard('spoils', draggedCard.index, 'deck');
-            closeModal();
-            log(`Returned ${draggedCard.card.name} to deck`);
-        }
-        
-        function moveCard(fromZone, fromIndex, toZone) {
-            if (toZone === 'hand' && zones.hand.length >= 5) {
-                alert("Hand is full (max 5 cards)!");
-                return;
-            }
-            const card = zones[fromZone].splice(fromIndex, 1)[0];
-            zones[toZone].push(card);
-            updateAllZones();
-        }
-        
-        function allowDrop(ev) { 
-            ev.preventDefault(); 
-            ev.currentTarget.classList.add('dragover'); 
-        }
-        
-        function dropCard(ev) {
-            ev.preventDefault();
-            ev.currentTarget.classList.remove('dragover');
-            if (!draggedCard) return;
-            
-            let targetZone = null;
-            if (ev.currentTarget.id === 'battlefield-zone') targetZone = 'battlefield';
-            else if (ev.currentTarget.id === 'hand-zone') targetZone = 'hand';
-            else if (ev.currentTarget.id === 'spoils-zone') targetZone = 'spoils';
-            
-            if (!targetZone) return;
-            if (targetZone === 'hand' && zones.hand.length >= 5) {
-                alert("Hand max 5!");
-                return;
-            }
-            
-            const card = zones[draggedCard.zone].splice(draggedCard.index, 1)[0];
-            zones[targetZone].push(card);
-            updateAllZones();
-            log(`Moved ${card.name} → ${targetZone}`);
-        }
-        
-        function changeResource(delta) {
-            resources = Math.max(0, Math.min(18, resources + delta));
-            document.getElementById('resource-display').textContent = resources;
-        }
-        
-        function manualRoll() {
-            const dice = document.getElementById('dice-result');
-            dice.classList.add('dice');
-            const roll = Math.floor(Math.random() * 6) + 1;
-            dice.textContent = roll;
-            setTimeout(() => dice.classList.remove('dice'), 600);
-            log(`Manual roll: ${roll}`);
-        }
-        
-        function nextTurn() {
-            turn++;
-             document.getElementById('turn-counter').textContent = turn;
+    <div class="stat dice-display" id="dice-display"></div>
+  </div>
+  <div class="phase-indicator" id="phase-label">—</div>
+  <div class="stat-group">
+    <div class="stat"><span class="lbl">AI RESOURCES</span><span class="val" id="ai-resource-count">0</span></div>
+    <div class="stat"><span class="lbl">TURN</span><span class="val" id="turn-count">1</span></div>
+  </div>
+</div>
 
-            log(`Turn ${turn} started`);
+<!-- PLAYER BATTLEFIELD (already in battlefield grid above) -->
+
+<!-- PLAYER HAND -->
+<div class="player-zone player-zone-human">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span class="zone-label">🛡 Your Hand</span>
+    <div class="stat"><span class="lbl">DECK</span><span class="val" id="player-deck-count">50</span></div>
+  </div>
+  <div class="hand-row" id="player-hand"></div>
+</div>
+
+<!-- ACTION ROW -->
+<div class="action-row">
+  <button class="action-btn primary" id="btn-attack" onclick="declareAttack()" disabled>⚔ Attack</button>
+  <button class="action-btn" id="btn-next-phase" onclick="nextPhase()">Next Phase ▶</button>
+  <button class="action-btn" id="btn-pass" onclick="passToAI()" disabled>Pass Turn</button>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- LOG TOGGLE -->
+
+<button class="log-toggle" id="log-toggle" onclick="toggleLog()" style="display:none">📜 Log</button>
+
+<!-- LOG PANEL -->
+
+<div class="log-panel" id="log-panel">
+  <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-light);margin-bottom:8px;letter-spacing:2px;">COMBAT LOG</div>
+  <div id="log-entries"></div>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2 id="modal-title"></h2>
+    <p id="modal-body"></p>
+    <button class="btn" id="modal-btn" onclick="closeModal()">Continue</button>
+  </div>
+</div>
+
+<script>
+// =============================================
+//  CARD DATABASE — 50 unique custom cards
+// =============================================
+const ALL_CARDS = [
+  // CREATURES (cost, power, toughness, deathtouch=true by default, ability)
+  {id:1, name:"Ashborn Warden",    type:"Creature",  subtype:"Spirit",  color:"void",  cost:1, power:1, toughness:2, emoji:"👻", text:"Whenever ~ blocks, mill target opponent 1."},
+  {id:2, name:"Gravedancer",       type:"Creature",  subtype:"Zombie",  color:"void",  cost:2, power:2, toughness:1, emoji:"💀", text:"When ~ dies, draw a card."},
+  {id:3, name:"Thornback Hulk",    type:"Creature",  subtype:"Beast",   color:"earth", cost:3, power:3, toughness:3, emoji:"🦎", text:"Trample — excess damage mills double."},
+  {id:4, name:"Lava Imp",          type:"Creature",  subtype:"Imp",     color:"fire",  cost:1, power:1, toughness:1, emoji:"😈", text:"Haste. Can attack the turn it's played."},
+  {id:5, name:"Frost Djinn",       type:"Creature",  subtype:"Djinn",   color:"water", cost:4, power:3, toughness:4, emoji:"🧊", text:"When ~ enters, freeze an enemy creature (skip its next attack)."},
+  {id:6, name:"Ironclad Golem",    type:"Creature",  subtype:"Artifact",color:"gold",  cost:5, power:4, toughness:5, emoji:"🤖", text:"Vigilance — can attack without tapping."},
+  {id:7, name:"Venom Cobra",       type:"Creature",  subtype:"Snake",   color:"earth", cost:2, power:1, toughness:1, emoji:"🐍", text:"Double Deathtouch — mill 2 extra on lethal hit."},
+  {id:8, name:"Cursed Wraith",     type:"Creature",  subtype:"Wraith",  color:"void",  cost:3, power:2, toughness:2, emoji:"🌑", text:"When ~ attacks, opponent mills 1 extra."},
+  {id:9, name:"Stonewall Drake",   type:"Creature",  subtype:"Dragon",  color:"earth", cost:4, power:2, toughness:6, emoji:"🐉", text:"Defender. High toughness wall."},
+  {id:10,name:"Blazing Phoenix",   type:"Creature",  subtype:"Bird",    color:"fire",  cost:5, power:4, toughness:3, emoji:"🔥", text:"When ~ dies, return to hand next turn."},
+  {id:11,name:"Tide Serpent",      type:"Creature",  subtype:"Serpent", color:"water", cost:3, power:3, toughness:2, emoji:"🐊", text:"Can only be blocked by other Water creatures."},
+  {id:12,name:"Gilded Sphinx",     type:"Creature",  subtype:"Sphinx",  color:"gold",  cost:6, power:5, toughness:5, emoji:"🦁", text:"When ~ attacks, draw a card."},
+  {id:13,name:"Pestilence Rat",    type:"Creature",  subtype:"Rat",     color:"void",  cost:1, power:1, toughness:1, emoji:"🐀", text:"Whenever another creature dies, put a +1/+1 counter here."},
+  {id:14,name:"Bonecage Ogre",     type:"Creature",  subtype:"Ogre",    color:"earth", cost:4, power:5, toughness:2, emoji:"👹", text:"Berserker — deals combat damage equal to power+2."},
+  {id:15,name:"Storm Elemental",   type:"Creature",  subtype:"Elemental",color:"water",cost:4, power:3, toughness:3, emoji:"⛈", text:"When ~ enters, mill target opponent 3."},
+  {id:16,name:"Ash Revenant",      type:"Creature",  subtype:"Zombie",  color:"fire",  cost:3, power:2, toughness:3, emoji:"🔥", text:"Undying — if this creature dies with no counters, return it to play with a +1/+1 counter."},
+  {id:17,name:"Shadow Thief",      type:"Creature",  subtype:"Rogue",   color:"void",  cost:2, power:2, toughness:1, emoji:"🌘", text:"Unblockable if opponent has ≥5 cards in hand."},
+  {id:18,name:"Magma Goliath",     type:"Creature",  subtype:"Giant",   color:"fire",  cost:7, power:7, toughness:5, emoji:"🌋", text:"When ~ deals damage, mill that many cards."},
+  {id:19,name:"Dunewyrm",          type:"Creature",  subtype:"Worm",    color:"earth", cost:5, power:5, toughness:4, emoji:"🪱", text:"When ~ attacks, it deals 1 damage to each blocker before combat."},
+  {id:20,name:"Mire Witch",        type:"Creature",  subtype:"Witch",   color:"void",  cost:3, power:1, toughness:3, emoji:"🧙", text:"Tap: Mill target opponent 2."},
+  // SPELLS
+  {id:21,name:"Mind Raze",         type:"Instant",   subtype:"",        color:"void",  cost:1, emoji:"🌀", text:"Mill target player 4."},
+  {id:22,name:"Torrential Surge",  type:"Instant",   subtype:"",        color:"water", cost:2, emoji:"🌊", text:"Counter target non-creature spell. Mill caster 3."},
+  {id:23,name:"Searing Bolt",      type:"Instant",   subtype:"",        color:"fire",  cost:2, emoji:"⚡", text:"Deal 3 damage to any target. Excess mills."},
+  {id:24,name:"Undergrowth",       type:"Sorcery",   subtype:"",        color:"earth", cost:2, emoji:"🌿", text:"Draw 2 cards. Mill yourself 1."},
+  {id:25,name:"Voidpulse",         type:"Sorcery",   subtype:"",        color:"void",  cost:3, emoji:"💜", text:"Exile top 5 cards of target opponent's library."},
+  {id:26,name:"Gilded Gift",       type:"Sorcery",   subtype:"",        color:"gold",  cost:3, emoji:"🎁", text:"Draw 3 cards. Save up to 8 resources this turn."},
+  {id:27,name:"Pyroclasm",         type:"Sorcery",   subtype:"",        color:"fire",  cost:4, emoji:"☄️", text:"Deal 2 damage to all creatures. Excess mills."},
+  {id:28,name:"Spectral Drain",    type:"Instant",   subtype:"",        color:"void",  cost:2, emoji:"👁", text:"Destroy target tapped creature. Mill its owner 2."},
+  {id:29,name:"Fog of Ruin",       type:"Instant",   subtype:"",        color:"earth", cost:1, emoji:"🌫", text:"Prevent all combat damage this turn. Mill both players 1."},
+  {id:30,name:"Echo of the Tomb",  type:"Sorcery",   subtype:"",        color:"void",  cost:5, emoji:"⚰️", text:"Return all creatures from all graveyards to the library. Shuffle. Mill opponent 6."},
+  // ENCHANTMENTS
+  {id:31,name:"Hex Brand",         type:"Enchantment",subtype:"Aura",   color:"void",  cost:2, emoji:"🔮", text:"Enchant creature. It mills opponent 1 each turn."},
+  {id:32,name:"Pyre Cloak",        type:"Enchantment",subtype:"Aura",   color:"fire",  cost:1, emoji:"🔥", text:"Enchant creature. It gains +2/+0 and Haste."},
+  {id:33,name:"Shell of Ages",     type:"Enchantment",subtype:"Aura",   color:"earth", cost:2, emoji:"🐢", text:"Enchant creature. It gains +0/+4 and Defender."},
+  {id:34,name:"Tide Weave",        type:"Enchantment",subtype:"Global", color:"water", cost:3, emoji:"🌊", text:"At end of each turn, mill the attacking player 2."},
+  {id:35,name:"Eternal Dusk",      type:"Enchantment",subtype:"Global", color:"void",  cost:4, emoji:"🌒", text:"All creatures get +1/+1. At end of turn, mill all players 1."},
+  // ARTIFACTS & MISC
+  {id:36,name:"Millstone Idol",    type:"Artifact",  subtype:"",        color:"gold",  cost:3, emoji:"🗿", text:"Tap: Mill target player 3."},
+  {id:37,name:"Shard of Eternity", type:"Artifact",  subtype:"",        color:"gold",  cost:2, emoji:"💎", text:"Tap: Add 3 to your resource pool."},
+  {id:38,name:"Gravepact",         type:"Enchantment",subtype:"Global", color:"void",  cost:4, emoji:"📜", text:"Whenever a creature you control dies, mill opponent 2."},
+  {id:39,name:"Tome of Unraveling",type:"Artifact",  subtype:"",        color:"gold",  cost:4, emoji:"📚", text:"Tap: Draw 2 cards and mill yourself 1."},
+  {id:40,name:"Void Mirror",       type:"Artifact",  subtype:"",        color:"void",  cost:5, emoji:"🪞", text:"Tap: Copy the mill effect of any spell just cast. Mill opponent that amount again."},
+  // MORE CREATURES
+  {id:41,name:"Cavernborn Troll",  type:"Creature",  subtype:"Troll",   color:"earth", cost:3, power:3, toughness:4, emoji:"🧌", text:"Regenerate — once per turn, prevent this creature's death."},
+  {id:42,name:"Plague Bat",        type:"Creature",  subtype:"Bat",     color:"void",  cost:2, power:1, toughness:2, emoji:"🦇", text:"Flying — can only be blocked by creatures with Flying."},
+  {id:43,name:"Ember Lynx",        type:"Creature",  subtype:"Cat",     color:"fire",  cost:2, power:2, toughness:2, emoji:"🐱", text:"Whenever ~ deals combat damage, scry 1 (look at top card, mill or keep)."},
+  {id:44,name:"Brine Leviathan",   type:"Creature",  subtype:"Leviathan",color:"water",cost:8, power:8, toughness:8, emoji:"🐋", text:"Can't be countered. When ~ attacks, mill 5."},
+  {id:45,name:"Soul Specter",      type:"Creature",  subtype:"Spirit",  color:"void",  cost:4, power:3, toughness:2, emoji:"🫥", text:"When ~ deals combat damage, opponent mills equal to their hand size."},
+  {id:46,name:"Ridgeback Brute",   type:"Creature",  subtype:"Beast",   color:"earth", cost:2, power:3, toughness:1, emoji:"🦏", text:"Charge — +2/+0 when attacking alone."},
+  {id:47,name:"Cinder Witch",      type:"Creature",  subtype:"Witch",   color:"fire",  cost:3, power:2, toughness:2, emoji:"🧹", text:"Tap: Deal 1 damage to any target. Can activate twice per turn."},
+  {id:48,name:"Gloomhide Stalker", type:"Creature",  subtype:"Horror",  color:"void",  cost:5, power:4, toughness:4, emoji:"🕷", text:"When ~ enters, each opponent mills 4."},
+  {id:49,name:"Runewright",        type:"Creature",  subtype:"Wizard",  color:"gold",  cost:4, power:2, toughness:3, emoji:"📖", text:"Tap: Add 2 to resource pool. Draw a card."},
+  {id:50,name:"Mistborne Assassin",type:"Creature",  subtype:"Rogue",   color:"void",  cost:3, power:3, toughness:1, emoji:"🗡", text:"When ~ deals combat damage to a creature, destroy that creature. Mill opponent 3."},
+];
+
+// =============================================
+//  GAME STATE
+// =============================================
+const DECK_SIZE = 50;
+const HAND_SIZE = 5;
+const DRAW_PER_TURN = 2;
+const BASE_RESOURCES = 6;
+const MAX_SAVE = 6;
+const MILL_PER_TURN = 5;
+
+let G = {};
+
+function mkCard(def) {
+  return {
+    ...def,
+    uid: Math.random().toString(36).slice(2),
+    tapped: false,
+    counters: 0,
+    frozen: false,
+    undying: def.text && def.text.includes("Undying") ? true : false,
+    skipNextAttack: false,
+  };
+}
+
+function shuffled(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildDeck() {
+  return shuffled(ALL_CARDS.map(mkCard));
+}
+
+function startGame() {
+  G = {
+    playerDeck: buildDeck(),
+    aiDeck: buildDeck(),
+    playerHand: [],
+    aiHand: [],
+    playerField: [],
+    aiField: [],
+    playerGrave: [],
+    aiGrave: [],
+    playerRes: 0,
+    aiRes: 0,
+    savedRes: 0,
+    aiSavedRes: 0,
+    turn: 1,
+    phase: "draw", // draw, main, combat, end
+    isPlayerTurn: true,
+    diceRoll: 0,
+    selectedCard: null,
+    attackers: [],
+    blockers: {},  // blocker uid -> attacker uid
+    combatPhase: null, // null, "declare-attackers", "declare-blockers", "resolve"
+    globalEnchants: [],
+    tideWeaveActive: false,
+    eternalDuskActive: false,
+    gravepactActive: false,
+    phoenixPending: null,
+    log: [],
+  };
+
+  // Initial draw
+  for (let i = 0; i < HAND_SIZE; i++) {
+    G.playerHand.push(G.playerDeck.pop());
+    G.aiHand.push(G.aiDeck.pop());
+  }
+
+  document.getElementById('title-screen').classList.remove('active');
+  document.getElementById('game-screen').classList.add('active');
+  document.getElementById('log-toggle').style.display = '';
+
+  log("A new game of Shrinkage begins!", "phase");
+  startPlayerTurn();
+}
+
+// =============================================
+//  PHASES
+// =============================================
+const PHASES = ["draw","main","combat","end"];
+
+function setPhase(p) {
+  G.phase = p;
+  document.getElementById('phase-label').textContent =
+    (G.isPlayerTurn ? "YOUR " : "AI ") + p.toUpperCase();
+  updateUI();
+}
+
+function startPlayerTurn() {
+  G.isPlayerTurn = true;
+  G.attackers = [];
+  G.blockers = {};
+  G.combatPhase = null;
+  document.getElementById('turn-count').textContent = G.turn;
+  log(`— Turn ${G.turn} — Player's turn begins —`, "phase");
+
+  // Discard down to hand size first
+  while (G.playerHand.length > HAND_SIZE) G.playerGrave.push(G.playerHand.pop());
+
+  // Roll die + base resources
+  G.diceRoll = Math.floor(Math.random() * 6) + 1;
+  const newRes = G.diceRoll + BASE_RESOURCES + G.savedRes;
+  G.playerRes = newRes;
+  G.savedRes = 0;
+
+  const dice = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+  document.getElementById('dice-display').textContent = dice[G.diceRoll-1];
+  log(`🎲 Rolled ${G.diceRoll} + 6 base + ${G.savedRes} saved = ${newRes} resources`, "play");
+
+  // Untap all player creatures
+  G.playerField.forEach(c => { c.tapped = false; if (c.frozen) c.frozen = false; });
+
+  // Draw 2
+  drawCards(G.playerDeck, G.playerHand, DRAW_PER_TURN, "player");
+
+  // Phoenix return
+  if (G.phoenixPending === "player") {
+    const ph = G.playerGrave.find(c => c.name === "Blazing Phoenix");
+    if (ph) {
+      G.playerGrave.splice(G.playerGrave.indexOf(ph), 1);
+      G.playerHand.push(ph);
+      log("🔥 Blazing Phoenix rises from the grave!", "play");
+    }
+    G.phoenixPending = null;
+  }
+
+  setPhase("draw");
+  updateUI();
+}
+
+function startAITurn() {
+  G.isPlayerTurn = false;
+  G.attackers = [];
+  G.blockers = {};
+  G.combatPhase = null;
+
+  // Discard down
+  while (G.aiHand.length > HAND_SIZE) G.aiGrave.push(G.aiHand.pop());
+
+  G.turn++;
+  document.getElementById('turn-count').textContent = G.turn;
+  log(`— Turn ${G.turn} — AI's turn begins —`, "phase");
+
+  const die = Math.floor(Math.random() * 6) + 1;
+  const newRes = die + BASE_RESOURCES + G.aiSavedRes;
+  G.aiRes = newRes;
+  G.aiSavedRes = 0;
+  log(`🤖 AI rolled ${die} + 6 base = ${newRes} resources`, "play");
+
+  // Untap AI creatures
+  G.aiField.forEach(c => { c.tapped = false; if (c.frozen) c.frozen = false; });
+
+  // Draw
+  drawCards(G.aiDeck, G.aiHand, DRAW_PER_TURN, "ai");
+
+  setPhase("draw");
+  updateUI();
+
+  setTimeout(aiTakeTurn, 800);
+}
+
+function drawCards(deck, hand, n, who) {
+  for (let i = 0; i < n; i++) {
+    if (deck.length === 0) {
+      checkWin(); return;
+    }
+    hand.push(deck.pop());
+    if (hand.length > HAND_SIZE) {
+      const discard = hand.shift();
+      if (who === "player") G.playerGrave.push(discard);
+      else G.aiGrave.push(discard);
+    }
+  }
+  updateDeckCounts();
+}
+
+// =============================================
+//  NEXT PHASE / PASS
+// =============================================
+function nextPhase() {
+  const phases = ["draw","main","combat","end"];
+  const idx = phases.indexOf(G.phase);
+  if (idx < phases.length - 1) {
+    const next = phases[idx + 1];
+    if (next === "combat") {
+      G.combatPhase = "declare-attackers";
+    }
+    setPhase(next);
+  } else {
+    endTurn();
+  }
+}
+
+function passToAI() {
+  endTurn();
+}
+
+function endTurn() {
+  // Mill 5 for current player
+  if (G.isPlayerTurn) {
+    millPlayer(G.playerDeck, G.playerGrave, MILL_PER_TURN, "You");
+    // Tide Weave
+    if (G.tideWeaveActive) millPlayer(G.playerDeck, G.playerGrave, 2, "You (Tide Weave)");
+    // Save up to 6 resources
+    G.savedRes = Math.min(G.playerRes, MAX_SAVE);
+    G.playerRes = 0;
+    log(`💰 You save ${G.savedRes} resources`, "play");
+    checkWin();
+    setTimeout(startAITurn, 600);
+  } else {
+    millPlayer(G.aiDeck, G.aiGrave, MILL_PER_TURN, "AI");
+    if (G.tideWeaveActive) millPlayer(G.aiDeck, G.aiGrave, 2, "AI (Tide Weave)");
+    G.aiSavedRes = Math.min(G.aiRes, MAX_SAVE);
+    G.aiRes = 0;
+    checkWin();
+    G.turn++;
+    startPlayerTurn();
+  }
+}
+
+// =============================================
+//  MILL
+// =============================================
+function millPlayer(deck, grave, n, name) {
+  const actual = Math.min(n, deck.length);
+  for (let i = 0; i < actual; i++) grave.push(deck.pop());
+  log(`📕 ${name} mills ${actual} card${actual !== 1 ? 's' : ''}. ${deck.length} remain.`, "mill");
+  updateDeckCounts();
+  if (deck.length === 0) checkWin();
+}
+
+function checkWin() {
+  if (G.playerDeck.length === 0 && !G._gameOver) {
+    G._gameOver = true;
+    setTimeout(() => showModal("💀 Defeated!", "Your library has been depleted. The shadows consumed your knowledge. Better luck next ritual.", "Play Again", restartGame), 300);
+  } else if (G.aiDeck.length === 0 && !G._gameOver) {
+    G._gameOver = true;
+    setTimeout(() => showModal("🏆 Victory!", "You have milled the opponent into oblivion! The ritual is complete. You emerge triumphant!", "Play Again", restartGame), 300);
+  }
+}
+
+function restartGame() {
+  G._gameOver = false;
+  startGame();
+}
+
+// =============================================
+//  CARD PLAYING (Player)
+// =============================================
+function selectCard(uid) {
+  if (!G.isPlayerTurn || G.phase !== "main") return;
+  const card = G.playerHand.find(c => c.uid === uid);
+  if (!card) return;
+
+  if (G.selectedCard === uid) {
+    // Play it
+    if (G.playerRes < card.cost) {
+      floatText("Not enough resources!", "var(--crimson)");
+      return;
+    }
+    G.playerRes -= card.cost;
+    G.playerHand = G.playerHand.filter(c => c.uid !== uid);
+    playCard(card, "player");
+    G.selectedCard = null;
+  } else {
+    G.selectedCard = uid;
+    floatText(`${card.name} — Cost: ${card.cost}`, "var(--gold-light)");
+  }
+  updateUI();
+}
+
+function playCard(card, owner) {
+  const isPlayer = owner === "player";
+  const field = isPlayer ? G.playerField : G.aiField;
+  const grave = isPlayer ? G.playerGrave : G.aiGrave;
+  const deckTarget = isPlayer ? G.aiDeck : G.playerDeck;
+  const graveTarget = isPlayer ? G.aiGrave : G.playerGrave;
+  const who = isPlayer ? "You play" : "AI plays";
+
+  log(`${who}: ${card.emoji} ${card.name}`, "play");
+
+  if (card.type === "Creature") {
+    // Handle Haste
+    if (card.text && card.text.includes("Haste")) card.tapped = false;
+    else card.tapped = true; // summoning sickness
+    field.push(card);
+
+    // ETB effects
+    if (card.name === "Frost Djinn") {
+      const targets = isPlayer ? G.aiField : G.playerField;
+      if (targets.length > 0) {
+        targets[0].frozen = true;
+        log(`❄️ Frost Djinn freezes ${targets[0].name}!`, "play");
+      }
+    }
+    if (card.name === "Storm Elemental") {
+      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You");
+    }
+    if (card.name === "Gloomhide Stalker") {
+      millPlayer(deckTarget, graveTarget, 4, isPlayer ? "AI" : "You");
+    }
+  } else if (card.type === "Instant" || card.type === "Sorcery") {
+    applySpellEffect(card, isPlayer);
+    grave.push(card);
+  } else if (card.type === "Enchantment") {
+    if (card.subtype === "Global") {
+      G.globalEnchants.push(card);
+      if (card.name === "Tide Weave") G.tideWeaveActive = true;
+      if (card.name === "Eternal Dusk") {
+        G.eternalDuskActive = true;
+        [...G.playerField,...G.aiField].forEach(c => { c.counters = (c.counters||0)+1; });
+      }
+      if (card.name === "Gravepact") G.gravepactActive = true;
+    } else {
+      grave.push(card); // simplified: aura goes to grave
+    }
+  } else if (card.type === "Artifact") {
+    field.push({...card, isArtifact: true, tapped: false});
+  }
+  updateUI();
+}
+
+function applySpellEffect(card, isPlayer) {
+  const deckTarget = isPlayer ? G.aiDeck : G.playerDeck;
+  const graveTarget = isPlayer ? G.aiGrave : G.playerGrave;
+  const deckSelf = isPlayer ? G.playerDeck : G.aiDeck;
+  const graveSelf = isPlayer ? G.playerGrave : G.aiGrave;
+  const handSelf = isPlayer ? G.playerHand : G.aiHand;
+  const resKey = isPlayer ? "playerRes" : "aiRes";
+
+  switch (card.name) {
+    case "Mind Raze":
+      millPlayer(deckTarget, graveTarget, 4, isPlayer ? "AI" : "You"); break;
+    case "Torrential Surge":
+      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You"); break;
+    case "Searing Bolt":
+      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You"); break;
+    case "Undergrowth":
+      drawCards(deckSelf, handSelf, 2, isPlayer ? "player" : "ai");
+      millPlayer(deckSelf, graveSelf, 1, isPlayer ? "You" : "AI"); break;
+    case "Voidpulse":
+      millPlayer(deckTarget, graveTarget, 5, isPlayer ? "AI" : "You"); break;
+    case "Gilded Gift":
+      drawCards(deckSelf, handSelf, 3, isPlayer ? "player" : "ai"); break;
+    case "Pyroclasm":
+      [...G.playerField,...G.aiField].forEach(c => {
+        if (!c.isArtifact) {
+          c.toughness = (c.toughness||1) - 2;
+          if (c.toughness <= 0) {
+            if (G.playerField.includes(c)) { G.playerField.splice(G.playerField.indexOf(c),1); G.playerGrave.push(c); }
+            else { G.aiField.splice(G.aiField.indexOf(c),1); G.aiGrave.push(c); }
+            log(`💀 ${c.name} destroyed by Pyroclasm`, "combat");
+          }
         }
-        
-        function drawCard() {
-            if (zones.deck.length === 0) return alert("Deck empty!");
-            if (zones.hand.length >= 5) return alert("Hand full (max 5 cards)!");
-            
-            const card = zones.deck.shift();
-            zones.hand.push(card);
-            updateAllZones();
-            log(`Drew ${card.name}`);
+      });
+      millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You"); break;
+    case "Spectral Drain":
+      const tappedEnemy = isPlayer ? G.aiField.find(c=>c.tapped) : G.playerField.find(c=>c.tapped);
+      if (tappedEnemy) {
+        const ef = isPlayer ? G.aiField : G.playerField;
+        const eg = isPlayer ? G.aiGrave : G.playerGrave;
+        ef.splice(ef.indexOf(tappedEnemy), 1);
+        eg.push(tappedEnemy);
+        millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You");
+        log(`💀 Spectral Drain destroys ${tappedEnemy.name}!`, "combat");
+      } break;
+    case "Fog of Ruin":
+      log("🌫 Fog of Ruin — all combat damage prevented this turn!", "play");
+      millPlayer(G.playerDeck, G.playerGrave, 1, "You");
+      millPlayer(G.aiDeck, G.aiGrave, 1, "AI"); break;
+    case "Echo of the Tomb":
+      millPlayer(deckTarget, graveTarget, 6, isPlayer ? "AI" : "You"); break;
+    default:
+      millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You");
+  }
+}
+
+// =============================================
+//  COMBAT (Player)
+// =============================================
+function declareAttack() {
+  if (!G.isPlayerTurn || G.phase !== "combat") return;
+  if (G.combatPhase === "declare-attackers") {
+    // All untapped, non-frozen creatures attack
+    G.attackers = G.playerField
+      .filter(c => !c.tapped && !c.frozen && c.type === "Creature")
+      .map(c => c.uid);
+    if (G.attackers.length === 0) { floatText("No creatures to attack with!", "var(--gold)"); return; }
+    G.attackers.forEach(uid => {
+      const c = G.playerField.find(x=>x.uid===uid);
+      if (c && !(c.text && c.text.includes("Vigilance"))) c.tapped = true;
+    });
+    log(`⚔ You attack with ${G.attackers.length} creature(s)!`, "combat");
+    G.combatPhase = "resolve";
+
+    // Charge bonus
+    G.attackers.forEach(uid => {
+      const c = G.playerField.find(x=>x.uid===uid);
+      if (c && c.text && c.text.includes("Charge") && G.attackers.length === 1) c._chargeBonus = 2;
+      else if (c) c._chargeBonus = 0;
+    });
+
+    // AI blocks automatically
+    aiDeclareBlockers();
+    resolveCombat("player");
+  }
+  updateUI();
+}
+
+function aiDeclareBlockers() {
+  G.blockers = {};
+  const available = [...G.aiField.filter(c => !c.tapped && c.type === "Creature")];
+  const attackers = G.attackers.map(uid => G.playerField.find(c=>c.uid===uid)).filter(Boolean);
+
+  attackers.forEach(atk => {
+    // AI prefers to block with a creature that can survive or tie
+    const blocker = available.find(b =>
+      b.power >= atk.power || b.toughness > atk.power
+    ) || available[0];
+    if (blocker) {
+      G.blockers[blocker.uid] = atk.uid;
+      available.splice(available.indexOf(blocker), 1);
+      blocker.tapped = true;
+    }
+  });
+
+  if (Object.keys(G.blockers).length > 0) {
+    log(`🛡 AI blocks with ${Object.keys(G.blockers).length} creature(s)`, "combat");
+  }
+}
+
+function resolveCombat(turn) {
+  const isPlayer = turn === "player";
+  const attackerField = isPlayer ? G.playerField : G.aiField;
+  const attackerGrave = isPlayer ? G.playerGrave : G.aiGrave;
+  const defField = isPlayer ? G.aiField : G.playerField;
+  const defGrave = isPlayer ? G.aiGrave : G.playerGrave;
+  const defDeck = isPlayer ? G.aiDeck : G.playerDeck;
+  const defGraveArr = isPlayer ? G.aiGrave : G.playerGrave;
+
+  const attackers = G.attackers.map(uid => attackerField.find(c=>c.uid===uid)).filter(Boolean);
+  const blocked = new Set(Object.values(G.blockers));
+
+  attackers.forEach(atk => {
+    const blocker = defField.find(c => G.blockers[c.uid] === atk.uid);
+    const atkPow = (atk.power||0) + (atk.counters||0) + (atk._chargeBonus||0);
+    const atkTou = (atk.toughness||0) + (atk.counters||0);
+
+    if (blocker) {
+      const blkPow = (blocker.power||0) + (blocker.counters||0);
+      const blkTou = (blocker.toughness||0) + (blocker.counters||0);
+
+      // All creatures have deathtouch
+      const atkDies = blkPow >= 1;
+      const blkDies = atkPow >= 1;
+      const excess = Math.max(0, atkPow - blkTou);
+
+      if (atkDies) {
+        log(`💀 ${atk.name} is destroyed by ${blocker.name}`, "combat");
+        // Undying check
+        if (atk.undying && atk.counters === 0) {
+          atk.counters = 1; atk.tapped = false;
+          log(`♻️ ${atk.name} returns with an undying counter!`, "play");
+        } else {
+          attackerField.splice(attackerField.indexOf(atk), 1);
+          attackerGrave.push(atk);
+          if (G.gravepactActive) {
+            const opDeck = isPlayer ? G.aiDeck : G.playerDeck;
+            const opGrave = isPlayer ? G.aiGrave : G.playerGrave;
+            millPlayer(opDeck, opGrave, 2, isPlayer ? "AI" : "You");
+          }
+          if (atk.name === "Blazing Phoenix") G.phoenixPending = turn;
+          if (atk.name === "Pestilence Rat") {}// handled elsewhere
         }
-        
-        function selfShrink() {
-            if (zones.deck.length === 0) return;
-            const card = zones.deck.shift();
-            zones.spoils.push(card);
-            updateAllZones();
-            log(`Self-shrunk ${card.name}`);
+      }
+      if (blkDies) {
+        log(`💀 ${blocker.name} is destroyed by ${atk.name}`, "combat");
+        if (blocker.undying && blocker.counters === 0) {
+          blocker.counters = 1; blocker.tapped = false;
+          log(`♻️ ${blocker.name} returns with an undying counter!`, "play");
+        } else {
+          defField.splice(defField.indexOf(blocker), 1);
+          defGrave.push(blocker);
+          if (G.gravepactActive && !isPlayer) millPlayer(G.aiDeck, G.aiGrave, 2, "AI");
         }
-        
-        function shuffleDeck() {
-            zones.deck.sort(() => Math.random() - 0.5);
-            log("Deck shuffled");
+      }
+
+      // Excess damage mills
+      if (excess > 0) {
+        const trampleMult = atk.text && atk.text.includes("Trample") ? 2 : 1;
+        const millAmt = excess * trampleMult;
+        millPlayer(defDeck, defGraveArr, millAmt, isPlayer ? "AI" : "You");
+        log(`💥 ${excess} excess damage → mills ${millAmt}`, "combat");
+      }
+
+      // Mistborne Assassin
+      if (atk.name === "Mistborne Assassin" && blkDies) {
+        millPlayer(defDeck, defGraveArr, 3, isPlayer ? "AI" : "You");
+      }
+
+    } else if (!blocked.has(atk.uid)) {
+      // Unblocked — deal damage to weaker side (mill)
+      const millAmt = atkPow;
+      millPlayer(defDeck, defGraveArr, millAmt, isPlayer ? "AI" : "You");
+      log(`💥 ${atk.name} attacks unblocked — mills ${millAmt}!`, "combat");
+
+      // Soul Specter
+      if (atk.name === "Soul Specter") {
+        const handSize = isPlayer ? G.aiHand.length : G.playerHand.length;
+        if (handSize > 0) millPlayer(defDeck, defGraveArr, handSize, isPlayer ? "AI" : "You");
+      }
+      // Magma Goliath
+      if (atk.name === "Magma Goliath") {
+        millPlayer(defDeck, defGraveArr, atkPow, isPlayer ? "AI" : "You");
+      }
+      // Ember Lynx scry
+      if (atk.name === "Ember Lynx") {
+        const topDeck = isPlayer ? G.playerDeck : G.aiDeck;
+        if (topDeck.length > 0) {
+          const top = topDeck[topDeck.length-1];
+          log(`🔍 Ember Lynx scries: sees ${top.emoji} ${top.name} (kept)`, "play");
         }
-        
-        function millOpponent(index) {
-            if (opponents[index] > 0) {
-                opponents[index]--;
-                document.getElementById(`opp-deck-${index}`).textContent = opponents[index];
-                log(`Milled 1 from Opponent ${index+1}`);
-                if (opponents[index] === 0) log(`★★★ OPPONENT ${index+1} DECK EMPTY — YOU WIN! ★★★`);
-            }
-        }
-        
-        function log(message) {
-            const logDiv = document.getElementById('log');
-            const entry = document.createElement('div');
-            entry.innerHTML = `• ${message}`;
-            logDiv.appendChild(entry);
-            logDiv.scrollTop = logDiv.scrollHeight;
-        }
-        
-        function handleCSVImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const lines = e.target.result.trim().split('\n');
-                cards = [];
-                for (let i = 1; i < lines.length; i++) {
-                    if (!lines[i].trim()) continue;
-                    const v = lines[i].split(',').map(x => x.trim());
-                    cards.push({
-                        id: Date.now() + i,
-                        name: v[0] || "Card",
-                        type: v[1] || "Soldier",
-                        cost: parseInt(v[2]) || 0,
-                        strength: v[3] || "",
-                        text: v[4] || ""
-                    });
-                }
-                zones.deck = [...cards].sort(() => Math.random() - 0.5);
-                zones.hand = []; zones.battlefield = []; zones.spoils = [];
-                opponents = [50,50,50];
-                resources = 0; turn = 1;
-                updateAllZones();
-                document.getElementById('resource-display').textContent = 0;
-                document.getElementById('turn-counter').textContent = 1;
-                log(`✅ Imported ${cards.length} cards and shuffled deck`);
-            };
-            reader.readAsText(file);
-        }
-        
-        function downloadSampleCSV() {
-            const csv = `name,type,cost,strength,text`;
-            const blob = new Blob([csv], {type: 'text/csv'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'shrinkage-deck.csv';
-            a.click();
-        }
-        
-        function searchDeck() {
-            if (zones.deck.length === 0) return alert("Deck empty!");
-            document.getElementById('search-modal').classList.remove('hidden');
-            filterSearch();
-        }
-        
-        function filterSearch() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const container = document.getElementById('search-results');
-            container.innerHTML = '';
-            
-            const filtered = zones.deck.filter(c => 
-                c.name.toLowerCase().includes(term)
-            );
-            
-            filtered.forEach((card, i) => {
-                const row = document.createElement('div');
-                row.className = 'flex items-center justify-between bg-zinc-800 hover:bg-zinc-700 px-6 py-4 rounded-2xl cursor-pointer';
-                row.innerHTML = `
-                    <div>
-                        <div class="font-medium">${card.name}</div>
-                        <div class="text-xs text-emerald-400">${card.type} • cost ${card.cost}</div>
-                    </div>
-                    <button onclick="event.stopImmediatePropagation(); takeFromSearch(${i});" 
-                            class="bg-emerald-600 px-6 py-2 rounded-2xl text-xs">DRAW TO HAND</button>
-                `;
-                row.onclick = () => takeFromSearch(i);
-                container.appendChild(row);
-            });
-        }
-        
-        function takeFromSearch(index) {
-            if (zones.hand.length >= 5) return alert("Hand full!");
-            const card = zones.deck.splice(index, 1)[0];
-            zones.hand.push(card);
-            updateAllZones();
-            closeSearchModal();
-            log(`Searched & drew ${card.name}`);
-        }
-        
-        function clearAllZones() {
-            if (!confirm("Reset full game?")) return;
-            zones.deck = [...cards];
-            zones.hand = []; zones.battlefield = []; zones.spoils = [];
-            opponents = [50,50,50];
-            resources = 0; turn = 1;
-            document.getElementById('resource-display').textContent = 0;
-            document.getElementById('turn-counter').textContent = 1;
-            document.getElementById('log').innerHTML = '';
-            updateAllZones();
-            log("Game fully reset");
-        }
-        
-        function init() {
-            cards = getSampleCards();
-            zones.deck = [...cards];
-            updateAllZones();
-            document.getElementById('resource-display').textContent = resources;
-            document.getElementById('turn-counter').textContent = turn;
-            log("SHRINKAGE SOLO PRACTICE LOADED");
-            log("• Everything now in ONE tight area");
-            log("• Smaller cards + smaller circles + smaller text");
-            log("• Still perfectly readable from 3 feet away");
-        }
-        
-        window.onload = init;
-    </script>
+      }
+    }
+  });
+
+  G.attackers = [];
+  G.combatPhase = null;
+  updateUI();
+  checkWin();
+}
+
+// =============================================
+//  AI TURN
+// =============================================
+function aiTakeTurn() {
+  if (G._gameOver) return;
+  setPhase("main");
+
+  // AI plays cards greedily: highest cost first that it can afford, prefers creatures
+  const hand = [...G.aiHand].sort((a,b) => b.cost - a.cost);
+  for (const card of hand) {
+    if (G.aiRes >= card.cost) {
+      G.aiRes -= card.cost;
+      G.aiHand.splice(G.aiHand.indexOf(card), 1);
+      playCard(card, "ai");
+      if (G._gameOver) return;
+      // Play at most 2 cards per turn
+      if (G.aiField.length > 5) break;
+    }
+  }
+
+  updateUI();
+
+  // Combat
+  setTimeout(() => {
+    if (G._gameOver) return;
+    setPhase("combat");
+    const aiAttackers = G.aiField.filter(c =>
+      !c.tapped && !c.frozen && c.type === "Creature" && !c.isArtifact
+    );
+    if (aiAttackers.length > 0) {
+      G.attackers = aiAttackers.map(c => c.uid);
+      aiAttackers.forEach(c => {
+        if (!(c.text && c.text.includes("Vigilance"))) c.tapped = true;
+      });
+      log(`🤖 AI attacks with ${aiAttackers.length} creature(s)!`, "combat");
+      // Player auto-blocks (weakest available)
+      aiPlayerAutoBlock(aiAttackers);
+      resolveCombat("ai");
+    }
+
+    if (G._gameOver) return;
+    setTimeout(() => {
+      setPhase("end");
+      endTurn();
+    }, 600);
+  }, 1000);
+}
+
+function aiPlayerAutoBlock(attackers) {
+  G.blockers = {};
+  const available = [...G.playerField.filter(c => !c.tapped && c.type === "Creature")];
+  attackers.forEach(atk => {
+    const blocker = available.find(b => b.power >= atk.power) || available[0];
+    if (blocker) {
+      G.blockers[blocker.uid] = atk.uid;
+      available.splice(available.indexOf(blocker), 1);
+      blocker.tapped = true;
+      log(`🛡 You auto-block ${atk.name} with ${blocker.name}`, "combat");
+    }
+  });
+}
+
+// =============================================
+//  UI RENDERING
+// =============================================
+function renderCard(card, zone, isPlayer) {
+  const el = document.createElement("div");
+  el.className = "card";
+  el.dataset.color = card.color;
+  if (card.tapped) el.classList.add("tapped");
+  if (G.selectedCard === card.uid) el.classList.add("selected");
+  if (G.attackers.includes(card.uid)) el.classList.add("attacking");
+  if (Object.keys(G.blockers).includes(card.uid)) el.classList.add("blocking");
+
+  if (zone === "hand" && !isPlayer) {
+    // Show card back for AI hand
+    el.style.background = "linear-gradient(135deg,#1a0a00,#3d1a0a)";
+    el.innerHTML = `<div class="card-frame"><div class="card-art">📜</div></div>`;
+    return el;
+  }
+
+  const pt = card.type === "Creature"
+    ? `<div class="card-pt">${(card.power||0)+(card.counters||0)}/${(card.toughness||0)+(card.counters||0)}</div>`
+    : '';
+
+  el.innerHTML = `
+    <div class="card-frame">
+      <div class="card-title-bar">
+        <span class="card-name">${card.emoji} ${card.name}</span>
+        <span class="card-cost">${card.cost}</span>
+      </div>
+      <div class="card-art">${card.emoji}</div>
+      <div class="card-type-bar">${card.type}${card.subtype ? ' — '+card.subtype : ''}</div>
+      <div class="card-text-box">${card.text}</div>
+      ${pt}
+    </div>`;
+
+  if (zone === "hand" && isPlayer) {
+    el.addEventListener("click", () => selectCard(card.uid));
+  }
+  return el;
+}
+
+function renderField(cards, containerId, isPlayer) {
+  const el = document.getElementById(containerId);
+  // Keep label
+  const label = el.querySelector('.zone-label');
+  el.innerHTML = '';
+  if (label) el.appendChild(label);
+  else {
+    const lbl = document.createElement('span');
+    lbl.className = 'zone-label';
+    lbl.style.width = '100%';
+    lbl.style.marginBottom = '4px';
+    lbl.textContent = isPlayer ? '🛡 Your Field' : '⚔ AI Field';
+    el.appendChild(lbl);
+  }
+  cards.forEach(c => el.appendChild(renderCard(c, "field", isPlayer)));
+}
+
+function renderHand(cards, containerId, isPlayer) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  cards.forEach(c => el.appendChild(renderCard(c, "hand", isPlayer)));
+}
+
+function renderResourceDots() {
+  const el = document.getElementById('resource-dots');
+  el.innerHTML = '';
+  const max = 12;
+  for (let i = 0; i < max; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i >= G.playerRes ? ' spent' : '');
+    el.appendChild(d);
+  }
+}
+
+function updateDeckCounts() {
+  document.getElementById('player-deck-count').textContent = G.playerDeck.length;
+  document.getElementById('ai-deck-count').textContent = G.aiDeck.length;
+}
+
+function updateUI() {
+  if (!G.playerDeck) return;
+  renderHand(G.playerHand, "player-hand", true);
+  renderHand(G.aiHand, "ai-hand", false);
+  renderField(G.playerField, "player-battlefield", true);
+  renderField(G.aiField, "ai-battlefield", false);
+  renderResourceDots();
+  document.getElementById('resource-count').textContent = G.playerRes;
+  document.getElementById('ai-resource-count').textContent = G.aiRes;
+  updateDeckCounts();
+
+  // Button states
+  const canAttack = G.isPlayerTurn && G.phase === "combat" &&
+    G.combatPhase === "declare-attackers" &&
+    G.playerField.some(c => !c.tapped && !c.frozen && c.type === "Creature");
+  document.getElementById('btn-attack').disabled = !canAttack;
+  document.getElementById('btn-pass').disabled = !G.isPlayerTurn;
+  document.getElementById('btn-next-phase').disabled = !G.isPlayerTurn;
+}
+
+// =============================================
+//  LOG
+// =============================================
+function log(msg, type="play") {
+  G.log.push({msg, type});
+  const el = document.getElementById('log-entries');
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
+  entry.textContent = msg;
+  el.appendChild(entry);
+  el.scrollTop = el.scrollHeight;
+}
+
+function toggleLog() {
+  document.getElementById('log-panel').classList.toggle('open');
+}
+
+// =============================================
+//  MODAL
+// =============================================
+function showModal(title, body, btnText, cb) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal-btn').textContent = btnText;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-btn').onclick = () => { closeModal(); if(cb) cb(); };
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// =============================================
+//  FLOATING TEXT
+// =============================================
+function floatText(msg, color) {
+  const el = document.createElement('div');
+  el.className = 'floating-text';
+  el.textContent = msg;
+  el.style.color = color;
+  el.style.left = (window.innerWidth/2 - 100) + 'px';
+  el.style.top = (window.innerHeight/2) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+</script>
+
 </body>
 </html>
