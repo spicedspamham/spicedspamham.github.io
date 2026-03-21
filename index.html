@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -20,18 +19,18 @@
     --card-h: 168px;
   }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-background: #0d1a0d;
-background-image:
-radial-gradient(ellipse at 20% 50%, rgba(26,92,26,0.15) 0%, transparent 50%),
-radial-gradient(ellipse at 80% 50%, rgba(10,40,60,0.2) 0%, transparent 50%),
-url(“data:image/svg+xml,%3Csvg width=‘60’ height=‘60’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Crect width=‘60’ height=‘60’ fill=‘none’/%3E%3Ccircle cx=‘30’ cy=‘30’ r=‘1’ fill=‘rgba(200,147,42,0.08)’/%3E%3C/svg%3E”);
-font-family: ‘EB Garamond’, serif;
-color: var(–parchment);
-min-height: 100vh;
-overflow-x: hidden;
+  background: #0d1a0d;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(26,92,26,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(10,40,60,0.2) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='60' height='60' fill='none'/%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(200,147,42,0.08)'/%3E%3C/svg%3E");
+  font-family: 'EB Garamond', serif;
+  color: var(--parchment);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ========= SCREENS ========= */
@@ -40,672 +39,656 @@ overflow-x: hidden;
 
 /* ========= TITLE SCREEN ========= */
 #title-screen {
-flex-direction: column;
-align-items: center;
-justify-content: center;
-text-align: center;
-padding: 40px 20px;
-position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  position: relative;
 }
 
 .title-art {
-font-size: 90px;
-margin-bottom: 10px;
-filter: drop-shadow(0 0 30px rgba(200,147,42,0.5));
-animation: float 4s ease-in-out infinite;
+  font-size: 90px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 30px rgba(200,147,42,0.5));
+  animation: float 4s ease-in-out infinite;
 }
 
 @keyframes float {
-0%,100% { transform: translateY(0); }
-50% { transform: translateY(-12px); }
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 h1.game-title {
-font-family: ‘Cinzel Decorative’, serif;
-font-size: clamp(36px, 8vw, 72px);
-color: var(–gold-light);
-text-shadow: 0 0 40px rgba(200,147,42,0.7), 2px 2px 0 var(–ink);
-letter-spacing: 4px;
-margin-bottom: 8px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(36px, 8vw, 72px);
+  color: var(--gold-light);
+  text-shadow: 0 0 40px rgba(200,147,42,0.7), 2px 2px 0 var(--ink);
+  letter-spacing: 4px;
+  margin-bottom: 8px;
 }
 
 .subtitle {
-font-family: ‘Cinzel’, serif;
-font-size: 14px;
-color: var(–parchment-dark);
-letter-spacing: 3px;
-margin-bottom: 50px;
-opacity: 0.8;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--parchment-dark);
+  letter-spacing: 3px;
+  margin-bottom: 50px;
+  opacity: 0.8;
 }
 
 .rulebox {
-background: rgba(245,233,200,0.07);
-border: 1px solid rgba(200,147,42,0.3);
-border-radius: 4px;
-padding: 24px 32px;
-max-width: 520px;
-margin-bottom: 40px;
-text-align: left;
-font-size: 15px;
-line-height: 1.7;
+  background: rgba(245,233,200,0.07);
+  border: 1px solid rgba(200,147,42,0.3);
+  border-radius: 4px;
+  padding: 24px 32px;
+  max-width: 520px;
+  margin-bottom: 40px;
+  text-align: left;
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .rulebox h3 {
-font-family: ‘Cinzel’, serif;
-color: var(–gold-light);
-font-size: 13px;
-letter-spacing: 2px;
-margin-bottom: 12px;
-text-align: center;
+  font-family: 'Cinzel', serif;
+  color: var(--gold-light);
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .rulebox ul { list-style: none; }
 .rulebox li { padding: 3px 0; }
-.rulebox li::before { content: ’⚔ ’; color: var(–gold); }
+.rulebox li::before { content: '\2694 '; color: var(--gold); }
 
 .btn {
-font-family: ‘Cinzel’, serif;
-font-size: 16px;
-letter-spacing: 2px;
-padding: 14px 40px;
-background: linear-gradient(135deg, #7a4a10, #c8932a, #7a4a10);
-color: var(–parchment);
-border: 2px solid var(–gold);
-cursor: pointer;
-text-transform: uppercase;
-position: relative;
-overflow: hidden;
-transition: all 0.2s;
-clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  padding: 14px 40px;
+  background: linear-gradient(135deg, #7a4a10, #c8932a, #7a4a10);
+  color: var(--parchment);
+  border: 2px solid var(--gold);
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
 }
 
 .btn:hover {
-background: linear-gradient(135deg, #c8932a, #f0c050, #c8932a);
-color: var(–ink);
-transform: translateY(-2px);
-box-shadow: 0 8px 30px rgba(200,147,42,0.4);
+  background: linear-gradient(135deg, #c8932a, #f0c050, #c8932a);
+  color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,147,42,0.4);
 }
 
 /* ========= GAME SCREEN ========= */
 #game-screen {
-flex-direction: column;
-padding: 0;
-height: 100vh;
-overflow: hidden;
+  flex-direction: column;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .game-layout {
-display: grid;
-grid-template-rows: auto 1fr auto 1fr auto;
-height: 100vh;
-gap: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto 1fr auto;
+  height: 100vh;
+  gap: 0;
 }
 
 /* ========= ZONES ========= */
 .player-zone {
-padding: 8px 16px;
-display: flex;
-flex-direction: column;
-gap: 6px;
-position: relative;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
 }
 
 .ai-zone { background: rgba(139,26,26,0.08); border-bottom: 1px solid rgba(200,147,42,0.15); }
 .player-zone-human { background: rgba(26,92,92,0.08); border-top: 1px solid rgba(200,147,42,0.15); }
 
 .zone-label {
-font-family: ‘Cinzel’, serif;
-font-size: 11px;
-letter-spacing: 2px;
-color: var(–gold);
-opacity: 0.7;
-text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  opacity: 0.7;
+  text-transform: uppercase;
 }
 
 .hand-row {
-display: flex;
-gap: 6px;
-flex-wrap: wrap;
-min-height: 50px;
-align-items: center;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-height: 50px;
+  align-items: center;
 }
 
 /* ========= BATTLEFIELD ========= */
 .battlefield {
-display: grid;
-grid-template-columns: 1fr 1fr;
-border-top: 1px solid rgba(200,147,42,0.15);
-border-bottom: 1px solid rgba(200,147,42,0.15);
-background: rgba(0,0,0,0.3);
-position: relative;
-overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid rgba(200,147,42,0.15);
+  border-bottom: 1px solid rgba(200,147,42,0.15);
+  background: rgba(0,0,0,0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .battlefield::after {
-content: ‘’;
-position: absolute;
-inset: 0;
-background: url(“data:image/svg+xml,%3Csvg width=‘200’ height=‘200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cellipse cx=‘100’ cy=‘100’ rx=‘90’ ry=‘90’ fill=‘none’ stroke=‘rgba(200,147,42,0.05)’ stroke-width=‘2’/%3E%3C/svg%3E”) center/contain no-repeat;
-pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cellipse cx='100' cy='100' rx='90' ry='90' fill='none' stroke='rgba(200,147,42,0.05)' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+  pointer-events: none;
 }
 
 .bf-side {
-padding: 8px 12px;
-display: flex;
-flex-wrap: wrap;
-gap: 6px;
-align-content: flex-start;
-min-height: 100px;
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+  min-height: 100px;
 }
 
 .bf-side.ai-bf { border-right: 1px solid rgba(200,147,42,0.1); }
 
 /* ========= STATS BAR ========= */
 .stats-bar {
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 8px 16px;
-background: rgba(26,10,0,0.8);
-border: none;
-flex-wrap: wrap;
-gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(26,10,0,0.8);
+  border: none;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .stat-group {
-display: flex;
-gap: 16px;
-align-items: center;
-flex-wrap: wrap;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .stat {
-font-family: ‘Cinzel’, serif;
-font-size: 12px;
-letter-spacing: 1px;
-display: flex;
-align-items: center;
-gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .stat .val {
-font-size: 18px;
-font-weight: 700;
-color: var(–gold-light);
-min-width: 28px;
-text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-light);
+  min-width: 28px;
+  text-align: center;
 }
 
 .stat .lbl { color: rgba(245,233,200,0.5); font-size: 10px; }
 
 .phase-indicator {
-font-family: ‘Cinzel’, serif;
-font-size: 11px;
-letter-spacing: 2px;
-padding: 4px 12px;
-border: 1px solid var(–gold);
-color: var(–gold-light);
-background: rgba(200,147,42,0.1);
-text-transform: uppercase;
-white-space: nowrap;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 4px 12px;
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  background: rgba(200,147,42,0.1);
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* ========= CARDS ========= */
 .card {
-width: var(–card-w);
-height: var(–card-h);
-border-radius: 8px;
-border: 2px solid var(–gold);
-cursor: pointer;
-position: relative;
-overflow: hidden;
-transition: transform 0.15s, box-shadow 0.15s;
-flex-shrink: 0;
-display: flex;
-flex-direction: column;
-font-size: 9px;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 8px;
+  border: 2px solid var(--gold);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 9px;
 }
 
 .card:hover:not(.tapped):not(.enemy-card) {
-transform: translateY(-8px) scale(1.05);
-box-shadow: 0 12px 30px rgba(200,147,42,0.5);
-z-index: 10;
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(200,147,42,0.5);
+  z-index: 10;
 }
 
 .card.tapped {
-transform: rotate(90deg);
-opacity: 0.7;
-margin: 8px;
+  transform: rotate(90deg);
+  opacity: 0.7;
+  margin: 8px;
 }
 
 .card.selected {
-box-shadow: 0 0 0 3px var(–gold-light), 0 0 20px rgba(240,192,80,0.6);
-transform: translateY(-12px) scale(1.08);
-z-index: 10;
+  box-shadow: 0 0 0 3px var(--gold-light), 0 0 20px rgba(240,192,80,0.6);
+  transform: translateY(-12px) scale(1.08);
+  z-index: 10;
 }
 
 .card.attacking { box-shadow: 0 0 0 3px #ff4444, 0 0 20px rgba(255,68,68,0.5); }
 .card.blocking { box-shadow: 0 0 0 3px #44aaff, 0 0 20px rgba(68,170,255,0.5); }
 
-.card-inner {
-height: 100%;
-display: flex;
-flex-direction: column;
-}
-
 .card-frame {
-height: 100%;
-display: flex;
-flex-direction: column;
-padding: 4px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
 }
 
 .card-title-bar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 2px 3px;
-background: rgba(0,0,0,0.5);
-border-radius: 3px 3px 0 0;
-margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 3px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 3px 3px 0 0;
+  margin-bottom: 2px;
 }
 
 .card-name {
-font-family: ‘Cinzel’, serif;
-font-size: 8px;
-font-weight: 600;
-color: #fff;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-max-width: 70px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
 }
 
 .card-cost {
-font-family: ‘Cinzel’, serif;
-font-size: 10px;
-font-weight: 700;
-background: rgba(200,147,42,0.8);
-color: #fff;
-border-radius: 50%;
-width: 16px;
-height: 16px;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(200,147,42,0.8);
+  color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .card-art {
-flex: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 36px;
-overflow: hidden;
-border-radius: 2px;
-background: rgba(0,0,0,0.2);
-margin: 0 1px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.2);
+  margin: 0 1px;
 }
 
 .card-type-bar {
-background: rgba(0,0,0,0.5);
-padding: 1px 3px;
-font-family: ‘Cinzel’, serif;
-font-size: 7px;
-color: rgba(245,233,200,0.7);
-text-align: center;
-margin: 2px 0;
-letter-spacing: 0.5px;
+  background: rgba(0,0,0,0.5);
+  padding: 1px 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  color: rgba(245,233,200,0.7);
+  text-align: center;
+  margin: 2px 0;
+  letter-spacing: 0.5px;
 }
 
 .card-text-box {
-background: rgba(245,233,200,0.9);
-color: var(–ink);
-padding: 3px 4px;
-font-size: 7px;
-line-height: 1.3;
-border-radius: 2px;
-flex: 1;
-overflow: hidden;
-font-family: ‘EB Garamond’, serif;
+  background: rgba(245,233,200,0.9);
+  color: var(--ink);
+  padding: 3px 4px;
+  font-size: 7px;
+  line-height: 1.3;
+  border-radius: 2px;
+  flex: 1;
+  overflow: hidden;
+  font-family: 'EB Garamond', serif;
 }
 
 .card-pt {
-background: rgba(0,0,0,0.7);
-color: var(–gold-light);
-font-family: ‘Cinzel’, serif;
-font-size: 9px;
-font-weight: 700;
-text-align: right;
-padding: 1px 3px;
-border-radius: 0 0 3px 3px;
-margin-top: 1px;
+  background: rgba(0,0,0,0.7);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: right;
+  padding: 1px 3px;
+  border-radius: 0 0 3px 3px;
+  margin-top: 1px;
 }
 
 /* card color themes */
-.card[data-color=“fire”] { background: linear-gradient(160deg, #3d0a0a 0%, #6b1a0a 60%, #3d0a0a 100%); border-color: #c84040; }
-.card[data-color=“water”] { background: linear-gradient(160deg, #0a1a3d 0%, #0a3d6b 60%, #0a1a3d 100%); border-color: #4080c8; }
-.card[data-color=“earth”] { background: linear-gradient(160deg, #1a2a0a 0%, #3d5c1a 60%, #1a2a0a 100%); border-color: #70a030; }
-.card[data-color=“void”] { background: linear-gradient(160deg, #1a0a2a 0%, #3d1a5c 60%, #1a0a2a 100%); border-color: #9040c8; }
-.card[data-color=“gold”] { background: linear-gradient(160deg, #2a1a0a 0%, #5c3d0a 60%, #2a1a0a 100%); border-color: #c8932a; }
+.card[data-color="fire"]  { background: linear-gradient(160deg, #3d0a0a 0%, #6b1a0a 60%, #3d0a0a 100%); border-color: #c84040; }
+.card[data-color="water"] { background: linear-gradient(160deg, #0a1a3d 0%, #0a3d6b 60%, #0a1a3d 100%); border-color: #4080c8; }
+.card[data-color="earth"] { background: linear-gradient(160deg, #1a2a0a 0%, #3d5c1a 60%, #1a2a0a 100%); border-color: #70a030; }
+.card[data-color="void"]  { background: linear-gradient(160deg, #1a0a2a 0%, #3d1a5c 60%, #1a0a2a 100%); border-color: #9040c8; }
+.card[data-color="gold"]  { background: linear-gradient(160deg, #2a1a0a 0%, #5c3d0a 60%, #2a1a0a 100%); border-color: #c8932a; }
 
 .back-card {
-width: var(–card-w);
-height: var(–card-h);
-border-radius: 8px;
-background: linear-gradient(135deg, #1a0a00 0%, #3d1a0a 50%, #1a0a00 100%);
-border: 2px solid var(–gold);
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 32px;
-flex-shrink: 0;
-filter: brightness(0.7);
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1a0a00 0%, #3d1a0a 50%, #1a0a00 100%);
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+  filter: brightness(0.7);
 }
 
 /* ========= LOG ========= */
 .log-panel {
-position: fixed;
-right: 0;
-top: 0;
-bottom: 0;
-width: 280px;
-background: rgba(13,26,13,0.95);
-border-left: 1px solid rgba(200,147,42,0.2);
-padding: 16px;
-overflow-y: auto;
-transform: translateX(100%);
-transition: transform 0.3s;
-z-index: 100;
-display: flex;
-flex-direction: column;
-gap: 8px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background: rgba(13,26,13,0.95);
+  border-left: 1px solid rgba(200,147,42,0.2);
+  padding: 16px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .log-panel.open { transform: translateX(0); }
 
 .log-entry {
-font-size: 12px;
-line-height: 1.5;
-padding: 4px 8px;
-border-left: 2px solid rgba(200,147,42,0.3);
-color: rgba(245,233,200,0.8);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 4px 8px;
+  border-left: 2px solid rgba(200,147,42,0.3);
+  color: rgba(245,233,200,0.8);
 }
 
 .log-entry.combat { border-left-color: #c84040; }
-.log-entry.mill { border-left-color: #9040c8; }
-.log-entry.play { border-left-color: #70a030; }
-.log-entry.phase { border-left-color: var(–gold); color: var(–gold-light); font-family: ‘Cinzel’, serif; font-size: 11px; }
+.log-entry.mill   { border-left-color: #9040c8; }
+.log-entry.play   { border-left-color: #70a030; }
+.log-entry.phase  { border-left-color: var(--gold); color: var(--gold-light); font-family: 'Cinzel', serif; font-size: 11px; }
 
 .log-toggle {
-position: fixed;
-right: 12px;
-top: 12px;
-z-index: 101;
-background: rgba(26,10,0,0.9);
-border: 1px solid var(–gold);
-color: var(–gold-light);
-font-family: ‘Cinzel’, serif;
-font-size: 11px;
-letter-spacing: 1px;
-padding: 6px 12px;
-cursor: pointer;
-clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  position: fixed;
+  right: 12px;
+  top: 12px;
+  z-index: 101;
+  background: rgba(26,10,0,0.9);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  cursor: pointer;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
 }
 
 /* ========= ACTION BUTTONS ========= */
 .action-row {
-display: flex;
-gap: 8px;
-flex-wrap: wrap;
-padding: 6px 16px;
-background: rgba(26,10,0,0.9);
-border-top: 1px solid rgba(200,147,42,0.2);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 16px;
+  background: rgba(26,10,0,0.9);
+  border-top: 1px solid rgba(200,147,42,0.2);
 }
 
 .action-btn {
-font-family: ‘Cinzel’, serif;
-font-size: 11px;
-letter-spacing: 1px;
-padding: 7px 16px;
-background: rgba(200,147,42,0.15);
-color: var(–parchment);
-border: 1px solid rgba(200,147,42,0.4);
-cursor: pointer;
-text-transform: uppercase;
-transition: all 0.15s;
-clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 7px 16px;
+  background: rgba(200,147,42,0.15);
+  color: var(--parchment);
+  border: 1px solid rgba(200,147,42,0.4);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
 }
 
 .action-btn:hover:not(:disabled) {
-background: rgba(200,147,42,0.35);
-border-color: var(–gold);
-color: var(–gold-light);
+  background: rgba(200,147,42,0.35);
+  border-color: var(--gold);
+  color: var(--gold-light);
 }
 
 .action-btn:disabled {
-opacity: 0.3;
-cursor: not-allowed;
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .action-btn.primary {
-background: linear-gradient(135deg, rgba(139,26,26,0.4), rgba(200,50,50,0.3));
-border-color: #c84040;
+  background: linear-gradient(135deg, rgba(139,26,26,0.4), rgba(200,50,50,0.3));
+  border-color: #c84040;
 }
 
 .action-btn.primary:hover:not(:disabled) {
-background: linear-gradient(135deg, rgba(200,50,50,0.5), rgba(255,80,80,0.4));
-color: #ffaaaa;
+  background: linear-gradient(135deg, rgba(200,50,50,0.5), rgba(255,80,80,0.4));
+  color: #ffaaaa;
 }
 
 /* ========= DICE ========= */
 .dice-display {
-font-size: 28px;
-animation: diceRoll 0.3s ease;
+  font-size: 28px;
+  animation: diceRoll 0.3s ease;
 }
 
 @keyframes diceRoll {
-0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
-50% { transform: rotate(180deg) scale(1.2); }
-100% { transform: rotate(360deg) scale(1); opacity: 1; }
+  0%   { transform: rotate(0deg) scale(0.5); opacity: 0; }
+  50%  { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); opacity: 1; }
 }
 
 /* ========= MODAL ========= */
 .modal-overlay {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.8);
-z-index: 200;
-align-items: center;
-justify-content: center;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-overlay.open { display: flex; }
 
 .modal {
-background: linear-gradient(160deg, #1a0a00, #2a1400);
-border: 2px solid var(–gold);
-border-radius: 8px;
-padding: 32px;
-max-width: 500px;
-width: 90vw;
-text-align: center;
-position: relative;
+  background: linear-gradient(160deg, #1a0a00, #2a1400);
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90vw;
+  text-align: center;
+  position: relative;
 }
 
 .modal h2 {
-font-family: ‘Cinzel Decorative’, serif;
-color: var(–gold-light);
-font-size: 24px;
-margin-bottom: 16px;
+  font-family: 'Cinzel Decorative', serif;
+  color: var(--gold-light);
+  font-size: 24px;
+  margin-bottom: 16px;
 }
 
 .modal p { line-height: 1.7; margin-bottom: 16px; opacity: 0.85; }
 
 /* ========= RESOURCE DOTS ========= */
 .resource-dots {
-display: flex;
-gap: 4px;
-flex-wrap: wrap;
-align-items: center;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .dot {
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: var(–gold-light);
-box-shadow: 0 0 6px rgba(240,192,80,0.6);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  box-shadow: 0 0 6px rgba(240,192,80,0.6);
 }
 
 .dot.spent {
-background: rgba(200,147,42,0.2);
-border: 1px solid rgba(200,147,42,0.3);
-box-shadow: none;
+  background: rgba(200,147,42,0.2);
+  border: 1px solid rgba(200,147,42,0.3);
+  box-shadow: none;
 }
 
 /* ========= ANIMATIONS ========= */
 @keyframes millAnim {
-0% { transform: scale(1) rotate(0deg); opacity: 1; }
-50% { transform: scale(1.3) rotate(15deg); opacity: 0.5; }
-100% { transform: scale(0) rotate(30deg); opacity: 0; }
+  0%   { transform: scale(1) rotate(0deg); opacity: 1; }
+  50%  { transform: scale(1.3) rotate(15deg); opacity: 0.5; }
+  100% { transform: scale(0) rotate(30deg); opacity: 0; }
 }
 
 @keyframes damageFlash {
-0%,100% { background: inherit; }
-50% { background: rgba(200,0,0,0.3); }
+  0%,100% { background: inherit; }
+  50%     { background: rgba(200,0,0,0.3); }
 }
 
-.mill-flash { animation: millAnim 0.5s forwards; }
+.mill-flash   { animation: millAnim 0.5s forwards; }
 .damage-flash { animation: damageFlash 0.4s ease 2; }
 
 .floating-text {
-position: fixed;
-font-family: ‘Cinzel’, serif;
-font-size: 20px;
-font-weight: 700;
-pointer-events: none;
-z-index: 999;
-animation: floatUp 1.2s forwards;
+  position: fixed;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 999;
+  animation: floatUp 1.2s forwards;
 }
 
 @keyframes floatUp {
-0% { transform: translateY(0); opacity: 1; }
-100% { transform: translateY(-80px); opacity: 0; }
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-80px); opacity: 0; }
 }
 
 /* ========= RESPONSIVE ========= */
 @media (max-width: 600px) {
-:root { –card-w: 90px; –card-h: 126px; }
-.card-name { max-width: 52px; font-size: 7px; }
-.card-art { font-size: 26px; }
-.card-text-box { font-size: 6px; }
-.stats-bar { font-size: 10px; }
+  :root { --card-w: 90px; --card-h: 126px; }
+  .card-name    { max-width: 52px; font-size: 7px; }
+  .card-art     { font-size: 26px; }
+  .card-text-box { font-size: 6px; }
+  .stats-bar    { font-size: 10px; }
 }
 </style>
-
 </head>
 <body>
 
 <!-- TITLE SCREEN -->
-
 <div id="title-screen" class="screen active">
-  <div class="title-art">📜</div>
+  <div class="title-art">&#x1F4DC;</div>
   <h1 class="game-title">SHRINKAGE</h1>
   <p class="subtitle">An MTG Variant by Joseph DeSantis</p>
   <div class="rulebox">
     <h3>Quick Rules</h3>
     <ul>
-      <li>50-card singleton decks — deplete your opponent's library to win</li>
+      <li>50-card singleton decks &mdash; deplete your opponent's library to win</li>
       <li>Max hand size 5, draw 2 per turn, discard at turn start</li>
       <li>Roll a d6 + 6 base = up to 12 resource points; save up to 6</li>
-      <li>All creatures have Deathtouch — excess damage mills opponent</li>
+      <li>All creatures have Deathtouch &mdash; excess damage mills opponent</li>
       <li>Mill 5 cards at the end of each of your turns</li>
-      <li>No colors — use converted mana cost as resource cost</li>
+      <li>No colors &mdash; use converted mana cost as resource cost</li>
     </ul>
   </div>
   <button class="btn" onclick="startGame()">Begin the Ritual</button>
 </div>
 
 <!-- GAME SCREEN -->
-
 <div id="game-screen" class="screen">
   <div class="game-layout">
 
-```
-<!-- AI ZONE -->
-<div class="player-zone ai-zone">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span class="zone-label">⚔ Opponent — Hand</span>
-    <div class="stat"><span class="lbl">DECK</span><span class="val" id="ai-deck-count">50</span></div>
-  </div>
-  <div class="hand-row" id="ai-hand"></div>
-</div>
-
-<!-- AI BATTLEFIELD -->
-<div class="battlefield">
-  <div class="bf-side ai-bf" id="ai-battlefield">
-    <span class="zone-label" style="width:100%;margin-bottom:4px;">⚔ AI Field</span>
-  </div>
-  <div class="bf-side" id="player-battlefield">
-    <span class="zone-label" style="width:100%;margin-bottom:4px;">🛡 Your Field</span>
-  </div>
-</div>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stat-group">
-    <div class="stat">
-      <span class="lbl">YOUR RESOURCES</span>
-      <div class="resource-dots" id="resource-dots"></div>
-      <span class="val" id="resource-count">0</span>
+    <!-- AI ZONE -->
+    <div class="player-zone ai-zone">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="zone-label">&#x2694; Opponent &mdash; Hand</span>
+        <div class="stat"><span class="lbl">DECK</span><span class="val" id="ai-deck-count">50</span></div>
+      </div>
+      <div class="hand-row" id="ai-hand"></div>
     </div>
-    <div class="stat dice-display" id="dice-display"></div>
-  </div>
-  <div class="phase-indicator" id="phase-label">—</div>
-  <div class="stat-group">
-    <div class="stat"><span class="lbl">AI RESOURCES</span><span class="val" id="ai-resource-count">0</span></div>
-    <div class="stat"><span class="lbl">TURN</span><span class="val" id="turn-count">1</span></div>
-  </div>
-</div>
 
-<!-- PLAYER BATTLEFIELD (already in battlefield grid above) -->
+    <!-- BATTLEFIELD -->
+    <div class="battlefield">
+      <div class="bf-side ai-bf" id="ai-battlefield">
+        <span class="zone-label" style="width:100%;margin-bottom:4px;">&#x2694; AI Field</span>
+      </div>
+      <div class="bf-side" id="player-battlefield">
+        <span class="zone-label" style="width:100%;margin-bottom:4px;">&#x1F6E1; Your Field</span>
+      </div>
+    </div>
 
-<!-- PLAYER HAND -->
-<div class="player-zone player-zone-human">
-  <div style="display:flex;justify-content:space-between;align-items:center;">
-    <span class="zone-label">🛡 Your Hand</span>
-    <div class="stat"><span class="lbl">DECK</span><span class="val" id="player-deck-count">50</span></div>
-  </div>
-  <div class="hand-row" id="player-hand"></div>
-</div>
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+      <div class="stat-group">
+        <div class="stat">
+          <span class="lbl">YOUR RESOURCES</span>
+          <div class="resource-dots" id="resource-dots"></div>
+          <span class="val" id="resource-count">0</span>
+        </div>
+        <div class="stat dice-display" id="dice-display"></div>
+      </div>
+      <div class="phase-indicator" id="phase-label">&mdash;</div>
+      <div class="stat-group">
+        <div class="stat"><span class="lbl">AI RESOURCES</span><span class="val" id="ai-resource-count">0</span></div>
+        <div class="stat"><span class="lbl">TURN</span><span class="val" id="turn-count">1</span></div>
+      </div>
+    </div>
 
-<!-- ACTION ROW -->
-<div class="action-row">
-  <button class="action-btn primary" id="btn-attack" onclick="declareAttack()" disabled>⚔ Attack</button>
-  <button class="action-btn" id="btn-next-phase" onclick="nextPhase()">Next Phase ▶</button>
-  <button class="action-btn" id="btn-pass" onclick="passToAI()" disabled>Pass Turn</button>
-</div>
-```
+    <!-- PLAYER HAND -->
+    <div class="player-zone player-zone-human">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="zone-label">&#x1F6E1; Your Hand</span>
+        <div class="stat"><span class="lbl">DECK</span><span class="val" id="player-deck-count">50</span></div>
+      </div>
+      <div class="hand-row" id="player-hand"></div>
+    </div>
+
+    <!-- ACTION ROW -->
+    <div class="action-row">
+      <button class="action-btn primary" id="btn-attack" onclick="declareAttack()" disabled>&#x2694; Attack</button>
+      <button class="action-btn" id="btn-next-phase" onclick="nextPhase()">Next Phase &#x25B6;</button>
+      <button class="action-btn" id="btn-pass" onclick="passToAI()" disabled>Pass Turn</button>
+    </div>
 
   </div>
 </div>
 
 <!-- LOG TOGGLE -->
-
-<button class="log-toggle" id="log-toggle" onclick="toggleLog()" style="display:none">📜 Log</button>
+<button class="log-toggle" id="log-toggle" onclick="toggleLog()" style="display:none">&#x1F4DC; Log</button>
 
 <!-- LOG PANEL -->
-
 <div class="log-panel" id="log-panel">
   <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-light);margin-bottom:8px;letter-spacing:2px;">COMBAT LOG</div>
   <div id="log-entries"></div>
 </div>
 
 <!-- MODAL -->
-
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <h2 id="modal-title"></h2>
@@ -719,72 +702,72 @@ animation: floatUp 1.2s forwards;
 //  CARD DATABASE — 50 unique custom cards
 // =============================================
 const ALL_CARDS = [
-  // CREATURES (cost, power, toughness, deathtouch=true by default, ability)
-  {id:1, name:"Ashborn Warden",    type:"Creature",  subtype:"Spirit",  color:"void",  cost:1, power:1, toughness:2, emoji:"👻", text:"Whenever ~ blocks, mill target opponent 1."},
-  {id:2, name:"Gravedancer",       type:"Creature",  subtype:"Zombie",  color:"void",  cost:2, power:2, toughness:1, emoji:"💀", text:"When ~ dies, draw a card."},
-  {id:3, name:"Thornback Hulk",    type:"Creature",  subtype:"Beast",   color:"earth", cost:3, power:3, toughness:3, emoji:"🦎", text:"Trample — excess damage mills double."},
-  {id:4, name:"Lava Imp",          type:"Creature",  subtype:"Imp",     color:"fire",  cost:1, power:1, toughness:1, emoji:"😈", text:"Haste. Can attack the turn it's played."},
-  {id:5, name:"Frost Djinn",       type:"Creature",  subtype:"Djinn",   color:"water", cost:4, power:3, toughness:4, emoji:"🧊", text:"When ~ enters, freeze an enemy creature (skip its next attack)."},
-  {id:6, name:"Ironclad Golem",    type:"Creature",  subtype:"Artifact",color:"gold",  cost:5, power:4, toughness:5, emoji:"🤖", text:"Vigilance — can attack without tapping."},
-  {id:7, name:"Venom Cobra",       type:"Creature",  subtype:"Snake",   color:"earth", cost:2, power:1, toughness:1, emoji:"🐍", text:"Double Deathtouch — mill 2 extra on lethal hit."},
-  {id:8, name:"Cursed Wraith",     type:"Creature",  subtype:"Wraith",  color:"void",  cost:3, power:2, toughness:2, emoji:"🌑", text:"When ~ attacks, opponent mills 1 extra."},
-  {id:9, name:"Stonewall Drake",   type:"Creature",  subtype:"Dragon",  color:"earth", cost:4, power:2, toughness:6, emoji:"🐉", text:"Defender. High toughness wall."},
-  {id:10,name:"Blazing Phoenix",   type:"Creature",  subtype:"Bird",    color:"fire",  cost:5, power:4, toughness:3, emoji:"🔥", text:"When ~ dies, return to hand next turn."},
-  {id:11,name:"Tide Serpent",      type:"Creature",  subtype:"Serpent", color:"water", cost:3, power:3, toughness:2, emoji:"🐊", text:"Can only be blocked by other Water creatures."},
-  {id:12,name:"Gilded Sphinx",     type:"Creature",  subtype:"Sphinx",  color:"gold",  cost:6, power:5, toughness:5, emoji:"🦁", text:"When ~ attacks, draw a card."},
-  {id:13,name:"Pestilence Rat",    type:"Creature",  subtype:"Rat",     color:"void",  cost:1, power:1, toughness:1, emoji:"🐀", text:"Whenever another creature dies, put a +1/+1 counter here."},
-  {id:14,name:"Bonecage Ogre",     type:"Creature",  subtype:"Ogre",    color:"earth", cost:4, power:5, toughness:2, emoji:"👹", text:"Berserker — deals combat damage equal to power+2."},
-  {id:15,name:"Storm Elemental",   type:"Creature",  subtype:"Elemental",color:"water",cost:4, power:3, toughness:3, emoji:"⛈", text:"When ~ enters, mill target opponent 3."},
-  {id:16,name:"Ash Revenant",      type:"Creature",  subtype:"Zombie",  color:"fire",  cost:3, power:2, toughness:3, emoji:"🔥", text:"Undying — if this creature dies with no counters, return it to play with a +1/+1 counter."},
-  {id:17,name:"Shadow Thief",      type:"Creature",  subtype:"Rogue",   color:"void",  cost:2, power:2, toughness:1, emoji:"🌘", text:"Unblockable if opponent has ≥5 cards in hand."},
-  {id:18,name:"Magma Goliath",     type:"Creature",  subtype:"Giant",   color:"fire",  cost:7, power:7, toughness:5, emoji:"🌋", text:"When ~ deals damage, mill that many cards."},
-  {id:19,name:"Dunewyrm",          type:"Creature",  subtype:"Worm",    color:"earth", cost:5, power:5, toughness:4, emoji:"🪱", text:"When ~ attacks, it deals 1 damage to each blocker before combat."},
-  {id:20,name:"Mire Witch",        type:"Creature",  subtype:"Witch",   color:"void",  cost:3, power:1, toughness:3, emoji:"🧙", text:"Tap: Mill target opponent 2."},
+  // CREATURES
+  {id:1,  name:"Ashborn Warden",    type:"Creature",   subtype:"Spirit",   color:"void",  cost:1, power:1, toughness:2, emoji:"\u{1F47B}", text:"Whenever ~ blocks, mill target opponent 1."},
+  {id:2,  name:"Gravedancer",       type:"Creature",   subtype:"Zombie",   color:"void",  cost:2, power:2, toughness:1, emoji:"\u{1F480}", text:"When ~ dies, draw a card."},
+  {id:3,  name:"Thornback Hulk",    type:"Creature",   subtype:"Beast",    color:"earth", cost:3, power:3, toughness:3, emoji:"\u{1F98E}", text:"Trample \u2014 excess damage mills double."},
+  {id:4,  name:"Lava Imp",          type:"Creature",   subtype:"Imp",      color:"fire",  cost:1, power:1, toughness:1, emoji:"\u{1F608}", text:"Haste. Can attack the turn it's played."},
+  {id:5,  name:"Frost Djinn",       type:"Creature",   subtype:"Djinn",    color:"water", cost:4, power:3, toughness:4, emoji:"\u{1F9CA}", text:"When ~ enters, freeze an enemy creature (skip its next attack)."},
+  {id:6,  name:"Ironclad Golem",    type:"Creature",   subtype:"Artifact", color:"gold",  cost:5, power:4, toughness:5, emoji:"\u{1F916}", text:"Vigilance \u2014 can attack without tapping."},
+  {id:7,  name:"Venom Cobra",       type:"Creature",   subtype:"Snake",    color:"earth", cost:2, power:1, toughness:1, emoji:"\u{1F40D}", text:"Double Deathtouch \u2014 mill 2 extra on lethal hit."},
+  {id:8,  name:"Cursed Wraith",     type:"Creature",   subtype:"Wraith",   color:"void",  cost:3, power:2, toughness:2, emoji:"\u{1F311}", text:"When ~ attacks, opponent mills 1 extra."},
+  {id:9,  name:"Stonewall Drake",   type:"Creature",   subtype:"Dragon",   color:"earth", cost:4, power:2, toughness:6, emoji:"\u{1F409}", text:"Defender. High toughness wall."},
+  {id:10, name:"Blazing Phoenix",   type:"Creature",   subtype:"Bird",     color:"fire",  cost:5, power:4, toughness:3, emoji:"\u{1F525}", text:"When ~ dies, return to hand next turn."},
+  {id:11, name:"Tide Serpent",      type:"Creature",   subtype:"Serpent",  color:"water", cost:3, power:3, toughness:2, emoji:"\u{1F40A}", text:"Can only be blocked by other Water creatures."},
+  {id:12, name:"Gilded Sphinx",     type:"Creature",   subtype:"Sphinx",   color:"gold",  cost:6, power:5, toughness:5, emoji:"\u{1F981}", text:"When ~ attacks, draw a card."},
+  {id:13, name:"Pestilence Rat",    type:"Creature",   subtype:"Rat",      color:"void",  cost:1, power:1, toughness:1, emoji:"\u{1F400}", text:"Whenever another creature dies, put a +1/+1 counter here."},
+  {id:14, name:"Bonecage Ogre",     type:"Creature",   subtype:"Ogre",     color:"earth", cost:4, power:5, toughness:2, emoji:"\u{1F479}", text:"Berserker \u2014 deals combat damage equal to power+2."},
+  {id:15, name:"Storm Elemental",   type:"Creature",   subtype:"Elemental",color:"water", cost:4, power:3, toughness:3, emoji:"\u{26C8}",  text:"When ~ enters, mill target opponent 3."},
+  {id:16, name:"Ash Revenant",      type:"Creature",   subtype:"Zombie",   color:"fire",  cost:3, power:2, toughness:3, emoji:"\u{1F525}", text:"Undying \u2014 if this creature dies with no counters, return it to play with a +1/+1 counter."},
+  {id:17, name:"Shadow Thief",      type:"Creature",   subtype:"Rogue",    color:"void",  cost:2, power:2, toughness:1, emoji:"\u{1F318}", text:"Unblockable if opponent has \u22655 cards in hand."},
+  {id:18, name:"Magma Goliath",     type:"Creature",   subtype:"Giant",    color:"fire",  cost:7, power:7, toughness:5, emoji:"\u{1F30B}", text:"When ~ deals damage, mill that many cards."},
+  {id:19, name:"Dunewyrm",          type:"Creature",   subtype:"Worm",     color:"earth", cost:5, power:5, toughness:4, emoji:"\u{1FAB1}", text:"When ~ attacks, it deals 1 damage to each blocker before combat."},
+  {id:20, name:"Mire Witch",        type:"Creature",   subtype:"Witch",    color:"void",  cost:3, power:1, toughness:3, emoji:"\u{1F9D9}", text:"Tap: Mill target opponent 2."},
   // SPELLS
-  {id:21,name:"Mind Raze",         type:"Instant",   subtype:"",        color:"void",  cost:1, emoji:"🌀", text:"Mill target player 4."},
-  {id:22,name:"Torrential Surge",  type:"Instant",   subtype:"",        color:"water", cost:2, emoji:"🌊", text:"Counter target non-creature spell. Mill caster 3."},
-  {id:23,name:"Searing Bolt",      type:"Instant",   subtype:"",        color:"fire",  cost:2, emoji:"⚡", text:"Deal 3 damage to any target. Excess mills."},
-  {id:24,name:"Undergrowth",       type:"Sorcery",   subtype:"",        color:"earth", cost:2, emoji:"🌿", text:"Draw 2 cards. Mill yourself 1."},
-  {id:25,name:"Voidpulse",         type:"Sorcery",   subtype:"",        color:"void",  cost:3, emoji:"💜", text:"Exile top 5 cards of target opponent's library."},
-  {id:26,name:"Gilded Gift",       type:"Sorcery",   subtype:"",        color:"gold",  cost:3, emoji:"🎁", text:"Draw 3 cards. Save up to 8 resources this turn."},
-  {id:27,name:"Pyroclasm",         type:"Sorcery",   subtype:"",        color:"fire",  cost:4, emoji:"☄️", text:"Deal 2 damage to all creatures. Excess mills."},
-  {id:28,name:"Spectral Drain",    type:"Instant",   subtype:"",        color:"void",  cost:2, emoji:"👁", text:"Destroy target tapped creature. Mill its owner 2."},
-  {id:29,name:"Fog of Ruin",       type:"Instant",   subtype:"",        color:"earth", cost:1, emoji:"🌫", text:"Prevent all combat damage this turn. Mill both players 1."},
-  {id:30,name:"Echo of the Tomb",  type:"Sorcery",   subtype:"",        color:"void",  cost:5, emoji:"⚰️", text:"Return all creatures from all graveyards to the library. Shuffle. Mill opponent 6."},
+  {id:21, name:"Mind Raze",         type:"Instant",    subtype:"",         color:"void",  cost:1, emoji:"\u{1F300}", text:"Mill target player 4."},
+  {id:22, name:"Torrential Surge",  type:"Instant",    subtype:"",         color:"water", cost:2, emoji:"\u{1F30A}", text:"Counter target non-creature spell. Mill caster 3."},
+  {id:23, name:"Searing Bolt",      type:"Instant",    subtype:"",         color:"fire",  cost:2, emoji:"\u26A1",    text:"Deal 3 damage to any target. Excess mills."},
+  {id:24, name:"Undergrowth",       type:"Sorcery",    subtype:"",         color:"earth", cost:2, emoji:"\u{1F33F}", text:"Draw 2 cards. Mill yourself 1."},
+  {id:25, name:"Voidpulse",         type:"Sorcery",    subtype:"",         color:"void",  cost:3, emoji:"\u{1F49C}", text:"Exile top 5 cards of target opponent's library."},
+  {id:26, name:"Gilded Gift",       type:"Sorcery",    subtype:"",         color:"gold",  cost:3, emoji:"\u{1F381}", text:"Draw 3 cards. Save up to 8 resources this turn."},
+  {id:27, name:"Pyroclasm",         type:"Sorcery",    subtype:"",         color:"fire",  cost:4, emoji:"\u2604\uFE0F", text:"Deal 2 damage to all creatures. Excess mills."},
+  {id:28, name:"Spectral Drain",    type:"Instant",    subtype:"",         color:"void",  cost:2, emoji:"\u{1F441}", text:"Destroy target tapped creature. Mill its owner 2."},
+  {id:29, name:"Fog of Ruin",       type:"Instant",    subtype:"",         color:"earth", cost:1, emoji:"\u{1F32B}", text:"Prevent all combat damage this turn. Mill both players 1."},
+  {id:30, name:"Echo of the Tomb",  type:"Sorcery",    subtype:"",         color:"void",  cost:5, emoji:"\u26B0\uFE0F", text:"Return all creatures from all graveyards to the library. Shuffle. Mill opponent 6."},
   // ENCHANTMENTS
-  {id:31,name:"Hex Brand",         type:"Enchantment",subtype:"Aura",   color:"void",  cost:2, emoji:"🔮", text:"Enchant creature. It mills opponent 1 each turn."},
-  {id:32,name:"Pyre Cloak",        type:"Enchantment",subtype:"Aura",   color:"fire",  cost:1, emoji:"🔥", text:"Enchant creature. It gains +2/+0 and Haste."},
-  {id:33,name:"Shell of Ages",     type:"Enchantment",subtype:"Aura",   color:"earth", cost:2, emoji:"🐢", text:"Enchant creature. It gains +0/+4 and Defender."},
-  {id:34,name:"Tide Weave",        type:"Enchantment",subtype:"Global", color:"water", cost:3, emoji:"🌊", text:"At end of each turn, mill the attacking player 2."},
-  {id:35,name:"Eternal Dusk",      type:"Enchantment",subtype:"Global", color:"void",  cost:4, emoji:"🌒", text:"All creatures get +1/+1. At end of turn, mill all players 1."},
-  // ARTIFACTS & MISC
-  {id:36,name:"Millstone Idol",    type:"Artifact",  subtype:"",        color:"gold",  cost:3, emoji:"🗿", text:"Tap: Mill target player 3."},
-  {id:37,name:"Shard of Eternity", type:"Artifact",  subtype:"",        color:"gold",  cost:2, emoji:"💎", text:"Tap: Add 3 to your resource pool."},
-  {id:38,name:"Gravepact",         type:"Enchantment",subtype:"Global", color:"void",  cost:4, emoji:"📜", text:"Whenever a creature you control dies, mill opponent 2."},
-  {id:39,name:"Tome of Unraveling",type:"Artifact",  subtype:"",        color:"gold",  cost:4, emoji:"📚", text:"Tap: Draw 2 cards and mill yourself 1."},
-  {id:40,name:"Void Mirror",       type:"Artifact",  subtype:"",        color:"void",  cost:5, emoji:"🪞", text:"Tap: Copy the mill effect of any spell just cast. Mill opponent that amount again."},
+  {id:31, name:"Hex Brand",         type:"Enchantment",subtype:"Aura",     color:"void",  cost:2, emoji:"\u{1F52E}", text:"Enchant creature. It mills opponent 1 each turn."},
+  {id:32, name:"Pyre Cloak",        type:"Enchantment",subtype:"Aura",     color:"fire",  cost:1, emoji:"\u{1F525}", text:"Enchant creature. It gains +2/+0 and Haste."},
+  {id:33, name:"Shell of Ages",     type:"Enchantment",subtype:"Aura",     color:"earth", cost:2, emoji:"\u{1F422}", text:"Enchant creature. It gains +0/+4 and Defender."},
+  {id:34, name:"Tide Weave",        type:"Enchantment",subtype:"Global",   color:"water", cost:3, emoji:"\u{1F30A}", text:"At end of each turn, mill the attacking player 2."},
+  {id:35, name:"Eternal Dusk",      type:"Enchantment",subtype:"Global",   color:"void",  cost:4, emoji:"\u{1F312}", text:"All creatures get +1/+1. At end of turn, mill all players 1."},
+  // ARTIFACTS
+  {id:36, name:"Millstone Idol",    type:"Artifact",   subtype:"",         color:"gold",  cost:3, emoji:"\u{1F5FF}", text:"Tap: Mill target player 3."},
+  {id:37, name:"Shard of Eternity", type:"Artifact",   subtype:"",         color:"gold",  cost:2, emoji:"\u{1F48E}", text:"Tap: Add 3 to your resource pool."},
+  {id:38, name:"Gravepact",         type:"Enchantment",subtype:"Global",   color:"void",  cost:4, emoji:"\u{1F4DC}", text:"Whenever a creature you control dies, mill opponent 2."},
+  {id:39, name:"Tome of Unraveling",type:"Artifact",   subtype:"",         color:"gold",  cost:4, emoji:"\u{1F4DA}", text:"Tap: Draw 2 cards and mill yourself 1."},
+  {id:40, name:"Void Mirror",       type:"Artifact",   subtype:"",         color:"void",  cost:5, emoji:"\u{1FA9E}", text:"Tap: Copy the mill effect of any spell just cast. Mill opponent that amount again."},
   // MORE CREATURES
-  {id:41,name:"Cavernborn Troll",  type:"Creature",  subtype:"Troll",   color:"earth", cost:3, power:3, toughness:4, emoji:"🧌", text:"Regenerate — once per turn, prevent this creature's death."},
-  {id:42,name:"Plague Bat",        type:"Creature",  subtype:"Bat",     color:"void",  cost:2, power:1, toughness:2, emoji:"🦇", text:"Flying — can only be blocked by creatures with Flying."},
-  {id:43,name:"Ember Lynx",        type:"Creature",  subtype:"Cat",     color:"fire",  cost:2, power:2, toughness:2, emoji:"🐱", text:"Whenever ~ deals combat damage, scry 1 (look at top card, mill or keep)."},
-  {id:44,name:"Brine Leviathan",   type:"Creature",  subtype:"Leviathan",color:"water",cost:8, power:8, toughness:8, emoji:"🐋", text:"Can't be countered. When ~ attacks, mill 5."},
-  {id:45,name:"Soul Specter",      type:"Creature",  subtype:"Spirit",  color:"void",  cost:4, power:3, toughness:2, emoji:"🫥", text:"When ~ deals combat damage, opponent mills equal to their hand size."},
-  {id:46,name:"Ridgeback Brute",   type:"Creature",  subtype:"Beast",   color:"earth", cost:2, power:3, toughness:1, emoji:"🦏", text:"Charge — +2/+0 when attacking alone."},
-  {id:47,name:"Cinder Witch",      type:"Creature",  subtype:"Witch",   color:"fire",  cost:3, power:2, toughness:2, emoji:"🧹", text:"Tap: Deal 1 damage to any target. Can activate twice per turn."},
-  {id:48,name:"Gloomhide Stalker", type:"Creature",  subtype:"Horror",  color:"void",  cost:5, power:4, toughness:4, emoji:"🕷", text:"When ~ enters, each opponent mills 4."},
-  {id:49,name:"Runewright",        type:"Creature",  subtype:"Wizard",  color:"gold",  cost:4, power:2, toughness:3, emoji:"📖", text:"Tap: Add 2 to resource pool. Draw a card."},
-  {id:50,name:"Mistborne Assassin",type:"Creature",  subtype:"Rogue",   color:"void",  cost:3, power:3, toughness:1, emoji:"🗡", text:"When ~ deals combat damage to a creature, destroy that creature. Mill opponent 3."},
+  {id:41, name:"Cavernborn Troll",  type:"Creature",   subtype:"Troll",    color:"earth", cost:3, power:3, toughness:4, emoji:"\u{1F9CC}", text:"Regenerate \u2014 once per turn, prevent this creature's death."},
+  {id:42, name:"Plague Bat",        type:"Creature",   subtype:"Bat",      color:"void",  cost:2, power:1, toughness:2, emoji:"\u{1F987}", text:"Flying \u2014 can only be blocked by creatures with Flying."},
+  {id:43, name:"Ember Lynx",        type:"Creature",   subtype:"Cat",      color:"fire",  cost:2, power:2, toughness:2, emoji:"\u{1F431}", text:"Whenever ~ deals combat damage, scry 1 (look at top card, mill or keep)."},
+  {id:44, name:"Brine Leviathan",   type:"Creature",   subtype:"Leviathan",color:"water", cost:8, power:8, toughness:8, emoji:"\u{1F40B}", text:"Can't be countered. When ~ attacks, mill 5."},
+  {id:45, name:"Soul Specter",      type:"Creature",   subtype:"Spirit",   color:"void",  cost:4, power:3, toughness:2, emoji:"\u{1FABB}", text:"When ~ deals combat damage, opponent mills equal to their hand size."},
+  {id:46, name:"Ridgeback Brute",   type:"Creature",   subtype:"Beast",    color:"earth", cost:2, power:3, toughness:1, emoji:"\u{1F98F}", text:"Charge \u2014 +2/+0 when attacking alone."},
+  {id:47, name:"Cinder Witch",      type:"Creature",   subtype:"Witch",    color:"fire",  cost:3, power:2, toughness:2, emoji:"\u{1F9F9}", text:"Tap: Deal 1 damage to any target. Can activate twice per turn."},
+  {id:48, name:"Gloomhide Stalker", type:"Creature",   subtype:"Horror",   color:"void",  cost:5, power:4, toughness:4, emoji:"\u{1F577}", text:"When ~ enters, each opponent mills 4."},
+  {id:49, name:"Runewright",        type:"Creature",   subtype:"Wizard",   color:"gold",  cost:4, power:2, toughness:3, emoji:"\u{1F4D6}", text:"Tap: Add 2 to resource pool. Draw a card."},
+  {id:50, name:"Mistborne Assassin",type:"Creature",   subtype:"Rogue",    color:"void",  cost:3, power:3, toughness:1, emoji:"\u{1F5E1}", text:"When ~ deals combat damage to a creature, destroy that creature. Mill opponent 3."},
 ];
 
 // =============================================
 //  GAME STATE
 // =============================================
-const DECK_SIZE = 50;
-const HAND_SIZE = 5;
-const DRAW_PER_TURN = 2;
+const DECK_SIZE      = 50;
+const HAND_SIZE      = 5;
+const DRAW_PER_TURN  = 2;
 const BASE_RESOURCES = 6;
-const MAX_SAVE = 6;
-const MILL_PER_TURN = 5;
+const MAX_SAVE       = 6;
+const MILL_PER_TURN  = 5;
 
 let G = {};
 
@@ -795,7 +778,7 @@ function mkCard(def) {
     tapped: false,
     counters: 0,
     frozen: false,
-    undying: def.text && def.text.includes("Undying") ? true : false,
+    undying: !!(def.text && def.text.includes("Undying")),
     skipNextAttack: false,
   };
 }
@@ -828,22 +811,22 @@ function startGame() {
     savedRes: 0,
     aiSavedRes: 0,
     turn: 1,
-    phase: "draw", // draw, main, combat, end
+    phase: "draw",
     isPlayerTurn: true,
     diceRoll: 0,
     selectedCard: null,
     attackers: [],
-    blockers: {},  // blocker uid -> attacker uid
-    combatPhase: null, // null, "declare-attackers", "declare-blockers", "resolve"
+    blockers: {},
+    combatPhase: null,
     globalEnchants: [],
     tideWeaveActive: false,
     eternalDuskActive: false,
     gravepactActive: false,
     phoenixPending: null,
     log: [],
+    _gameOver: false,
   };
 
-  // Initial draw
   for (let i = 0; i < HAND_SIZE; i++) {
     G.playerHand.push(G.playerDeck.pop());
     G.aiHand.push(G.aiDeck.pop());
@@ -860,8 +843,6 @@ function startGame() {
 // =============================================
 //  PHASES
 // =============================================
-const PHASES = ["draw","main","combat","end"];
-
 function setPhase(p) {
   G.phase = p;
   document.getElementById('phase-label').textContent =
@@ -875,34 +856,30 @@ function startPlayerTurn() {
   G.blockers = {};
   G.combatPhase = null;
   document.getElementById('turn-count').textContent = G.turn;
-  log(`— Turn ${G.turn} — Player's turn begins —`, "phase");
+  log(`\u2014 Turn ${G.turn} \u2014 Player's turn begins \u2014`, "phase");
 
-  // Discard down to hand size first
   while (G.playerHand.length > HAND_SIZE) G.playerGrave.push(G.playerHand.pop());
 
-  // Roll die + base resources
   G.diceRoll = Math.floor(Math.random() * 6) + 1;
-  const newRes = G.diceRoll + BASE_RESOURCES + G.savedRes;
+  const prevSaved = G.savedRes;
+  const newRes = G.diceRoll + BASE_RESOURCES + prevSaved;
   G.playerRes = newRes;
   G.savedRes = 0;
 
-  const dice = ["⚀","⚁","⚂","⚃","⚄","⚅"];
-  document.getElementById('dice-display').textContent = dice[G.diceRoll-1];
-  log(`🎲 Rolled ${G.diceRoll} + 6 base + ${G.savedRes} saved = ${newRes} resources`, "play");
+  const dice = ["\u2680","\u2681","\u2682","\u2683","\u2684","\u2685"];
+  document.getElementById('dice-display').textContent = dice[G.diceRoll - 1];
+  log(`\u{1F3B2} Rolled ${G.diceRoll} + 6 base + ${prevSaved} saved = ${newRes} resources`, "play");
 
-  // Untap all player creatures
-  G.playerField.forEach(c => { c.tapped = false; if (c.frozen) c.frozen = false; });
+  G.playerField.forEach(c => { c.tapped = false; c.frozen = false; });
 
-  // Draw 2
   drawCards(G.playerDeck, G.playerHand, DRAW_PER_TURN, "player");
 
-  // Phoenix return
   if (G.phoenixPending === "player") {
     const ph = G.playerGrave.find(c => c.name === "Blazing Phoenix");
     if (ph) {
       G.playerGrave.splice(G.playerGrave.indexOf(ph), 1);
       G.playerHand.push(ph);
-      log("🔥 Blazing Phoenix rises from the grave!", "play");
+      log("\u{1F525} Blazing Phoenix rises from the grave!", "play");
     }
     G.phoenixPending = null;
   }
@@ -917,23 +894,21 @@ function startAITurn() {
   G.blockers = {};
   G.combatPhase = null;
 
-  // Discard down
   while (G.aiHand.length > HAND_SIZE) G.aiGrave.push(G.aiHand.pop());
 
   G.turn++;
   document.getElementById('turn-count').textContent = G.turn;
-  log(`— Turn ${G.turn} — AI's turn begins —`, "phase");
+  log(`\u2014 Turn ${G.turn} \u2014 AI's turn begins \u2014`, "phase");
 
   const die = Math.floor(Math.random() * 6) + 1;
-  const newRes = die + BASE_RESOURCES + G.aiSavedRes;
+  const prevSaved = G.aiSavedRes;
+  const newRes = die + BASE_RESOURCES + prevSaved;
   G.aiRes = newRes;
   G.aiSavedRes = 0;
-  log(`🤖 AI rolled ${die} + 6 base = ${newRes} resources`, "play");
+  log(`\u{1F916} AI rolled ${die} + 6 base + ${prevSaved} saved = ${newRes} resources`, "play");
 
-  // Untap AI creatures
-  G.aiField.forEach(c => { c.tapped = false; if (c.frozen) c.frozen = false; });
+  G.aiField.forEach(c => { c.tapped = false; c.frozen = false; });
 
-  // Draw
   drawCards(G.aiDeck, G.aiHand, DRAW_PER_TURN, "ai");
 
   setPhase("draw");
@@ -944,9 +919,7 @@ function startAITurn() {
 
 function drawCards(deck, hand, n, who) {
   for (let i = 0; i < n; i++) {
-    if (deck.length === 0) {
-      checkWin(); return;
-    }
+    if (deck.length === 0) { checkWin(); return; }
     hand.push(deck.pop());
     if (hand.length > HAND_SIZE) {
       const discard = hand.shift();
@@ -965,9 +938,7 @@ function nextPhase() {
   const idx = phases.indexOf(G.phase);
   if (idx < phases.length - 1) {
     const next = phases[idx + 1];
-    if (next === "combat") {
-      G.combatPhase = "declare-attackers";
-    }
+    if (next === "combat") G.combatPhase = "declare-attackers";
     setPhase(next);
   } else {
     endTurn();
@@ -979,15 +950,12 @@ function passToAI() {
 }
 
 function endTurn() {
-  // Mill 5 for current player
   if (G.isPlayerTurn) {
     millPlayer(G.playerDeck, G.playerGrave, MILL_PER_TURN, "You");
-    // Tide Weave
     if (G.tideWeaveActive) millPlayer(G.playerDeck, G.playerGrave, 2, "You (Tide Weave)");
-    // Save up to 6 resources
     G.savedRes = Math.min(G.playerRes, MAX_SAVE);
     G.playerRes = 0;
-    log(`💰 You save ${G.savedRes} resources`, "play");
+    log(`\u{1F4B0} You save ${G.savedRes} resources`, "play");
     checkWin();
     setTimeout(startAITurn, 600);
   } else {
@@ -1007,23 +975,23 @@ function endTurn() {
 function millPlayer(deck, grave, n, name) {
   const actual = Math.min(n, deck.length);
   for (let i = 0; i < actual; i++) grave.push(deck.pop());
-  log(`📕 ${name} mills ${actual} card${actual !== 1 ? 's' : ''}. ${deck.length} remain.`, "mill");
+  log(`\u{1F4D5} ${name} mills ${actual} card${actual !== 1 ? 's' : ''}. ${deck.length} remain.`, "mill");
   updateDeckCounts();
   if (deck.length === 0) checkWin();
 }
 
 function checkWin() {
-  if (G.playerDeck.length === 0 && !G._gameOver) {
+  if (G._gameOver) return;
+  if (G.playerDeck.length === 0) {
     G._gameOver = true;
-    setTimeout(() => showModal("💀 Defeated!", "Your library has been depleted. The shadows consumed your knowledge. Better luck next ritual.", "Play Again", restartGame), 300);
-  } else if (G.aiDeck.length === 0 && !G._gameOver) {
+    setTimeout(() => showModal("\u{1F480} Defeated!", "Your library has been depleted. The shadows consumed your knowledge. Better luck next ritual.", "Play Again", restartGame), 300);
+  } else if (G.aiDeck.length === 0) {
     G._gameOver = true;
-    setTimeout(() => showModal("🏆 Victory!", "You have milled the opponent into oblivion! The ritual is complete. You emerge triumphant!", "Play Again", restartGame), 300);
+    setTimeout(() => showModal("\u{1F3C6} Victory!", "You have milled the opponent into oblivion! The ritual is complete. You emerge triumphant!", "Play Again", restartGame), 300);
   }
 }
 
 function restartGame() {
-  G._gameOver = false;
   startGame();
 }
 
@@ -1036,7 +1004,6 @@ function selectCard(uid) {
   if (!card) return;
 
   if (G.selectedCard === uid) {
-    // Play it
     if (G.playerRes < card.cost) {
       floatText("Not enough resources!", "var(--crimson)");
       return;
@@ -1047,114 +1014,107 @@ function selectCard(uid) {
     G.selectedCard = null;
   } else {
     G.selectedCard = uid;
-    floatText(`${card.name} — Cost: ${card.cost}`, "var(--gold-light)");
+    floatText(`${card.name} \u2014 Cost: ${card.cost}`, "var(--gold-light)");
   }
   updateUI();
 }
 
 function playCard(card, owner) {
   const isPlayer = owner === "player";
-  const field = isPlayer ? G.playerField : G.aiField;
-  const grave = isPlayer ? G.playerGrave : G.aiGrave;
-  const deckTarget = isPlayer ? G.aiDeck : G.playerDeck;
-  const graveTarget = isPlayer ? G.aiGrave : G.playerGrave;
+  const field      = isPlayer ? G.playerField : G.aiField;
+  const grave      = isPlayer ? G.playerGrave : G.aiGrave;
+  const deckTarget = isPlayer ? G.aiDeck      : G.playerDeck;
+  const gravTarget = isPlayer ? G.aiGrave     : G.playerGrave;
   const who = isPlayer ? "You play" : "AI plays";
 
   log(`${who}: ${card.emoji} ${card.name}`, "play");
 
   if (card.type === "Creature") {
-    // Handle Haste
-    if (card.text && card.text.includes("Haste")) card.tapped = false;
-    else card.tapped = true; // summoning sickness
+    card.tapped = !(card.text && card.text.includes("Haste"));
     field.push(card);
 
-    // ETB effects
     if (card.name === "Frost Djinn") {
       const targets = isPlayer ? G.aiField : G.playerField;
       if (targets.length > 0) {
         targets[0].frozen = true;
-        log(`❄️ Frost Djinn freezes ${targets[0].name}!`, "play");
+        log(`\u2744\uFE0F Frost Djinn freezes ${targets[0].name}!`, "play");
       }
     }
-    if (card.name === "Storm Elemental") {
-      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You");
-    }
-    if (card.name === "Gloomhide Stalker") {
-      millPlayer(deckTarget, graveTarget, 4, isPlayer ? "AI" : "You");
-    }
+    if (card.name === "Storm Elemental")   millPlayer(deckTarget, gravTarget, 3, isPlayer ? "AI" : "You");
+    if (card.name === "Gloomhide Stalker") millPlayer(deckTarget, gravTarget, 4, isPlayer ? "AI" : "You");
+
   } else if (card.type === "Instant" || card.type === "Sorcery") {
     applySpellEffect(card, isPlayer);
     grave.push(card);
+
   } else if (card.type === "Enchantment") {
     if (card.subtype === "Global") {
       G.globalEnchants.push(card);
-      if (card.name === "Tide Weave") G.tideWeaveActive = true;
+      if (card.name === "Tide Weave")   G.tideWeaveActive = true;
       if (card.name === "Eternal Dusk") {
         G.eternalDuskActive = true;
-        [...G.playerField,...G.aiField].forEach(c => { c.counters = (c.counters||0)+1; });
+        [...G.playerField, ...G.aiField].forEach(c => { c.counters = (c.counters || 0) + 1; });
       }
       if (card.name === "Gravepact") G.gravepactActive = true;
     } else {
-      grave.push(card); // simplified: aura goes to grave
+      grave.push(card);
     }
+
   } else if (card.type === "Artifact") {
     field.push({...card, isArtifact: true, tapped: false});
   }
+
   updateUI();
 }
 
 function applySpellEffect(card, isPlayer) {
-  const deckTarget = isPlayer ? G.aiDeck : G.playerDeck;
-  const graveTarget = isPlayer ? G.aiGrave : G.playerGrave;
-  const deckSelf = isPlayer ? G.playerDeck : G.aiDeck;
-  const graveSelf = isPlayer ? G.playerGrave : G.aiGrave;
-  const handSelf = isPlayer ? G.playerHand : G.aiHand;
-  const resKey = isPlayer ? "playerRes" : "aiRes";
+  const deckTarget = isPlayer ? G.aiDeck      : G.playerDeck;
+  const gravTarget = isPlayer ? G.aiGrave     : G.playerGrave;
+  const deckSelf   = isPlayer ? G.playerDeck  : G.aiDeck;
+  const gravSelf   = isPlayer ? G.playerGrave : G.aiGrave;
+  const handSelf   = isPlayer ? G.playerHand  : G.aiHand;
+  const opp = isPlayer ? "AI" : "You";
+  const self = isPlayer ? "You" : "AI";
 
   switch (card.name) {
-    case "Mind Raze":
-      millPlayer(deckTarget, graveTarget, 4, isPlayer ? "AI" : "You"); break;
-    case "Torrential Surge":
-      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You"); break;
-    case "Searing Bolt":
-      millPlayer(deckTarget, graveTarget, 3, isPlayer ? "AI" : "You"); break;
+    case "Mind Raze":       millPlayer(deckTarget, gravTarget, 4, opp); break;
+    case "Torrential Surge":millPlayer(deckTarget, gravTarget, 3, opp); break;
+    case "Searing Bolt":    millPlayer(deckTarget, gravTarget, 3, opp); break;
     case "Undergrowth":
       drawCards(deckSelf, handSelf, 2, isPlayer ? "player" : "ai");
-      millPlayer(deckSelf, graveSelf, 1, isPlayer ? "You" : "AI"); break;
-    case "Voidpulse":
-      millPlayer(deckTarget, graveTarget, 5, isPlayer ? "AI" : "You"); break;
-    case "Gilded Gift":
-      drawCards(deckSelf, handSelf, 3, isPlayer ? "player" : "ai"); break;
+      millPlayer(deckSelf, gravSelf, 1, self); break;
+    case "Voidpulse":   millPlayer(deckTarget, gravTarget, 5, opp); break;
+    case "Gilded Gift": drawCards(deckSelf, handSelf, 3, isPlayer ? "player" : "ai"); break;
     case "Pyroclasm":
-      [...G.playerField,...G.aiField].forEach(c => {
+      [...G.playerField, ...G.aiField].forEach(c => {
         if (!c.isArtifact) {
-          c.toughness = (c.toughness||1) - 2;
+          c.toughness = (c.toughness || 1) - 2;
           if (c.toughness <= 0) {
-            if (G.playerField.includes(c)) { G.playerField.splice(G.playerField.indexOf(c),1); G.playerGrave.push(c); }
-            else { G.aiField.splice(G.aiField.indexOf(c),1); G.aiGrave.push(c); }
-            log(`💀 ${c.name} destroyed by Pyroclasm`, "combat");
+            if (G.playerField.includes(c)) { G.playerField.splice(G.playerField.indexOf(c), 1); G.playerGrave.push(c); }
+            else                           { G.aiField.splice(G.aiField.indexOf(c), 1);          G.aiGrave.push(c); }
+            log(`\u{1F480} ${c.name} destroyed by Pyroclasm`, "combat");
           }
         }
       });
-      millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You"); break;
-    case "Spectral Drain":
-      const tappedEnemy = isPlayer ? G.aiField.find(c=>c.tapped) : G.playerField.find(c=>c.tapped);
+      millPlayer(deckTarget, gravTarget, 2, opp); break;
+    case "Spectral Drain": {
+      const tappedEnemy = isPlayer ? G.aiField.find(c => c.tapped) : G.playerField.find(c => c.tapped);
       if (tappedEnemy) {
         const ef = isPlayer ? G.aiField : G.playerField;
         const eg = isPlayer ? G.aiGrave : G.playerGrave;
         ef.splice(ef.indexOf(tappedEnemy), 1);
         eg.push(tappedEnemy);
-        millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You");
-        log(`💀 Spectral Drain destroys ${tappedEnemy.name}!`, "combat");
-      } break;
+        millPlayer(deckTarget, gravTarget, 2, opp);
+        log(`\u{1F480} Spectral Drain destroys ${tappedEnemy.name}!`, "combat");
+      }
+      break;
+    }
     case "Fog of Ruin":
-      log("🌫 Fog of Ruin — all combat damage prevented this turn!", "play");
+      log("\u{1F32B} Fog of Ruin \u2014 all combat damage prevented this turn!", "play");
       millPlayer(G.playerDeck, G.playerGrave, 1, "You");
       millPlayer(G.aiDeck, G.aiGrave, 1, "AI"); break;
-    case "Echo of the Tomb":
-      millPlayer(deckTarget, graveTarget, 6, isPlayer ? "AI" : "You"); break;
-    default:
-      millPlayer(deckTarget, graveTarget, 2, isPlayer ? "AI" : "You");
+    case "Echo of the Tomb": millPlayer(deckTarget, gravTarget, 6, opp); break;
+    default: millPlayer(deckTarget, gravTarget, 2, opp);
   }
 }
 
@@ -1163,43 +1123,35 @@ function applySpellEffect(card, isPlayer) {
 // =============================================
 function declareAttack() {
   if (!G.isPlayerTurn || G.phase !== "combat") return;
-  if (G.combatPhase === "declare-attackers") {
-    // All untapped, non-frozen creatures attack
-    G.attackers = G.playerField
-      .filter(c => !c.tapped && !c.frozen && c.type === "Creature")
-      .map(c => c.uid);
-    if (G.attackers.length === 0) { floatText("No creatures to attack with!", "var(--gold)"); return; }
-    G.attackers.forEach(uid => {
-      const c = G.playerField.find(x=>x.uid===uid);
-      if (c && !(c.text && c.text.includes("Vigilance"))) c.tapped = true;
-    });
-    log(`⚔ You attack with ${G.attackers.length} creature(s)!`, "combat");
-    G.combatPhase = "resolve";
+  if (G.combatPhase !== "declare-attackers") return;
 
-    // Charge bonus
-    G.attackers.forEach(uid => {
-      const c = G.playerField.find(x=>x.uid===uid);
-      if (c && c.text && c.text.includes("Charge") && G.attackers.length === 1) c._chargeBonus = 2;
-      else if (c) c._chargeBonus = 0;
-    });
+  G.attackers = G.playerField
+    .filter(c => !c.tapped && !c.frozen && c.type === "Creature")
+    .map(c => c.uid);
 
-    // AI blocks automatically
-    aiDeclareBlockers();
-    resolveCombat("player");
-  }
+  if (G.attackers.length === 0) { floatText("No creatures to attack with!", "var(--gold)"); return; }
+
+  G.attackers.forEach(uid => {
+    const c = G.playerField.find(x => x.uid === uid);
+    if (c && !(c.text && c.text.includes("Vigilance"))) c.tapped = true;
+    if (c) c._chargeBonus = (c.text && c.text.includes("Charge") && G.attackers.length === 1) ? 2 : 0;
+  });
+
+  log(`\u2694 You attack with ${G.attackers.length} creature(s)!`, "combat");
+  G.combatPhase = "resolve";
+
+  aiDeclareBlockers();
+  resolveCombat("player");
   updateUI();
 }
 
 function aiDeclareBlockers() {
   G.blockers = {};
   const available = [...G.aiField.filter(c => !c.tapped && c.type === "Creature")];
-  const attackers = G.attackers.map(uid => G.playerField.find(c=>c.uid===uid)).filter(Boolean);
+  const attackers  = G.attackers.map(uid => G.playerField.find(c => c.uid === uid)).filter(Boolean);
 
   attackers.forEach(atk => {
-    // AI prefers to block with a creature that can survive or tie
-    const blocker = available.find(b =>
-      b.power >= atk.power || b.toughness > atk.power
-    ) || available[0];
+    const blocker = available.find(b => b.power >= atk.power || b.toughness > atk.power) || available[0];
     if (blocker) {
       G.blockers[blocker.uid] = atk.uid;
       available.splice(available.indexOf(blocker), 1);
@@ -1207,60 +1159,53 @@ function aiDeclareBlockers() {
     }
   });
 
-  if (Object.keys(G.blockers).length > 0) {
-    log(`🛡 AI blocks with ${Object.keys(G.blockers).length} creature(s)`, "combat");
-  }
+  const numBlockers = Object.keys(G.blockers).length;
+  if (numBlockers > 0) log(`\u{1F6E1} AI blocks with ${numBlockers} creature(s)`, "combat");
 }
 
 function resolveCombat(turn) {
-  const isPlayer = turn === "player";
-  const attackerField = isPlayer ? G.playerField : G.aiField;
-  const attackerGrave = isPlayer ? G.playerGrave : G.aiGrave;
-  const defField = isPlayer ? G.aiField : G.playerField;
-  const defGrave = isPlayer ? G.aiGrave : G.playerGrave;
-  const defDeck = isPlayer ? G.aiDeck : G.playerDeck;
-  const defGraveArr = isPlayer ? G.aiGrave : G.playerGrave;
+  const isPlayer    = turn === "player";
+  const atkField    = isPlayer ? G.playerField : G.aiField;
+  const atkGrave    = isPlayer ? G.playerGrave : G.aiGrave;
+  const defField    = isPlayer ? G.aiField     : G.playerField;
+  const defGrave    = isPlayer ? G.aiGrave     : G.playerGrave;
+  const defDeck     = isPlayer ? G.aiDeck      : G.playerDeck;
+  const opp = isPlayer ? "AI" : "You";
 
-  const attackers = G.attackers.map(uid => attackerField.find(c=>c.uid===uid)).filter(Boolean);
-  const blocked = new Set(Object.values(G.blockers));
+  const attackers = G.attackers.map(uid => atkField.find(c => c.uid === uid)).filter(Boolean);
+  const blocked   = new Set(Object.values(G.blockers));
 
   attackers.forEach(atk => {
     const blocker = defField.find(c => G.blockers[c.uid] === atk.uid);
-    const atkPow = (atk.power||0) + (atk.counters||0) + (atk._chargeBonus||0);
-    const atkTou = (atk.toughness||0) + (atk.counters||0);
+    const atkPow  = (atk.power || 0) + (atk.counters || 0) + (atk._chargeBonus || 0);
 
     if (blocker) {
-      const blkPow = (blocker.power||0) + (blocker.counters||0);
-      const blkTou = (blocker.toughness||0) + (blocker.counters||0);
-
-      // All creatures have deathtouch
-      const atkDies = blkPow >= 1;
-      const blkDies = atkPow >= 1;
+      const blkPow = (blocker.power || 0) + (blocker.counters || 0);
+      const blkTou = (blocker.toughness || 0) + (blocker.counters || 0);
       const excess = Math.max(0, atkPow - blkTou);
 
+      // All creatures have deathtouch — any damage is lethal
+      const atkDies = blkPow >= 1;
+      const blkDies = atkPow >= 1;
+
       if (atkDies) {
-        log(`💀 ${atk.name} is destroyed by ${blocker.name}`, "combat");
-        // Undying check
+        log(`\u{1F480} ${atk.name} is destroyed by ${blocker.name}`, "combat");
         if (atk.undying && atk.counters === 0) {
           atk.counters = 1; atk.tapped = false;
-          log(`♻️ ${atk.name} returns with an undying counter!`, "play");
+          log(`\u267B\uFE0F ${atk.name} returns with an undying counter!`, "play");
         } else {
-          attackerField.splice(attackerField.indexOf(atk), 1);
-          attackerGrave.push(atk);
-          if (G.gravepactActive) {
-            const opDeck = isPlayer ? G.aiDeck : G.playerDeck;
-            const opGrave = isPlayer ? G.aiGrave : G.playerGrave;
-            millPlayer(opDeck, opGrave, 2, isPlayer ? "AI" : "You");
-          }
+          atkField.splice(atkField.indexOf(atk), 1);
+          atkGrave.push(atk);
+          if (G.gravepactActive) millPlayer(isPlayer ? G.aiDeck : G.playerDeck, isPlayer ? G.aiGrave : G.playerGrave, 2, opp);
           if (atk.name === "Blazing Phoenix") G.phoenixPending = turn;
-          if (atk.name === "Pestilence Rat") {}// handled elsewhere
         }
       }
+
       if (blkDies) {
-        log(`💀 ${blocker.name} is destroyed by ${atk.name}`, "combat");
+        log(`\u{1F480} ${blocker.name} is destroyed by ${atk.name}`, "combat");
         if (blocker.undying && blocker.counters === 0) {
           blocker.counters = 1; blocker.tapped = false;
-          log(`♻️ ${blocker.name} returns with an undying counter!`, "play");
+          log(`\u267B\uFE0F ${blocker.name} returns with an undying counter!`, "play");
         } else {
           defField.splice(defField.indexOf(blocker), 1);
           defGrave.push(blocker);
@@ -1268,40 +1213,33 @@ function resolveCombat(turn) {
         }
       }
 
-      // Excess damage mills
       if (excess > 0) {
-        const trampleMult = atk.text && atk.text.includes("Trample") ? 2 : 1;
+        const trampleMult = (atk.text && atk.text.includes("Trample")) ? 2 : 1;
         const millAmt = excess * trampleMult;
-        millPlayer(defDeck, defGraveArr, millAmt, isPlayer ? "AI" : "You");
-        log(`💥 ${excess} excess damage → mills ${millAmt}`, "combat");
+        millPlayer(defDeck, defGrave, millAmt, opp);
+        log(`\u{1F4A5} ${excess} excess damage \u2192 mills ${millAmt}`, "combat");
       }
 
-      // Mistborne Assassin
       if (atk.name === "Mistborne Assassin" && blkDies) {
-        millPlayer(defDeck, defGraveArr, 3, isPlayer ? "AI" : "You");
+        millPlayer(defDeck, defGrave, 3, opp);
       }
 
     } else if (!blocked.has(atk.uid)) {
-      // Unblocked — deal damage to weaker side (mill)
-      const millAmt = atkPow;
-      millPlayer(defDeck, defGraveArr, millAmt, isPlayer ? "AI" : "You");
-      log(`💥 ${atk.name} attacks unblocked — mills ${millAmt}!`, "combat");
+      millPlayer(defDeck, defGrave, atkPow, opp);
+      log(`\u{1F4A5} ${atk.name} attacks unblocked \u2014 mills ${atkPow}!`, "combat");
 
-      // Soul Specter
       if (atk.name === "Soul Specter") {
         const handSize = isPlayer ? G.aiHand.length : G.playerHand.length;
-        if (handSize > 0) millPlayer(defDeck, defGraveArr, handSize, isPlayer ? "AI" : "You");
+        if (handSize > 0) millPlayer(defDeck, defGrave, handSize, opp);
       }
-      // Magma Goliath
       if (atk.name === "Magma Goliath") {
-        millPlayer(defDeck, defGraveArr, atkPow, isPlayer ? "AI" : "You");
+        millPlayer(defDeck, defGrave, atkPow, opp);
       }
-      // Ember Lynx scry
       if (atk.name === "Ember Lynx") {
         const topDeck = isPlayer ? G.playerDeck : G.aiDeck;
         if (topDeck.length > 0) {
-          const top = topDeck[topDeck.length-1];
-          log(`🔍 Ember Lynx scries: sees ${top.emoji} ${top.name} (kept)`, "play");
+          const top = topDeck[topDeck.length - 1];
+          log(`\u{1F50D} Ember Lynx scries: sees ${top.emoji} ${top.name} (kept)`, "play");
         }
       }
     }
@@ -1320,44 +1258,34 @@ function aiTakeTurn() {
   if (G._gameOver) return;
   setPhase("main");
 
-  // AI plays cards greedily: highest cost first that it can afford, prefers creatures
-  const hand = [...G.aiHand].sort((a,b) => b.cost - a.cost);
+  const hand = [...G.aiHand].sort((a, b) => b.cost - a.cost);
   for (const card of hand) {
     if (G.aiRes >= card.cost) {
       G.aiRes -= card.cost;
       G.aiHand.splice(G.aiHand.indexOf(card), 1);
       playCard(card, "ai");
       if (G._gameOver) return;
-      // Play at most 2 cards per turn
       if (G.aiField.length > 5) break;
     }
   }
 
   updateUI();
 
-  // Combat
   setTimeout(() => {
     if (G._gameOver) return;
     setPhase("combat");
-    const aiAttackers = G.aiField.filter(c =>
-      !c.tapped && !c.frozen && c.type === "Creature" && !c.isArtifact
-    );
+    const aiAttackers = G.aiField.filter(c => !c.tapped && !c.frozen && c.type === "Creature" && !c.isArtifact);
+
     if (aiAttackers.length > 0) {
       G.attackers = aiAttackers.map(c => c.uid);
-      aiAttackers.forEach(c => {
-        if (!(c.text && c.text.includes("Vigilance"))) c.tapped = true;
-      });
-      log(`🤖 AI attacks with ${aiAttackers.length} creature(s)!`, "combat");
-      // Player auto-blocks (weakest available)
+      aiAttackers.forEach(c => { if (!(c.text && c.text.includes("Vigilance"))) c.tapped = true; });
+      log(`\u{1F916} AI attacks with ${aiAttackers.length} creature(s)!`, "combat");
       aiPlayerAutoBlock(aiAttackers);
       resolveCombat("ai");
     }
 
     if (G._gameOver) return;
-    setTimeout(() => {
-      setPhase("end");
-      endTurn();
-    }, 600);
+    setTimeout(() => { setPhase("end"); endTurn(); }, 600);
   }, 1000);
 }
 
@@ -1370,7 +1298,7 @@ function aiPlayerAutoBlock(attackers) {
       G.blockers[blocker.uid] = atk.uid;
       available.splice(available.indexOf(blocker), 1);
       blocker.tapped = true;
-      log(`🛡 You auto-block ${atk.name} with ${blocker.name}`, "combat");
+      log(`\u{1F6E1} You auto-block ${atk.name} with ${blocker.name}`, "combat");
     }
   });
 }
@@ -1382,15 +1310,14 @@ function renderCard(card, zone, isPlayer) {
   const el = document.createElement("div");
   el.className = "card";
   el.dataset.color = card.color;
-  if (card.tapped) el.classList.add("tapped");
-  if (G.selectedCard === card.uid) el.classList.add("selected");
-  if (G.attackers.includes(card.uid)) el.classList.add("attacking");
+  if (card.tapped)                              el.classList.add("tapped");
+  if (G.selectedCard === card.uid)              el.classList.add("selected");
+  if (G.attackers.includes(card.uid))           el.classList.add("attacking");
   if (Object.keys(G.blockers).includes(card.uid)) el.classList.add("blocking");
 
   if (zone === "hand" && !isPlayer) {
-    // Show card back for AI hand
     el.style.background = "linear-gradient(135deg,#1a0a00,#3d1a0a)";
-    el.innerHTML = `<div class="card-frame"><div class="card-art">📜</div></div>`;
+    el.innerHTML = `<div class="card-frame"><div class="card-art">\u{1F4DC}</div></div>`;
     return el;
   }
 
@@ -1405,7 +1332,7 @@ function renderCard(card, zone, isPlayer) {
         <span class="card-cost">${card.cost}</span>
       </div>
       <div class="card-art">${card.emoji}</div>
-      <div class="card-type-bar">${card.type}${card.subtype ? ' — '+card.subtype : ''}</div>
+      <div class="card-type-bar">${card.type}${card.subtype ? ' \u2014 ' + card.subtype : ''}</div>
       <div class="card-text-box">${card.text}</div>
       ${pt}
     </div>`;
@@ -1418,16 +1345,15 @@ function renderCard(card, zone, isPlayer) {
 
 function renderField(cards, containerId, isPlayer) {
   const el = document.getElementById(containerId);
-  // Keep label
   const label = el.querySelector('.zone-label');
   el.innerHTML = '';
-  if (label) el.appendChild(label);
-  else {
+  if (label) {
+    el.appendChild(label);
+  } else {
     const lbl = document.createElement('span');
     lbl.className = 'zone-label';
-    lbl.style.width = '100%';
-    lbl.style.marginBottom = '4px';
-    lbl.textContent = isPlayer ? '🛡 Your Field' : '⚔ AI Field';
+    lbl.style.cssText = 'width:100%;margin-bottom:4px;';
+    lbl.textContent = isPlayer ? '\u{1F6E1} Your Field' : '\u2694 AI Field';
     el.appendChild(lbl);
   }
   cards.forEach(c => el.appendChild(renderCard(c, "field", isPlayer)));
@@ -1442,8 +1368,7 @@ function renderHand(cards, containerId, isPlayer) {
 function renderResourceDots() {
   const el = document.getElementById('resource-dots');
   el.innerHTML = '';
-  const max = 12;
-  for (let i = 0; i < max; i++) {
+  for (let i = 0; i < 12; i++) {
     const d = document.createElement('div');
     d.className = 'dot' + (i >= G.playerRes ? ' spent' : '');
     el.appendChild(d);
@@ -1452,35 +1377,34 @@ function renderResourceDots() {
 
 function updateDeckCounts() {
   document.getElementById('player-deck-count').textContent = G.playerDeck.length;
-  document.getElementById('ai-deck-count').textContent = G.aiDeck.length;
+  document.getElementById('ai-deck-count').textContent     = G.aiDeck.length;
 }
 
 function updateUI() {
   if (!G.playerDeck) return;
   renderHand(G.playerHand, "player-hand", true);
-  renderHand(G.aiHand, "ai-hand", false);
+  renderHand(G.aiHand,     "ai-hand",     false);
   renderField(G.playerField, "player-battlefield", true);
-  renderField(G.aiField, "ai-battlefield", false);
+  renderField(G.aiField,     "ai-battlefield",     false);
   renderResourceDots();
-  document.getElementById('resource-count').textContent = G.playerRes;
+  document.getElementById('resource-count').textContent    = G.playerRes;
   document.getElementById('ai-resource-count').textContent = G.aiRes;
   updateDeckCounts();
 
-  // Button states
   const canAttack = G.isPlayerTurn && G.phase === "combat" &&
     G.combatPhase === "declare-attackers" &&
     G.playerField.some(c => !c.tapped && !c.frozen && c.type === "Creature");
-  document.getElementById('btn-attack').disabled = !canAttack;
-  document.getElementById('btn-pass').disabled = !G.isPlayerTurn;
+  document.getElementById('btn-attack').disabled    = !canAttack;
+  document.getElementById('btn-pass').disabled      = !G.isPlayerTurn;
   document.getElementById('btn-next-phase').disabled = !G.isPlayerTurn;
 }
 
 // =============================================
 //  LOG
 // =============================================
-function log(msg, type="play") {
+function log(msg, type = "play") {
   G.log.push({msg, type});
-  const el = document.getElementById('log-entries');
+  const el    = document.getElementById('log-entries');
   const entry = document.createElement('div');
   entry.className = `log-entry ${type}`;
   entry.textContent = msg;
@@ -1497,10 +1421,10 @@ function toggleLog() {
 // =============================================
 function showModal(title, body, btnText, cb) {
   document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-body').textContent = body;
-  document.getElementById('modal-btn').textContent = btnText;
+  document.getElementById('modal-body').textContent  = body;
+  document.getElementById('modal-btn').textContent   = btnText;
   document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('modal-btn').onclick = () => { closeModal(); if(cb) cb(); };
+  document.getElementById('modal-btn').onclick = () => { closeModal(); if (cb) cb(); };
 }
 
 function closeModal() {
@@ -1512,11 +1436,11 @@ function closeModal() {
 // =============================================
 function floatText(msg, color) {
   const el = document.createElement('div');
-  el.className = 'floating-text';
+  el.className   = 'floating-text';
   el.textContent = msg;
   el.style.color = color;
-  el.style.left = (window.innerWidth/2 - 100) + 'px';
-  el.style.top = (window.innerHeight/2) + 'px';
+  el.style.left  = (window.innerWidth / 2 - 100) + 'px';
+  el.style.top   = (window.innerHeight / 2) + 'px';
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1300);
 }
